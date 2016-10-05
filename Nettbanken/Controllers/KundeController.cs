@@ -10,6 +10,9 @@ namespace Nettbanken.Controllers
     {
         public ActionResult TestView()
         {
+            List<Models.Kunde> kunder = 
+            String ret = Models.DBMetoder.skrivInnKunde();
+            ViewData["Melding"] = ret;
             return View();
         }
     }
