@@ -16,11 +16,13 @@ namespace Nettbanken.Models
             Database.CreateIfNotExists(); // Lager databasen hvis den ikke eksisterer
         }
 
+        // Fjerner automatisk "flertalls-innsetting" på tabellene (Kunder => Kunders)
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }
 
+        // Metodene som lager tabellene
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Kunde> Kunder { get; set; }
         public DbSet<Konto> Kontoer { get; set; }
@@ -28,13 +30,10 @@ namespace Nettbanken.Models
         public DbSet<Poststed> Poststeder { get; set; }
     }
 
-    // Admin klasse for administratorer
     public class Admin
     {
-        public int id { get; set; } // ID i tabellen.
         [Key]
-        public string bankId { get; set; } // BankID for innlogging
-        public string personNr { get; set; }
+        public string adminId { get; set; } // BankID for innlogging
         public string passord { get; set; }
 
         public string fornavn { get; set; }
@@ -46,10 +45,8 @@ namespace Nettbanken.Models
         public virtual Poststed poststed { get; set; } // Hver Admin har kun ett postnr og poststed
     }
 
-    // Kunde klasse for kunder
     public class Kunde
     {
-        public int id { get; set; } // ID i tabellen.
         [Key]
         public string bankId { get; set; } // BankID for innlogging
         public string personNr { get; set; }
@@ -83,7 +80,7 @@ namespace Nettbanken.Models
     {
         [Key]
         public int Id { get; set; } 
-        public int status { get; set; } // Status, Betalt, Ikke-Betalt, Kansellert osv.
+        public string status { get; set; } // Status, Betalt, Ikke-Betalt, Kansellert osv.
         public int saldoInn { get; set; }
         public int saldout { get; set; }
         public string dato { get; set; }
