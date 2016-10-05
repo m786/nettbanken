@@ -1,9 +1,69 @@
 ﻿
-@model Nettbanken.Models.DBMetoder
-<h2>TestView</h2>
+@model Nettbanken.Models.Kunde
+<!DOCTYPE html>
 
-<div>
-    <p>
-        @ViewBag.Melding
-    </p>
-</div>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title> View for testing av innsetting og henting av data</title>
+    </head>
+
+    <body>
+        <div>
+            <h4>
+                Kunde Registrering
+            </h4>
+            <!--Aksesserer TestView metoden i KundeController-->
+            <form action="/Kunde/KundeView" method="post">
+            <table>
+                <tr> <td>BankID</td> </tr>
+                <tr>
+                    <td><input type="text" name="bankid"/></td>
+                </tr>
+
+                <tr> <td>Personnummer</td> </tr>
+                <tr>
+                    <td><input type="text" name="personnr"/></td>
+                </tr>
+
+                <tr> <td>Passord</td> </tr>
+                <tr>
+                    <td><input type="text" name="passord"/></td>
+                </tr>
+
+                <tr> <td>Fornavn</td> </tr>
+                <tr>
+                    <td><input type="text" name="fornavn"/></td>
+                </tr>
+
+                <tr> <td>Etternavn</td> </tr>
+                <tr>
+                    <td><input type="text" name="etternavn" /></td>
+                </tr>
+
+                <tr> <td>Adresse</td> </tr>
+                <tr>
+                    <td><input type="text" name="adresse" /></td>
+                </tr>
+
+                <tr> <td>TelefonNummer</td> </tr>
+                <tr>
+                    <td><input type="text" name="telefonnr" /></td>
+                </tr>
+
+                <tr> <td>PostNummer</td> </tr>
+                <tr>
+                    <td><input type="text" name="postnr" /></td>
+                </tr>
+
+                <tr> <td>Poststed</td> </tr>
+                <tr>
+                    <td><input type="text" name="poststed" /></td>
+                </tr>
+
+                <tr><input type="submit" value="Registrer"</tr>
+            </table>
+            </form>
+        </div>
+    </body>
+</html>

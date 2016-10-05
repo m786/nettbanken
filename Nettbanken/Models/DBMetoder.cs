@@ -7,27 +7,27 @@ namespace Nettbanken.Models
 {
     public class DBMetoder
     {
-        public static String skrivInnKunde()
+        public static String skrivInnKunde(String[] a)
         {
 
             using (var db = new DbModell())
             {
                 var kunde = new Kunde
                 {
-                    bankId = "236777",
-                    personNr = "061195",
-                    passord = "testbruker",
-                    fornavn = "Erik",
-                    etternavn = "Li",
-                    adresse = "askerveien 32",
-                    telefonNr = "123456789",
-                    postNr = "123"
+                    bankId = a[0],
+                    personNr = a[1],
+                    passord = a[2],
+                    fornavn = a[3],
+                    etternavn = a[4],
+                    adresse = a[5],
+                    telefonNr = a[6],
+                    postNr = a[7]
                 };
 
                 var poststed = new Poststed
                 {
-                    postNr = "123",
-                    poststed = "Oslo"
+                    postNr = a[7],
+                    poststed = a[8]
                 };
 
                 kunde.poststed = poststed;
@@ -36,11 +36,11 @@ namespace Nettbanken.Models
                 {
                     db.Kunder.Add(kunde);
                     db.SaveChanges();
-                    return "Kunde har blitt lagt til!";
+                    return "Innsetting av Kunde OK";
                 }
                 catch (Exception feil)
                 {
-                    return "Feil i innsetting" + feil.InnerException + " - " +feil.Source;
+                    return "Innsetting feil - " + feil.Message + " - " + feil.InnerException;
                 }
 
             }
