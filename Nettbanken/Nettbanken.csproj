@@ -181,10 +181,9 @@
     <Content Include="scripts\jquery-1.9.1.min.map" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Kunde\TestView.cshtml" />
-    <Content Include="Views\Kunde\KundeView.cshtml" />
-    <Content Include="Views\Kunde\AdminView.cshtml" />
-    <Content Include="Views\Kunde\TransaksjonView.cshtml" />
+    <Content Include="Views\Kunde\forsideView.cshtml" />
+    <Content Include="Views\Kunde\kundeLogginnView.cshtml" />
+    <Content Include="Views\Kunde\hjemmesideView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

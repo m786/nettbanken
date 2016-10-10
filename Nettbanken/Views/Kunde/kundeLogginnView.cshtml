@@ -1,0 +1,27 @@
+﻿
+@model Nettbanken.Models.Kunde
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Kunde Logginn</title>
+    </head>
+
+    <body>
+        <form action="/Kunde/kundeLogginnView" method="post">
+            <table>
+                <tr><td>BankID: </td></tr>
+                <tr><td><input type="text" name="bankid" placeholder="BankID"/></td></tr>
+
+                <tr><td>Personnummer: </td></tr>
+                <tr><td><input type="text" name="personnr" placeholder="Personnummer"/></td></tr>
+
+                <tr><td>Passord: </td></tr>
+                <tr><td><input type="text" name="passord" placeholder="Passord"/></td></tr>
+
+                <tr><td><input type="submit" value="Logg inn"/></td></tr>
+            </table>
+        </form>
+    </body>
+</html>

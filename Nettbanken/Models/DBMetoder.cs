@@ -7,6 +7,28 @@ namespace Nettbanken.Models
 {
     public class DBMetoder
     {
+
+        // Innloggingsmetode for kunder
+        public static Kunde kundeLogginn(String[] a)
+        {
+            string bankid = a[0];
+            string personnr = a[1];
+            string passord = a[2];
+            Kunde funnetKunde;
+
+            using (var db = new DbModell())
+            {
+                funnetKunde = (from k in db.Kunder
+                                     where k.bankId == bankid && k.personNr == personnr
+                                           && k.passord == passord
+                                     select k).Single();
+            }
+
+            return funnetKunde;
+        }
+        
+        
+        /*
         // Metode for å sette inn registreringsinfo til kundetabell
         public static String skrivInnKunde(String[] a)
         {
@@ -124,5 +146,6 @@ namespace Nettbanken.Models
 
             }
         }
+        */
     }
 }

@@ -6,88 +6,44 @@ using System.Web.Mvc;
 
 namespace Nettbanken.Controllers
 {
+
+    // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
-        // Resturnerer standard TestView side
-        public ActionResult TestView()
+        // Returnerer forsiden til Nettbanken
+        public ActionResult forsideView()
         {
             return View();
         }
-        // Returnerer standard AdminView side
-        public ActionResult AdminView()
+
+        // Kundens innloggingsside
+        public ActionResult kundeLogginnView()
         {
             return View();
         }
-        // Blir brukt når man sender inn registreringsinfo fra AdminView
+        
         [HttpPost]
-        public ActionResult AdminView(FormCollection innListe)
+        public ActionResult kundeLogginnView(FormCollection info)
         {
-            String OK; // Innsettingsstatus
+            String[] a = new String[3];
+            a[0] = info["bankid"];
+            a[1] = info["personnr"];
+            a[2] = info["passord"];
 
-            String[] a = new String[9];
-            a[0] = innListe["adminid"];
-            a[1] = innListe["passord"];
-            a[2] = innListe["fornavn"];
-            a[3] = innListe["etternavn"];
-            a[4] = innListe["adresse"];
-            a[5] = innListe["telefonnr"];
-            a[6] = innListe["postnr"];
-            a[7] = innListe["poststed"];
-            OK = Models.DBMetoder.skrivInnAdmin(a);
+            Models.Kunde kunde = Models.DBMetoder.kundeLogginn(a);
 
-            Response.Write(OK);
+            if (kunde.bankId.Equals(a[0]) && kunde.personNr.Equals(a[1]) && kunde.passord.Equals(a[2]))
+            {
+                return hjemmesideView();
+            }
             return View();
+
         }
-        // Returnerer standard KundeView side
-        public ActionResult KundeView()
+
+        public ActionResult hjemmesideView()
         {
             return View();
         }
-        // Blir brukt når man sender inn registreringsinfo fra KundeView
-        [HttpPost]
-        public ActionResult KundeView(FormCollection innListe)
-        {
-            String OK; // Innsettingsstatus
-
-            String[] a = new String[9];
-            a[0] = innListe["bankid"];
-            a[1] = innListe["personnr"];
-            a[2] = innListe["passord"];
-            a[3] = innListe["fornavn"];
-            a[4] = innListe["etternavn"];
-            a[5] = innListe["adresse"];
-            a[6] = innListe["telefonnr"];
-            a[7] = innListe["postnr"];
-            a[8] = innListe["poststed"];
-            OK = Models.DBMetoder.skrivInnKunde(a);
-
-            Response.Write(OK);
-            return View();
-        }
-        // Returnerer standard TransaksjonView side
-        public ActionResult TransaksjonView()
-        {
-            return View();
-        }
-        // Blir brukt når man sender inn transaksjonsinfo fra TransaksjonView
-        [HttpPost]
-        public ActionResult TransaksjonView(FormCollection innListe)
-        {
-            String OK; // Innsettingsstatus
-
-            String[] a = new String[8];
-            a[0] = innListe["status"];
-            a[1] = innListe["saldoinn"];
-            a[2] = innListe["saldout"];
-            a[3] = innListe["dato"];
-            a[4] = innListe["kid"];
-            a[5] = innListe["frakonto"];
-            a[6] = innListe["tilkonto"];
-            a[7] = innListe["melding"];
-            OK = Models.DBMetoder.skrivInnTransaksjon(a);
-
-            Response.Write(OK);
-            return View();
-        }
+        
     }
 }
