@@ -1,0 +1,78 @@
+﻿@model Nettbanken.Models.Kunde
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+    </head>
+    <body>
+        <!--BeginForm har parameterene (metodenavn, kontrollernavn, postmethod)-->
+        @using (Html.BeginForm("kundeRegistreringView","Kunde",FormMethod.Post))
+        {
+            //@Html.AntiForgeryToken()
+            //@Html.ValidationSummary(true)
+
+            <fieldset>
+                <legend>Kunde Registrering</legend>
+
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.personNr)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.personNr)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.passord)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.passord)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.fornavn)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.fornavn)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.etternavn)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.etternavn)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.adresse)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.adresse)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.telefonNr)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.telefonNr)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.poststed.postNr)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.poststed.postNr)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.poststed.poststed)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.poststed.poststed)
+                </div>
+
+                <div>
+                    <input type="submit" value="Registrer"/>
+                </div>
+            </fieldset>
+        }
+
+        <div>
+            @Html.ActionLink("Tilbake til forside","forsideView")
+        </div>
+
+    </body>
+</html>

@@ -16,30 +16,46 @@ namespace Nettbanken.Controllers
             return View();
         }
 
+        // Side for registrering av kunde
+        public ActionResult kundeRegistreringView()
+        {
+            return View();
+        }
+
+        // View som brukes når kunde registrer seg
+        // Pga oppsett i view, så returnerer det et objekt av kunde.
+        [HttpPost]
+        public ActionResult kundeRegistreringView(Models.Kunde kunde)
+        {
+            String OK;
+            
+            OK = Models.DBMetoder.registrerKunde(kunde);
+            
+            if (OK == "")
+            {
+                return RedirectToAction("hjemmesideView");
+            }
+            
+            //OK = kunde.poststed.postNr + " " + kunde.poststed.poststed;
+            Response.Write(OK);
+
+            return View();
+        }
+
         // Kundens innloggingsside
         public ActionResult kundeLogginnView()
         {
             return View();
         }
         
+        // View som brukes når kunde prøver å logge inn
         [HttpPost]
         public ActionResult kundeLogginnView(FormCollection info)
         {
-            String[] a = new String[3];
-            a[0] = info["bankid"];
-            a[1] = info["personnr"];
-            a[2] = info["passord"];
-
-            Models.Kunde kunde = Models.DBMetoder.kundeLogginn(a);
-
-            if (kunde.bankId.Equals(a[0]) && kunde.personNr.Equals(a[1]) && kunde.passord.Equals(a[2]))
-            {
-                return hjemmesideView();
-            }
             return View();
-
         }
 
+        // Hjemmesiden til kunde etter suksessfull innlogging
         public ActionResult hjemmesideView()
         {
             return View();

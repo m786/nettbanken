@@ -184,6 +184,7 @@
     <Content Include="Views\Kunde\forsideView.cshtml" />
     <Content Include="Views\Kunde\kundeLogginnView.cshtml" />
     <Content Include="Views\Kunde\hjemmesideView.cshtml" />
+    <Content Include="Views\Kunde\kundeRegistreringView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

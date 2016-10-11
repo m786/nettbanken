@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -8,27 +10,49 @@ namespace Nettbanken.Models
     public class DBMetoder
     {
 
-        // Innloggingsmetode for kunder
-        public static Kunde kundeLogginn(String[] a)
+        public static String registrerKunde(Kunde kunde)
         {
-            string bankid = a[0];
-            string personnr = a[1];
-            string passord = a[2];
-            Kunde funnetKunde;
+            String OK = "";
 
             using (var db = new DbModell())
             {
-                funnetKunde = (from k in db.Kunder
-                                     where k.bankId == bankid && k.personNr == personnr
-                                           && k.passord == passord
-                                     select k).Single();
+
+                kunde.bankId = "dummy";
+
+                try
+                {
+                    db.Kunder.Add(kunde);
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            Trace.TraceInformation("Property: {0} Error: {1}",
+                                                    validationError.PropertyName,
+                                                    validationError.ErrorMessage);
+                        }
+                    }
+                }
+
             }
 
-            return funnetKunde;
+            return OK;
+        }
+
+        // Innloggingsmetode for kunder
+        public static String kundeLogginn(String[] a)
+        {
+
+            // Temp metode
+            return null;
         }
         
         
-        /*
+        /* @@@@@@@@LIGGER HER SIKKERHETSSKYLD, KAN SLETTES @@@@@@@@@@@@@@
+         * 
         // Metode for å sette inn registreringsinfo til kundetabell
         public static String skrivInnKunde(String[] a)
         {

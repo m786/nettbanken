@@ -5,23 +5,41 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>Kunde Logginn</title>
     </head>
 
     <body>
-        <form action="/Kunde/kundeLogginnView" method="post">
-            <table>
-                <tr><td>BankID: </td></tr>
-                <tr><td><input type="text" name="bankid" placeholder="BankID"/></td></tr>
+        @using (Html.BeginForm())
+        {
+            <fieldset>
+                <legend>Kunde Logginn</legend>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.bankId)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.bankId)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.personNr)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.personNr)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.passord)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.passord)
+                </div>
 
-                <tr><td>Personnummer: </td></tr>
-                <tr><td><input type="text" name="personnr" placeholder="Personnummer"/></td></tr>
-
-                <tr><td>Passord: </td></tr>
-                <tr><td><input type="text" name="passord" placeholder="Passord"/></td></tr>
-
-                <tr><td><input type="submit" value="Logg inn"/></td></tr>
-            </table>
-        </form>
+                <div>
+                    <input type="submit" value="Logg inn"/>
+                </div>
+            </fieldset>
+        }
+            
+        <div>
+            @Html.ActionLink("Tilbake til forside","forsideView")
+        </div>
+        
     </body>
 </html>

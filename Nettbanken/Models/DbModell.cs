@@ -48,14 +48,22 @@ namespace Nettbanken.Models
     public class Kunde
     {
         [Key]
+        [Display(Name = "BankID")]
         public string bankId { get; set; } // BankID for innlogging
+        [Display (Name = "Personnummer")]
         public string personNr { get; set; }
+        [Display(Name = "Passord")]
         public string passord { get; set; }
 
+        [Display(Name = "Fornavn")]
         public string fornavn { get; set; }
+        [Display(Name = "Etternavn")]
         public string etternavn { get; set; }
+        [Display(Name = "Adresse")]
         public string adresse { get; set; }
+        [Display(Name = "Telefonnummer")]
         public string telefonNr { get; set; }
+        [Display(Name = "Postnummer")]
         public string postNr { get; set; }
 
         public virtual Poststed poststed { get; set; } // Hver kunde har kun et postnr og poststed
@@ -95,7 +103,9 @@ namespace Nettbanken.Models
     public class Poststed
     {
         [Key]
+        [Display(Name = "Postnummer")]
         public string postNr { get; set; }
+        [Display(Name = "Poststed")]
         public string poststed { get; set; }
 
         // Hver poststed kan ha flere kunder/admins knyttet til seg
