@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -7,122 +9,117 @@ namespace Nettbanken.Models
 {
     public class DBMetoder
     {
-        // Metode for å sette inn registreringsinfo til kundetabell
-        public static String skrivInnKunde(String[] a)
+
+        // Metode for kryptering av passord
+        private static String krypterPassord(String passord)
         {
-            // Åpner ny database connection
+            String innPassord, utPassord;
+            byte[] inndata, utdata;
+
+            // Lagrer passord og oppretter krypteringsalgoritme
+            innPassord = passord;
+            var algoritme = System.Security.Cryptography.SHA512.Create();
+
+            // gjør string om til byte array og krypterer det
+            inndata = System.Text.Encoding.ASCII.GetBytes(innPassord);
+            utdata = algoritme.ComputeHash(inndata);
+
+            utPassord = System.Text.Encoding.ASCII.GetString(utdata);
+
+            return utPassord;
+        }
+        
+        
+        // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
+        public static String registrerKunde(Kunde kunde)
+        {
+            String OK = "";
+           
+            // Oppretter Database connection
             using (var db = new DbModell())
             {
-                // Ny Kunde objekt og setter inn data i kundetabell
-                var kunde = new Kunde
+                // Sjekker om postnr og poststed allerede finnes
+                bool finnes = db.Poststeder.Any(p => p.postNr == kunde.poststed.postNr);
+                // Om postnr og poststed finnes så opprettes en ny kunde 
+                // uten noe i Poststed klasse-attributett til kunden
+                if (finnes)
                 {
-                    bankId = a[0],
-                    personNr = a[1],
-                    passord = a[2],
-                    fornavn = a[3],
-                    etternavn = a[4],
-                    adresse = a[5],
-                    telefonNr = a[6],
-                    postNr = a[7]
-                };
+                    var nyKunde = new Kunde
+                    {
+                        bankId = "1337",
+                        personNr = kunde.personNr,
+                        passord = krypterPassord(kunde.passord),
+                        fornavn = kunde.fornavn,
+                        etternavn = kunde.etternavn,
+                        adresse = kunde.adresse,
+                        telefonNr = kunde.telefonNr,
+                        postNr = kunde.poststed.postNr
+                    };
 
-                var poststed = new Poststed
-                {
-                    postNr = a[7],
-                    poststed = a[8]
-                };
-                // knytter kunde sin poststed med poststed tabellen
-                kunde.poststed = poststed;
+                    try
+                    {
+                        db.Kunder.Add(nyKunde);
+                        db.SaveChanges();
+                    }
+                    catch (Exception feil)
+                    {
+                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message;
+                    }
 
-                // Prøver om innsetting er OK
-                try
-                {
-                    db.Kunder.Add(kunde);
-                    db.SaveChanges();
-                    return "Innsetting av Kunde OK";
                 }
-                catch (Exception feil)
+                // Postnr og poststed finnes ikke, 
+                // legger inne kunden og oppretter en ny rad i Poststeder
+                else
                 {
-                    return "Innsetting feil - " + feil.Message + " - " + feil.InnerException;
+                    kunde.bankId = "1337";
+                    kunde.passord = krypterPassord(kunde.passord);
+                    try
+                    {
+                        db.Kunder.Add(kunde);
+                        db.SaveChanges();
+                    }
+                    catch (Exception feil)
+                    {
+                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message;
+                    }
                 }
-
+             
             }
-        }
 
-        // Metode for å sette inn registreringsinfo til admintabell
-        public static String skrivInnAdmin(String[] a)
+            return OK;
+        } 
+
+        // Innloggingsmetode for kunder
+        public static Boolean kundeLogginn(Kunde kunde)
         {
-            // Åpner ny database connection
             using (var db = new DbModell())
             {
-                // Ny admin objekt og setter inn data inn i admintabell
-                var admin = new Admin
-                {
-                    adminId = a[0],
-                    passord = a[1],
-                    fornavn = a[2],
-                    etternavn = a[3],
-                    adresse = a[4],
-                    telefonNr = a[5],
-                    postNr = a[6]
-                };
+                // krypterer det gitte passordet 
+                // og sjekker oppgitte personnr og passord mot database
+                String passord = krypterPassord(kunde.passord);
+                Kunde fantKunde = db.Kunder.FirstOrDefault(k => k.personNr == kunde.personNr && k.passord == passord);
 
-                var poststed = new Poststed
+                if (fantKunde != null)
                 {
-                    postNr = a[6],
-                    poststed = a[7]
-                };
-                // Knytter admin sin poststed med poststed tabellen
-                admin.poststed = poststed;
-
-                // Prøver om innsetting er OK
-                try
-                {
-                    db.Admins.Add(admin);
-                    db.SaveChanges();
-                    return "Innsetting av Admin OK";
-                }
-                catch (Exception feil)
-                {
-                    return "Innsetting feil - " + feil.Message + " - " + feil.InnerException;
+                    return true;
                 }
 
+                return false;
             }
         }
-
-        // Metode for å sette inn registreringsinfo til transaksjonstabell
-        public static String skrivInnTransaksjon(String[] a)
-        {
-            // Åpner ny database connection
-            using (var db = new DbModell())
+        /* @@@@@@@@@ CATCH METODE SOM FANGER OPP EN UNIK FEIL, IKKE SLETT@@@@@@@@@
+            catch (DbEntityValidationException dbEx)
             {
-                // Ny Transaksjonsobjekt og setter data inn i tabellen
-                var transaksjon = new Transaksjon
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
                 {
-
-                    status = a[0],
-                    saldoInn = Int32.Parse(a[1]),
-                    saldout = Int32.Parse(a[2]),
-                    dato = a[3],
-                    KID = a[4],
-                    fraKonto = a[5],
-                    tilKonto = a[6],
-                    melding = a[7]
-                };
-
-                // Prøver om innsetting er OK
-                try
-                {
-                    db.Transaksjoner.Add(transaksjon);
-                    db.SaveChanges();
-                    return "Innsetting av Transaksjon OK";
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                            validationError.PropertyName,
+                            validationError.ErrorMessage);
+                    }
                 }
-                catch (Exception feil)
-                {
-                    return "Innsetting feil - " + feil.Message + " - " + feil.InnerException;
-                }
-
-            }
-        }
+             }
+        */
     }
 }

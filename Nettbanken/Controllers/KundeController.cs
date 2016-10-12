@@ -6,88 +6,108 @@ using System.Web.Mvc;
 
 namespace Nettbanken.Controllers
 {
+
+    // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
-        // Resturnerer standard TestView side
-        public ActionResult TestView()
+        // Returnerer forsiden til Nettbanken
+        public ActionResult forsideView()
+        {
+            // Sjekker om session finnes, hvis ikke så settes den
+            if (Session["innlogget"] == null)
+            {
+                Session["innlogget"] = false;
+                ViewBag.innlogget = false;
+            }
+            // ViewBag får session verdien ellers.
+            else
+            {
+                ViewBag.innlogget = (bool)Session["innlogget"];
+            }
+
+            return View();
+        }
+
+        // Side for registrering av kunde
+        public ActionResult kundeRegistreringView()
         {
             return View();
         }
-        // Returnerer standard AdminView side
-        public ActionResult AdminView()
-        {
-            return View();
-        }
-        // Blir brukt når man sender inn registreringsinfo fra AdminView
+
+        // View som brukes når kunde registrer seg
+        // Pga oppsett i view, så returnerer det et objekt av kunde.
         [HttpPost]
-        public ActionResult AdminView(FormCollection innListe)
+        public ActionResult kundeRegistreringView(Models.Kunde kunde)
         {
-            String OK; // Innsettingsstatus
+            String OK;
+            
+            OK = Models.DBMetoder.registrerKunde(kunde);
+            
+            // Hvis OK er tom, så gikk registreringen bra, og går videre
+            if (OK == "")
+            {
+                return RedirectToAction("hjemmesideView");
+            }
 
-            String[] a = new String[9];
-            a[0] = innListe["adminid"];
-            a[1] = innListe["passord"];
-            a[2] = innListe["fornavn"];
-            a[3] = innListe["etternavn"];
-            a[4] = innListe["adresse"];
-            a[5] = innListe["telefonnr"];
-            a[6] = innListe["postnr"];
-            a[7] = innListe["poststed"];
-            OK = Models.DBMetoder.skrivInnAdmin(a);
-
-            Response.Write(OK);
             return View();
         }
-        // Returnerer standard KundeView side
-        public ActionResult KundeView()
+
+        // Kundens innloggingsside
+        public ActionResult kundeLogginnView()
         {
-            return View();
+            if (Session["innlogget"] != null)
+            { 
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    return RedirectToAction("hjemmesideView");
+                }
+                return View();
+            }
+
+            return RedirectToAction("forsideView");
         }
-        // Blir brukt når man sender inn registreringsinfo fra KundeView
+        
+        // View som brukes når kunde prøver å logge inn
         [HttpPost]
-        public ActionResult KundeView(FormCollection innListe)
+        public ActionResult kundeLogginnView(Models.Kunde kunde)
         {
-            String OK; // Innsettingsstatus
+            // if-setning sjekker om kunden finnes i databasen
+            if (Models.DBMetoder.kundeLogginn(kunde))
+            {
+                Session["innlogget"] = true;
+                ViewBag.innlogget = true;
+                return RedirectToAction("hjemmesideView");
+            }
 
-            String[] a = new String[9];
-            a[0] = innListe["bankid"];
-            a[1] = innListe["personnr"];
-            a[2] = innListe["passord"];
-            a[3] = innListe["fornavn"];
-            a[4] = innListe["etternavn"];
-            a[5] = innListe["adresse"];
-            a[6] = innListe["telefonnr"];
-            a[7] = innListe["postnr"];
-            a[8] = innListe["poststed"];
-            OK = Models.DBMetoder.skrivInnKunde(a);
-
-            Response.Write(OK);
+            Session["innlogget"] = false;
+            ViewBag.innlogget = false;
             return View();
         }
-        // Returnerer standard TransaksjonView side
-        public ActionResult TransaksjonView()
-        {
-            return View();
-        }
-        // Blir brukt når man sender inn transaksjonsinfo fra TransaksjonView
-        [HttpPost]
-        public ActionResult TransaksjonView(FormCollection innListe)
-        {
-            String OK; // Innsettingsstatus
 
-            String[] a = new String[8];
-            a[0] = innListe["status"];
-            a[1] = innListe["saldoinn"];
-            a[2] = innListe["saldout"];
-            a[3] = innListe["dato"];
-            a[4] = innListe["kid"];
-            a[5] = innListe["frakonto"];
-            a[6] = innListe["tilkonto"];
-            a[7] = innListe["melding"];
-            OK = Models.DBMetoder.skrivInnTransaksjon(a);
+        public ActionResult loggUt()
+        {
+            Session["innlogget"] = false;
+            return RedirectToAction("kundeLogginnView");
 
-            Response.Write(OK);
-            return View();
         }
+
+        // Hjemmesiden til kunde etter suksessfull innlogging
+        public ActionResult hjemmesideView()
+        {
+            // Siden kan kun vises dersom man er innlogget
+            if (Session["innlogget"] != null)
+            {
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    return View();
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
+        }
+        
     }
 }

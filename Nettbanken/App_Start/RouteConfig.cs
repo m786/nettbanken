@@ -16,7 +16,7 @@ namespace Nettbanken
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Kunde", action = "TestView", id = UrlParameter.Optional }
+                defaults: new { controller = "Kunde", action = "forsideView", id = UrlParameter.Optional }
             );
         }
     }

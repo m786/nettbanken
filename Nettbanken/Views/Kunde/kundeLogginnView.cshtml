@@ -1,0 +1,46 @@
+﻿
+@model Nettbanken.Models.Kunde
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+    </head>
+
+    <body>
+        @using (Html.BeginForm("kundeLogginnView","Kunde",FormMethod.Post))
+        {
+            <fieldset>
+                <legend>Kunde Logginn</legend>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.bankId)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.bankId)
+                    <span>BankID = 1337</span>
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.personNr)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.personNr)
+                </div>
+                <div class="editor-lable">
+                    @Html.LabelFor(model => model.passord)
+                </div>
+                <div class="editor-field">
+                    @Html.PasswordFor(model => model.passord)
+                </div>
+
+                <div>
+                    <input type="submit" value="Logg inn"/>
+                </div>
+            </fieldset>
+        }
+            
+        <div>
+            @Html.ActionLink("Tilbake til forside","forsideView")
+        </div>
+        
+    </body>
+</html>
