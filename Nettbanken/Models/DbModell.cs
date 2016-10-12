@@ -47,9 +47,10 @@ namespace Nettbanken.Models
 
     public class Kunde
     {
-        [Key]
         [Display(Name = "BankID")]
         public string bankId { get; set; } // BankID for innlogging
+
+        [Key]
         [Display (Name = "Personnummer")]
         public string personNr { get; set; }
         [Display(Name = "Passord")]

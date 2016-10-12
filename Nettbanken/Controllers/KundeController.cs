@@ -31,14 +31,13 @@ namespace Nettbanken.Controllers
             
             OK = Models.DBMetoder.registrerKunde(kunde);
             
+            // Hvis OK er tom, så gikk registreringen bra, og går videre
             if (OK == "")
             {
                 return RedirectToAction("hjemmesideView");
             }
-            
-            //OK = kunde.poststed.postNr + " " + kunde.poststed.poststed;
-            Response.Write(OK);
 
+            //Response.Write(OK);
             return View();
         }
 
@@ -50,7 +49,7 @@ namespace Nettbanken.Controllers
         
         // View som brukes når kunde prøver å logge inn
         [HttpPost]
-        public ActionResult kundeLogginnView(FormCollection info)
+        public ActionResult kundeLogginnView(Models.Kunde kunde)
         {
             return View();
         }
