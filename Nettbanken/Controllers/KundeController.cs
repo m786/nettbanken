@@ -13,6 +13,18 @@ namespace Nettbanken.Controllers
         // Returnerer forsiden til Nettbanken
         public ActionResult forsideView()
         {
+            // Sjekker om session finnes, hvis ikke så settes den
+            if (Session["innlogget"] == null)
+            {
+                Session["innlogget"] = false;
+                ViewBag.innlogget = false;
+            }
+            // ViewBag får session verdien ellers.
+            else
+            {
+                ViewBag.innlogget = (bool)Session["innlogget"];
+            }
+
             return View();
         }
 
@@ -37,27 +49,64 @@ namespace Nettbanken.Controllers
                 return RedirectToAction("hjemmesideView");
             }
 
-            //Response.Write(OK);
             return View();
         }
 
         // Kundens innloggingsside
         public ActionResult kundeLogginnView()
         {
-            return View();
+            if (Session["innlogget"] != null)
+            { 
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    return RedirectToAction("hjemmesideView");
+                }
+                return View();
+            }
+
+            return RedirectToAction("forsideView");
         }
         
         // View som brukes når kunde prøver å logge inn
         [HttpPost]
         public ActionResult kundeLogginnView(Models.Kunde kunde)
         {
+            // if-setning sjekker om kunden finnes i databasen
+            if (Models.DBMetoder.kundeLogginn(kunde))
+            {
+                Session["innlogget"] = true;
+                ViewBag.innlogget = true;
+                return RedirectToAction("hjemmesideView");
+            }
+
+            Session["innlogget"] = false;
+            ViewBag.innlogget = false;
             return View();
+        }
+
+        public ActionResult loggUt()
+        {
+            Session["innlogget"] = false;
+            return RedirectToAction("kundeLogginnView");
+
         }
 
         // Hjemmesiden til kunde etter suksessfull innlogging
         public ActionResult hjemmesideView()
         {
-            return View();
+            // Siden kan kun vises dersom man er innlogget
+            if (Session["innlogget"] != null)
+            {
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    return View();
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
         }
         
     }

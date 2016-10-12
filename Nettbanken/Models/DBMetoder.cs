@@ -10,14 +10,17 @@ namespace Nettbanken.Models
     public class DBMetoder
     {
 
+        // Metode for kryptering av passord
         private static String krypterPassord(String passord)
         {
             String innPassord, utPassord;
             byte[] inndata, utdata;
 
+            // Lagrer passord og oppretter krypteringsalgoritme
             innPassord = passord;
             var algoritme = System.Security.Cryptography.SHA512.Create();
 
+            // gjør string om til byte array og krypterer det
             inndata = System.Text.Encoding.ASCII.GetBytes(innPassord);
             utdata = algoritme.ComputeHash(inndata);
 
@@ -35,7 +38,6 @@ namespace Nettbanken.Models
             // Oppretter Database connection
             using (var db = new DbModell())
             {
-
                 // Sjekker om postnr og poststed allerede finnes
                 bool finnes = db.Poststeder.Any(p => p.postNr == kunde.poststed.postNr);
                 // Om postnr og poststed finnes så opprettes en ny kunde 
@@ -65,7 +67,8 @@ namespace Nettbanken.Models
                     }
 
                 }
-                // Postnr og poststed finnes ikke, legger inne kunden og oppretter en ny rad i Poststeder
+                // Postnr og poststed finnes ikke, 
+                // legger inne kunden og oppretter en ny rad i Poststeder
                 else
                 {
                     kunde.bankId = "1337";
@@ -87,10 +90,22 @@ namespace Nettbanken.Models
         } 
 
         // Innloggingsmetode for kunder
-        public static String kundeLogginn(Kunde kunde)
+        public static Boolean kundeLogginn(Kunde kunde)
         {
+            using (var db = new DbModell())
+            {
+                // krypterer det gitte passordet 
+                // og sjekker oppgitte personnr og passord mot database
+                String passord = krypterPassord(kunde.passord);
+                Kunde fantKunde = db.Kunder.FirstOrDefault(k => k.personNr == kunde.personNr && k.passord == passord);
 
-                return null;
+                if (fantKunde != null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
         /* @@@@@@@@@ CATCH METODE SOM FANGER OPP EN UNIK FEIL, IKKE SLETT@@@@@@@@@
             catch (DbEntityValidationException dbEx)
