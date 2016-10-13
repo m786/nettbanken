@@ -31,10 +31,13 @@
                     <div class="row">
                         <div class="col-xs12">
                             <h1>Velkommen til banken</h1>
-                            <p class="col-lg-2 col-lg-offset-4"><a class="btn btn-primary btn-lg" href="#" role="button">Registrer</a></p>
-                            <p class="col-lg-2 col-lg-offset-0"><a class="btn btn-primary btn-lg" href="#" role="button">Logginn</a></p>
+                            <p class="col-lg-2 col-lg-offset-4">
+                                @Html.ActionLink("Kunderegistrering", "kundeRegistreringView", new { tom = "" }, new { @class = "btn btn-primary btn-lg" })
+                            </p>   
+                            <p class="col-lg-2 col-lg-offset-0"> 
+                                @Html.ActionLink("Kunde Logginn", "kundeLogginnView", new { tom = ""}, new { @class = "btn btn-primary btn-lg"})
                             </p>
-                        </div>
+                         </div>
                     </div>
                     <div>
 
@@ -115,11 +118,7 @@
                 </div>
             </div>
         </footer>
-
-        // @Html.ActionLink("Kunderegistrering", "kundeRegistreringView")
-        </div>
-        <div>
-            // @Html.ActionLink("Kunde Logginn", "kundeLogginnView")
+        
         </div>
 
     </body>
