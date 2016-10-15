@@ -140,6 +140,8 @@
     <Content Include="Content\images\2.png" />
     <Content Include="Content\images\3.png" />
     <Content Include="Content\images\bilde1.png" />
+    <Content Include="Content\images\nettbanken.png" />
+    <Content Include="Content\innlogget_bootstrap.css" />
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

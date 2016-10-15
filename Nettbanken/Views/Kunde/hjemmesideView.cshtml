@@ -6,11 +6,61 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Kunde Logginn</title>
+    <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div><h2>Velkommen til Hjemmesiden din!</h2></div>
-    <div>Jaja! Det virker til å fungere fint :)</div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <img src="~/Content/images/nettbanken.png" width="200px">
+                <button type="button" class="btnn1 btn-sm btn-default">Utskrift</button>
+                <button type="button" class="btnn2 btn-sm btn-default">Transakjoner</button>
+                <button type="button" class="btnn3 btn-sm btn-default">Loggut</button>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Konto informasjon:</h1>
+            <p>Kontoer:</p>
+
+            <div class="container">
+
+                <div class="row">
+                    <div class="row">
+                        <div class="col-sm-4" style="background-color:silver;">Navn</div>
+                        <div class="col-sm-4" style="background-color:silver;">Kontonummer</div>
+                        <div class="col-sm-4" style="background-color:silver;">Saldo</div>
+
+                        <div class="col-sm-4" style="background-color:lavender;"><a href="">Brukerkonto</a></div>
+                        <div class="col-sm-4" style="background-color:lavenderblush;">.</div>
+                        <div class="col-sm-4" style="background-color:lavender;">.</div>
+
+                        <div class="col-sm-4" style="background-color:lavender;"><a href="">Sparekonto</a></div>
+                        <div class="col-sm-4" style="background-color:lavenderblush;">.</div>
+                        <div class="col-sm-4" style="background-color:lavender;">.</div>
+                    </div>
+                </div>
+                <div class="container">
+                    <label for="textarea">Utskrift:</label>
+                    <p>
+                        <a class="btn btn-primary" href="#" role="button">Utskrift</a>
+                        <a class="btn1 btn-primary" href="#" role="button">Transaksjoner</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p>Copyright Â© Nettbanken. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
     <div>
         @Html.ActionLink("Logg ut", "loggUt", new { tom = ""}, new { @class = "btn btn-primary"})
     </div>
