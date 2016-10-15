@@ -1,0 +1,58 @@
+html,body
+{
+width:100%;height:100%
+}
+
+body
+{
+height:100%;
+font-family:'Open Sans',sans-serif;
+background-color:#808080;
+}
+
+.header
+{
+margin-left:auto;
+margin-right:auto;
+margin-top:150px;
+max-width:430px;
+min-height:400px;
+border-radius:2px;
+box-shadow:0 15px 15px rgba(0,0,0,0.3);
+}
+
+.header-container
+{
+background:none repeat scroll rgba(245,245,245,0.8);
+padding:10px 0;
+border-top-left-radius:3px;
+border-top-right-radius:3px;
+border-bottom-left-radius:0;
+border-bottom-right-radius:0;
+}
+
+.logo
+{
+margin:0 auto;
+display:block;
+height:50px;
+width:170px
+}
+
+.footer-container
+{
+min-height:60px;
+background:none repeat scroll rgba(245,245,245,0.8);
+padding:10px 40px;
+border-top-left-radius:0;
+border-top-right-radius:0;
+border-bottom-left-radius:3px;
+border-bottom-right-radius:3px;
+}
+
+.logginn-container
+{
+min-height:300px;
+padding:30px 40px;
+background-color:#FAFBFD;
+}
