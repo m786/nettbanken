@@ -32,7 +32,7 @@
                         <div class="col-sm-4" style="background-color:silver;">Kontonummer</div>
                         <div class="col-sm-4" style="background-color:silver;">Saldo</div>
 
-                        <div class="col-sm-4" style="background-color:lavender;"><a href="">Brukerkonto</a></div>
+                        <div class="col-sm-4" style="background-color:lavender;">Brukerkonto</div>
                         <div class="col-sm-4" style="background-color:lavenderblush;">.</div>
                         <div class="col-sm-4" style="background-color:lavender;">.</div>
 
@@ -43,8 +43,11 @@
                 </div>
                 <div class="container">
                     <p>
-                      <input type="button" class="btn btn-primary" value="Utskrift" onclick="location.href='@Url.Action("utskriftView","Kunde")'" />
-                      <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'" />
+                        <!-- KNAPPENE FOR TRANSAKSJON/UTSKRIFT
+                      <input type="button" class="btn btn-primary" value="Utskrift" onclick="location.href='Url.Action("utskriftView","Kunde")'" />
+                      <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='Url.Action("transaksjonView","Kunde")'" />
+                        -->
+                        <input type="button" class="btn btn-primary" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" />
                     </p>
                 </div>
             </div>

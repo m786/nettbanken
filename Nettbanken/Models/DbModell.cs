@@ -81,6 +81,7 @@ namespace Nettbanken.Models
         public int saldo { get; set; }
         [Display(Name = "Kontonavn")]
         public string kontoNavn { get; set; }
+        [Display(Name = "Personnummer")]
         public string personNr { get; set; }
 
 
@@ -92,14 +93,23 @@ namespace Nettbanken.Models
     public class Transaksjon
     {
         [Key]
+        [Display(Name = "Transaksjonsnummer")]
         public int Id { get; set; } 
+        [Display(Name = "Status")]
         public string status { get; set; } // Status, Betalt, Ikke-Betalt, Kansellert osv.
+        [Display(Name = "Saldo inn")]
         public int saldoInn { get; set; }
-        public int saldout { get; set; }
+        [Display(Name = "Saldo ut")]
+        public int saldoUt { get; set; }
+        [Display(Name = "Dato")]
         public string dato { get; set; }
+        [Display(Name = "KID")]
         public string KID { get; set; }
+        [Display(Name = "Fra konto")]
         public string fraKonto { get; set; }
+        [Display(Name = "Til konto")]
         public string tilKonto { get; set; }
+        [Display(Name = "Melding")]
         public string melding { get; set; }
 
         public virtual Konto konto { get; set; } // Hver transaksjon vil tilhøre en konto
