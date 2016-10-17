@@ -1,9 +1,28 @@
-﻿<!DOCTYPE html>
+﻿@model Nettbanken.Models.Transaksjon
+
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Utføring av transaksjoner</title>
-    </head>
-    <body>
-        transaksjoner blabla
-    </body>
+<head>
+    <title>Transaksjonsside</title>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td>@Html.LabelFor(model => model.fraKonto)</td>
+            <td>@Html.LabelFor(model => model.tilKonto)</td>
+            <td>@Html.LabelFor(model => model.KID)</td>
+            <td>@Html.LabelFor(model => model.saldoUt)</td>
+        </tr>
+        <tr>
+            <td>@Html.EditorFor(model => model.fraKonto)</td>
+            <td>@Html.EditorFor(model => model.tilKonto)</td>
+            <td>@Html.EditorFor(model => model.KID)</td>
+            <td>@Html.EditorFor(model => model.saldoUt)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(mode => Model.status)</td>
+        </tr>
+    </table>
+</body>
 </html>

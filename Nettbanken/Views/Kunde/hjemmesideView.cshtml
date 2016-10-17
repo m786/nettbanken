@@ -1,11 +1,14 @@
-﻿@model Nettbanken.Models.Konto
+﻿
+@model Nettbanken.Models.Konto
 
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Kunde Logginn</title>
+    <title>Hjemmeside</title>
+    <script src="~/scripts/jquery-3.1.1.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
     <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -21,32 +24,22 @@
 
     <div class="container">
         <div class="jumbotron">
-            <h1>Konto informasjon:</h1>
-            <p>Kontoer:</p>
+            <h1>Konto Oversikt</h1>
+            <p>Velg konto:</p>
 
             <div class="container">
 
                 <div class="row">
                     <div class="row">
-                        <div class="col-sm-4" style="background-color:silver;">Kontonavn</div>
-                        <div class="col-sm-4" style="background-color:silver;">Kontonummer</div>
-                        <div class="col-sm-4" style="background-color:silver;">Saldo</div>
-
-                        <div class="col-sm-4" style="background-color:lavender;">Brukerkonto</div>
-                        <div class="col-sm-4" style="background-color:lavenderblush;">.</div>
-                        <div class="col-sm-4" style="background-color:lavender;">.</div>
-
-                        <div class="col-sm-4" style="background-color:lavender;"><a href="">Sparekonto</a></div>
-                        <div class="col-sm-4" style="background-color:lavenderblush;">.</div>
-                        <div class="col-sm-4" style="background-color:lavender;">.</div>
+                        <!--Select box-->
                     </div>
                 </div>
                 <div class="container">
                     <p>
-                        <!-- KNAPPENE FOR TRANSAKSJON/UTSKRIFT
-                      <input type="button" class="btn btn-primary" value="Utskrift" onclick="location.href='Url.Action("utskriftView","Kunde")'" />
-                      <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='Url.Action("transaksjonView","Kunde")'" />
-                        -->
+                        <input type="button" class="btn btn-primary" value="Utskrift" onclick="location.href='@Url.Action("utskriftView","Kunde")'" />
+                        <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'" />
+                    </p>
+                    <p>
                         <input type="button" class="btn btn-primary" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" />
                     </p>
                 </div>
