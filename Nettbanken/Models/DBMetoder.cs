@@ -97,7 +97,8 @@ namespace Nettbanken.Models
                 // krypterer det gitte passordet 
                 // og sjekker oppgitte personnr og passord mot database
                 String passord = krypterPassord(kunde.passord);
-                Kunde fantKunde = db.Kunder.FirstOrDefault(k => k.personNr == kunde.personNr && k.passord == passord);
+                Kunde fantKunde = db.Kunder.FirstOrDefault
+                    (k => k.personNr == kunde.personNr && k.passord == passord && k.bankId == kunde.bankId);
 
                 if (fantKunde != null)
                 {

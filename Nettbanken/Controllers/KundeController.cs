@@ -85,13 +85,6 @@ namespace Nettbanken.Controllers
             return View();
         }
 
-        public ActionResult loggUt()
-        {
-            Session["innlogget"] = false;
-            return RedirectToAction("kundeLogginnView");
-
-        }
-
         // Hjemmesiden til kunde etter suksessfull innlogging
         public ActionResult hjemmesideView()
         {
@@ -108,6 +101,48 @@ namespace Nettbanken.Controllers
 
             return RedirectToAction("forsideView");
         }
-        
+
+        // Side som viser utskrift av transaksjoner
+        public ActionResult utskriftView()
+        {
+            // Siden kan kun vises dersom man er innlogget
+            if (Session["innlogget"] != null)
+            {
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    return View();
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
+        }
+
+        // Siden for utføring av transaksjoner
+        public ActionResult transaksjonView()
+        {
+            // Siden kan kun vises dersom man er innlogget
+            if (Session["innlogget"] != null)
+            {
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    return View();
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
+        }
+
+        // Metode for utlogging
+        public ActionResult loggUt()
+        {
+            Session["innlogget"] = false;
+            return RedirectToAction("kundeLogginnView");
+
+        }
+
     }
 }

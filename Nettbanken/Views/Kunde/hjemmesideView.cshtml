@@ -1,4 +1,4 @@
-﻿
+﻿@model Nettbanken.Models.Konto
 
 <!DOCTYPE html>
 
@@ -10,16 +10,15 @@
 </head>
 
 <body>
+
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
                 <img src="~/Content/images/nettbanken.png" width="200px">
-                <button type="button" class="btnn1 btn-sm btn-default">Utskrift</button>
-                <button type="button" class="btnn2 btn-sm btn-default">Transakjoner</button>
-                <button type="button" class="btnn3 btn-sm btn-default">Loggut</button>
             </div>
         </div>
     </nav>
+
     <div class="container">
         <div class="jumbotron">
             <h1>Konto informasjon:</h1>
@@ -29,7 +28,7 @@
 
                 <div class="row">
                     <div class="row">
-                        <div class="col-sm-4" style="background-color:silver;">Navn</div>
+                        <div class="col-sm-4" style="background-color:silver;">Kontonavn</div>
                         <div class="col-sm-4" style="background-color:silver;">Kontonummer</div>
                         <div class="col-sm-4" style="background-color:silver;">Saldo</div>
 
@@ -43,15 +42,15 @@
                     </div>
                 </div>
                 <div class="container">
-                    <label for="textarea">Utskrift:</label>
                     <p>
-                        <a class="btn btn-primary" href="#" role="button">Utskrift</a>
-                        <a class="btn1 btn-primary" href="#" role="button">Transaksjoner</a>
+                      <input type="button" class="btn btn-primary" value="Utskrift" onclick="location.href='@Url.Action("utskriftView","Kunde")'" />
+                      <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'" />
                     </p>
                 </div>
             </div>
         </div>
     </div>
+
     <footer class="text-center">
         <div class="container">
             <div class="row">
@@ -61,8 +60,7 @@
             </div>
         </div>
     </footer>
-    <div>
-        @Html.ActionLink("Logg ut", "loggUt", new { tom = ""}, new { @class = "btn btn-primary"})
-    </div>
+
 </body>
+
 </html>

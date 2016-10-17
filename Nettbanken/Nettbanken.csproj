@@ -127,10 +127,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\NettbankDB.mdf" />
-    <Content Include="App_Data\NettbankDB_log.ldf">
-      <DependentUpon>NettbankDB.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -195,6 +191,8 @@
     <Content Include="Views\Kunde\kundeLogginnView.cshtml" />
     <Content Include="Views\Kunde\hjemmesideView.cshtml" />
     <Content Include="Views\Kunde\kundeRegistreringView.cshtml" />
+    <Content Include="Views\Kunde\transaksjonView.cshtml" />
+    <Content Include="Views\Kunde\utskriftView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -202,7 +200,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -75,9 +75,13 @@ namespace Nettbanken.Models
     public class Konto
     {
         [Key]
+        [Display(Name = "Kontonummer")]
         public string kontoNr { get; set; }
+        [Display(Name = "Saldo")]
         public int saldo { get; set; }
-        public string bankId { get; set; }
+        [Display(Name = "Kontonavn")]
+        public string kontoNavn { get; set; }
+        public string personNr { get; set; }
 
 
         public virtual Kunde kunde { get; set; } // Hver Konto er knyttet til en Kunde
