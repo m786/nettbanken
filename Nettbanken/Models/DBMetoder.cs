@@ -108,6 +108,68 @@ namespace Nettbanken.Models
                 return false;
             }
         }
+
+        // Henter alle kontoer som tilhører gitt personnr
+        public static List<String> hentKontoer(String personnr)
+        {
+            var kontoer = new List<String>();
+
+            using (var db = new Models.DbModell())
+            {
+                // henter alle kontoer
+                var tmp = db.Kontoer.ToList();
+                // Velger kun kontoene med gitte personnr
+                //kontoer.Add("---Velg konto---");
+                foreach (var k in tmp)
+                {
+                    if (personnr == k.personNr)
+                    {
+                        kontoer.Add(k.kontoNavn);
+                    }
+                }
+            }
+
+            return kontoer.ToList();
+        }
+
+        public static String hentTransaksjoner(String kontonavn, String personnr)
+        {
+            String transkasjonerListe =                        
+                "<table>" +
+                "<tr>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>Status</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Dato</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>KID</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Saldo inn</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>Saldo ut</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Fra konto</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>Til konto</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Melding</th>" +
+                "</tr>";
+
+            using (var db = new DbModell())
+            {
+                var transaksjoner = db.Transaksjoner.Where(t => t.konto.kontoNavn == kontonavn && t.konto.personNr == personnr);
+                foreach (var t in transaksjoner)
+                {
+                    transkasjonerListe +=
+                       "<tr>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>"+ t.status +"</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>"+t.dato+"</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + t.KID + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + t.saldoInn + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + t.saldoUt + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + t.fraKonto + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + t.tilKonto + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + t.melding + "</td>" +
+                       "</tr>";
+                }
+            }
+
+            transkasjonerListe += "</table>";
+            return transkasjonerListe;
+        }
+
         /* @@@@@@@@@ CATCH METODE SOM FANGER OPP EN UNIK FEIL, IKKE SLETT@@@@@@@@@
             catch (DbEntityValidationException dbEx)
             {

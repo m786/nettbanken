@@ -1,5 +1,5 @@
 ﻿
-@model Nettbanken.Models.Konto
+@model List<string>
 
 <!DOCTYPE html>
 
@@ -10,6 +10,13 @@
     <script src="~/scripts/jquery-3.1.1.js"></script>
     <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
     <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript">
+        function printUtskrift()
+        {
+            $("#transaksjonsListe").load("/Kunde/hentTransaksjoner", { kontonavn: $("#kontoDropdown").val(), personnr: @ViewBag.personnr });
+        }
+    </script>
 </head>
 
 <body>
@@ -31,18 +38,29 @@
 
                 <div class="row">
                     <div class="row">
-                        <!--Select box-->
+                        <select id="kontoDropdown">
+                            @foreach (var konto in Model)
+                            {
+                                <option>@konto</option>
+                            }
+                        </select>
                     </div>
                 </div>
+                <br/>
                 <div class="container">
                     <p>
-                        <input type="button" class="btn btn-primary" value="Utskrift" onclick="location.href='@Url.Action("utskriftView","Kunde")'" />
+                        <input type="button" class="btn btn-primary" value="Utskrift" onclick="printUtskrift()"/>
                         <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'" />
                     </p>
                     <p>
                         <input type="button" class="btn btn-primary" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" />
                     </p>
                 </div>
+
+                <div id="transaksjonsListe">
+                    <!--Her kommer utskriftstabellen-->
+                </div>
+
             </div>
         </div>
     </div>

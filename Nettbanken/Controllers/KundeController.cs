@@ -77,7 +77,9 @@ namespace Nettbanken.Controllers
             {
                 Session["innlogget"] = true;
                 ViewBag.innlogget = true;
-                return RedirectToAction("hjemmesideView");
+
+                String personnr = kunde.personNr;
+                return RedirectToAction("hjemmesideView", new { id = personnr});
             }
 
             Session["innlogget"] = false;
@@ -86,7 +88,7 @@ namespace Nettbanken.Controllers
         }
 
         // Hjemmesiden til kunde etter suksessfull innlogging
-        public ActionResult hjemmesideView()
+        public ActionResult hjemmesideView(string id)
         {
             // Siden kan kun vises dersom man er innlogget
             if (Session["innlogget"] != null)
@@ -94,7 +96,9 @@ namespace Nettbanken.Controllers
                 bool innlogget = (bool)Session["innlogget"];
                 if (innlogget)
                 {
-                    return View();
+                    var kontoer = Models.DBMetoder.hentKontoer(id);
+                    ViewBag.personnr = id;
+                    return View(kontoer);
                 }
                 return RedirectToAction("kundeLogginnView");
             }
@@ -142,6 +146,11 @@ namespace Nettbanken.Controllers
             Session["innlogget"] = false;
             return RedirectToAction("kundeLogginnView");
 
+        }
+
+        public String hentTransaksjoner(String kontonavn, String personnr)
+        {
+            return Models.DBMetoder.hentTransaksjoner(kontonavn, personnr);
         }
 
     }
