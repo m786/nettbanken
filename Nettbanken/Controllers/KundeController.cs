@@ -84,19 +84,20 @@ namespace Nettbanken.Controllers
             if (Models.DBMetoder.kundeLogginn(kunde))
             {
                 Session["innlogget"] = true;
-                ViewBag.innlogget = true;
 
                 String personnr = kunde.personNr;
-                return RedirectToAction("hjemmesideView", new { id = personnr});
+                Session["personnr"] = kunde.personNr;
+                Session["kontoer"] = Models.DBMetoder.hentKontoer(personnr);
+
+                return RedirectToAction("hjemmesideView");
             }
 
             Session["innlogget"] = false;
-            ViewBag.innlogget = false;
             return View();
         }
 
         // Hjemmesiden til kunde etter suksessfull innlogging
-        public ActionResult hjemmesideView(string id)
+        public ActionResult hjemmesideView()
         {
             // Siden kan kun vises dersom man er innlogget
             if (Session["innlogget"] != null)
@@ -104,26 +105,11 @@ namespace Nettbanken.Controllers
                 bool innlogget = (bool)Session["innlogget"];
                 if (innlogget)
                 {
-                    var kontoer = Models.DBMetoder.hentKontoer(id);
-                    ViewBag.personnr = id;
+                    // Henter kontoer til gitt kunde (id)
+                    var kontoer = (List<String>)Session["kontoer"];
+                    ViewBag.personnr = (String)Session["personnr"];
+
                     return View(kontoer);
-                }
-                return RedirectToAction("kundeLogginnView");
-            }
-
-            return RedirectToAction("forsideView");
-        }
-
-        // Side som viser utskrift av transaksjoner
-        public ActionResult utskriftView()
-        {
-            // Siden kan kun vises dersom man er innlogget
-            if (Session["innlogget"] != null)
-            {
-                bool innlogget = (bool)Session["innlogget"];
-                if (innlogget)
-                {
-                    return View();
                 }
                 return RedirectToAction("kundeLogginnView");
             }
@@ -140,7 +126,35 @@ namespace Nettbanken.Controllers
                 bool innlogget = (bool)Session["innlogget"];
                 if (innlogget)
                 {
+                    ViewBag.personnr = (String)Session["personnr"];
+                    ViewBag.kontoer = (List<String>)Session["kontoer"];
+
                     return View();
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
+        }
+
+        [HttpPost]
+        public ActionResult transaksjonView(Models.Transaksjon transaksjon)
+        {
+            // Siden kan kun vises dersom man er innlogget
+            if (Session["innlogget"] != null)
+            {
+                bool innlogget = (bool)Session["innlogget"];
+                if (innlogget)
+                {
+                    var personnr = (String)Session["personnr"];
+                    var kontoer = (List<String>)Session["kontoer"];
+
+                    ViewBag.kontoer = kontoer;
+                    ViewBag.personnr = personnr;
+
+                    Models.Transaksjon t = Models.DBMetoder.registrerTransaksjon(personnr, transaksjon);
+
+                    return RedirectToAction("hjemmesideView");
                 }
                 return RedirectToAction("kundeLogginnView");
             }
@@ -152,13 +166,22 @@ namespace Nettbanken.Controllers
         public ActionResult loggUt()
         {
             Session["innlogget"] = false;
+            Session["personnr"] = null;
+            Session["kontoer"] = null;
             return RedirectToAction("kundeLogginnView");
 
         }
 
-        public String hentTransaksjoner(String kontonavn, String personnr)
+        // Kaller på metode som henter konto informasjon
+        public String hentKontoInformasjon(String kontonavn, String personnr)
         {
-            return Models.DBMetoder.hentTransaksjoner(kontonavn, personnr);
+            return Models.DBMetoder.hentKontoInformasjon(kontonavn, personnr);
+        }
+
+        // Kaller på metode som henter gitt kontoutskrift
+        public String hentKontoUtskrift(String kontonavn, String personnr)
+        {
+            return Models.DBMetoder.hentKontoUtskrift(kontonavn, personnr);
         }
 
         ///////////////////////////DummyData////////////////////////////////
