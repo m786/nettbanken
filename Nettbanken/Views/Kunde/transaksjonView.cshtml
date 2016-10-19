@@ -5,10 +5,10 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>Transaksjonsside</title>
+        <title>Transaksjoner</title>
         <script src="~/scripts/jquery-3.1.1.js"></script>
         <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
-        <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
+        <link href="~/Content/Transaksjon_bootstrap1.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript">
             // Metode som oppdaterer tabell med korrekt info
@@ -22,195 +22,142 @@
             }
         </script>
     </head>
-<head>
-       <meta name="viewport" content="width=device-width" />
-       <title>Transaksjoner</title>
-       <link href="~/Content/Transaksjon_bootstrap1.css" rel="stylesheet" type="text/css">
-</head>
 
-<body>
-        <p>
-            <h2>Utfør betaling</h2>
-        </p>
-        <p>
-            <select id="kontoDropdown" onchange="printUtskrift(); settKonto();">
-                <option disbaled selected hidden>---Sett konto---</option>
-                @foreach (var konto in ViewBag.kontoer)
-                {
-                    <option>@konto</option>
-                }
-            </select>
-        </p>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <img src="~/Content/images/nettbanken.png" width="200px">
 
-        <p id="kontoInformasjon">
-            <!--Her kommer kontoinformasjon-->
-        </p>
+                </div>
+                <!-- /.container-fluid -->
+        </nav>
 
-        <p>
-            @using (Html.BeginForm("transaksjonView", "Kunde", FormMethod.Post))
-            {
-
-                <fieldset>
-                    <div class="editor-lable">
-                        @Html.LabelFor(model => model.fraKonto)
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextBoxFor(model => model.fraKonto, new { id = "konto" })
-                    </div>
-                    <div class="editor-lable">
-                        @Html.LabelFor(model => model.tilKonto)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.tilKonto)
-                    </div>
-                    <div class="editor-lable">
-                        @Html.LabelFor(model => model.KID)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.KID)
-                    </div>
-                    <div class="editor-lable">
-                        @Html.LabelFor(model => model.saldoUt)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.saldoUt)
-                    </div>
-                    <div class="editor-lable">
-                        @Html.LabelFor(model => model.dato)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.dato)
-                    </div>
-                    <div class="editor-lable">
-                        @Html.LabelFor(model => model.melding)
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextAreaFor(model => model.melding)
-                    </div>
-
-                    <br />
-                    <div>
-                        <input type="button" value="Legg til" id="leggTil" />
-                        <input type="submit" value="Fullfør" id="fullfør" />
-                        @Html.ActionLink("Tilbake til hjemmeside", "hjemmesideView")
-                    </div>
-
-                </fieldset>
-            }
-        </p>
-
-        <p id="transaksjoner">
-            <!--Her kommer de tillagte transaksjonene-->
-        </p>
-
-    </body>
-</html>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <img src="~/Content/images/nettbanken.png width="200px">
-
-            </div>
-            <!-- /.container-fluid -->
-    </nav>
-    <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><strong>Betalingesdetalijer:</strong></h3>
-            </div>
-
-            <div class="panel-body">
-                <form class="form-inline">
-                    <span><b>Fra KontoNr:</b></span>
-                    <input type="text" class="form-control">
-                    <br>
-                    <br>
-                    <span><b>Til KontoNr:</b></span>
-                    <input type="text" class="form-control2">
-
-                    <hr>
-                    <span><b>Beløp:</b></span>
-                    <input type="text" class="form-control3">
-                    <br>
-                    <br>
-                    <span><b>KID:</b></span>
-                    <input type="text" class="form-control4">
-                    <br>
-                    <br>
-                    <span><b>Dato:</b></span>
-                    <input type="date" class="form-control5">
-                    <br>
-                    <br>
-                </form>
-            </div>
-
-            <div class="panel-footer">
-                <p class="col-lg-2 col-lg-offset-4"><a class="btn btn-primary btn-lg" href="#" role="button">Tilbake</a></p>
-                <p class="col-lg-2 col-lg-offset-4"><a class="btn btn-primary btn-lg" href="#" role="button">Betal</a></p>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><strong>Betalinger:</strong></h3>
-            </div>
-            <div class="panel-body">
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Betalingsdato:</th>
-                            <th>Mottaker:</th>
-                            <th>Beløp:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Dato kommer hit</td>
-                            <td>mottakerskonto</td>
-                            <td>beløp her</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="panel-footer">
-                <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" href="#" role="button">Slett</a></p>
-                <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg" href="#" role="button">Endre</a></p>
-                <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg" href="#" role="button">Betal</a></p>
-            </div>
-        </div>
-    </div>
-    <footer class="text-center">
         <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <p>Copyright Â© Nettbanken. All rights reserved.</p>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Betalingesdetalijer:</strong></h3>
+                </div>
+                <select id="kontoDropdown" onchange="settKonto();">
+                    <option disbaled selected hidden>---Sett konto---</option>
+                    @foreach (var konto in ViewBag.kontoer)
+                    {
+                        <option>@konto</option>
+                    }
+                </select>
+                @using (Html.BeginForm("transaksjonView", "Kunde", FormMethod.Post))
+                {
+                    <fieldset class="form-inline">
+                        <div class="panel-body">
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.fraKonto):</b>
+                            </span>
+                            <span class="editor-field">
+                                @Html.TextBoxFor(model => model.fraKonto, 
+                               new { id = "konto", @readonly = "readonly" })
+                            </span>
+                            <br>
+                            <br>
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.tilKonto):</b>
+                            </span>
+                            <span class="editor-field">
+                                @Html.EditorFor(model => model.tilKonto)
+                            </span>
+                            <hr>
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.saldoUt):</b>
+                            </span>
+                            <span class="editor-field">
+                                @Html.EditorFor(model => model.saldoUt)
+                            </span>
+                            <br>
+                            <br>
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.KID):</b>
+                            </span>
+                            <span class="editor-field">
+                                @Html.EditorFor(model => model.KID)
+                            </span>
+                            <br>
+                            <br>
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.dato):</b>
+                            </span>
+                            <span>
+                                @Html.TextBoxFor(model => model.dato,
+                                         new { @class = "datepicker" })
+                            </span>
+                            <br>
+                            <br>
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.melding)</b>
+                            </span>
+                            <span class="editor-field">
+                                @Html.EditorFor(model => model.melding)
+                            </span>
+                            <br>
+                            <br>
+                        </div>
+
+                        <div class="panel-footer">
+                            <p class="col-lg-2 col-lg-offset-4">
+                                <input type="button" class="btn btn-primary btn-lg" value="Tilbake" onclick="location.href='@Url.Action("hjemmesideView","Kunde")'" />
+                            </p>
+                            <p class="col-lg-2 col-lg-offset-4"
+                               ><input type="submit" value="Legg til" class="btn btn-primary btn-lg" />
+                            </p>
+                        </div>
+
+                    </fieldset>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Betalinger:</strong></h3>
+                </div>
+                <div class="panel-body">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Betalingsdato:</th>
+                                <th>Mottaker:</th>
+                                <th>Beløp:</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dato kommer hit</td>
+                                <td>mottakerskonto</td>
+                                <td>beløp her</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" href="#" role="button">Slett</a></p>
+                    <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg" href="#" role="button">Endre</a></p>
+                    <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg" href="#" role="button">Betal</a></p>
                 </div>
             </div>
         </div>
-    </footer>
 
+        <footer class="text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p>Copyright Â© Nettbanken. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
-    <table>
-        <tr>
-            <td>@Html.LabelFor(model => model.fraKonto)</td>
-            <td>@Html.LabelFor(model => model.tilKonto)</td>
-            <td>@Html.LabelFor(model => model.KID)</td>
-            <td>@Html.LabelFor(model => model.saldoUt)</td>
-        </tr>
-        <tr>
-            <td>@Html.EditorFor(model => model.fraKonto)</td>
-            <td>@Html.EditorFor(model => model.tilKonto)</td>
-            <td>@Html.EditorFor(model => model.KID)</td>
-            <td>@Html.EditorFor(model => model.saldoUt)</td>
-        </tr>
-        <tr>
-            <td>@Html.LabelFor(mode => Model.status)</td>
-        </tr>
-    </table>
-</body>
+    </body>
 </html>
