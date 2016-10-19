@@ -109,6 +109,40 @@ namespace Nettbanken.Models
             }
         }
 
+        public static Transaksjon registrerTransaksjon(String personnr, Transaksjon t)
+        {
+            using (var db = new DbModell())
+            {
+                Konto funnetKonto = db.Kontoer.FirstOrDefault(k => k.kontoNavn == t.fraKonto);
+                if (funnetKonto != null)
+                {
+                    var transaksjon = new Transaksjon()
+                    {
+                        status = "Midlertidig Status",
+                        saldoInn = 0,
+                        saldoUt = t.saldoUt,
+                        dato = t.dato,
+                        KID = t.KID,
+                        fraKonto = funnetKonto.kontoNr,
+                        tilKonto = t.tilKonto,
+                        melding = t.melding,
+                        konto = funnetKonto
+                    };
+                    try
+                    {
+                        db.Transaksjoner.Add(transaksjon);
+                        db.SaveChanges();
+                        return transaksjon;
+                    }
+                    catch (Exception feil)
+                    {
+
+                    }
+                }
+                return null;
+            }
+        }
+
         // Henter alle kontoer som tilhører gitt personnr
         public static List<String> hentKontoer(String personnr)
         {
@@ -119,7 +153,6 @@ namespace Nettbanken.Models
                 // henter alle kontoer
                 var tmp = db.Kontoer.ToList();
                 // Velger kun kontoene med gitte personnr
-                //kontoer.Add("---Velg konto---");
                 foreach (var k in tmp)
                 {
                     if (personnr == k.personNr)
@@ -132,9 +165,42 @@ namespace Nettbanken.Models
             return kontoer.ToList();
         }
 
-        public static String hentTransaksjoner(String kontonavn, String personnr)
+        // Meetode som lager tabellen for konto informasjon
+        public static String hentKontoInformasjon(String kontonavn, String personnr)
         {
-            String transkasjonerListe =                        
+            String kontoInformasjon =
+                "<p><h3>Konto informasjon</h3></p>" +
+                "<table>" +
+                "<tr>" +
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Kontonavn</th>" +
+                "<th class='col-sm-4' style='background-color:lavender;'>Kontonummer</th>" +
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Saldo</th>" +
+                "</tr>";
+
+            // Finner korrekt konto og kunde
+            using (var db = new DbModell())
+            {
+                var info = db.Kontoer.Where(k => k.kontoNavn == kontonavn && k.personNr == personnr);
+                foreach (var i in info)
+                {
+                    kontoInformasjon +=
+                        "<tr>" +
+                        "<td class='col-sm-4' style='background-color:lavenderblush;'>"+ i.kontoNavn+"</td>" +
+                        "<td class='col-sm-4' style='background-color:lavender;'>"+i.kontoNr+"</td>" +
+                        "<td class='col-sm-4' style='background-color:lavenderblush;'>"+i.saldo+"</td>" +
+                        "</tr>";
+                }
+            }
+
+            kontoInformasjon += "</table>";
+            return kontoInformasjon;
+        }
+
+        // Metode som lager tabell for kontoutskrifter
+        public static String hentKontoUtskrift(String kontonavn, String personnr)
+        {
+            String kontoUtskrift =                        
+                "<p><h3>Konto utskrift</h3></p>" +
                 "<table>" +
                 "<tr>" +
                 "<th class='col-sm-1' style='background-color:lavenderblush;'>Status</th>" +
@@ -147,12 +213,13 @@ namespace Nettbanken.Models
                 "<th class='col-sm-1' style='background-color:lavender;'>Melding</th>" +
                 "</tr>";
 
+            // Finner riktig konto og kunde
             using (var db = new DbModell())
             {
                 var transaksjoner = db.Transaksjoner.Where(t => t.konto.kontoNavn == kontonavn && t.konto.personNr == personnr);
                 foreach (var t in transaksjoner)
                 {
-                    transkasjonerListe +=
+                    kontoUtskrift +=
                        "<tr>" +
                        "<td class='col-sm-1' style='background-color:lavenderblush;'>"+ t.status +"</td>" +
                        "<td class='col-sm-1' style='background-color:lavender;'>"+t.dato+"</td>" +
@@ -166,8 +233,8 @@ namespace Nettbanken.Models
                 }
             }
 
-            transkasjonerListe += "</table>";
-            return transkasjonerListe;
+            kontoUtskrift += "</table>";
+            return kontoUtskrift;
         }
 
         /* @@@@@@@@@ CATCH METODE SOM FANGER OPP EN UNIK FEIL, IKKE SLETT@@@@@@@@@

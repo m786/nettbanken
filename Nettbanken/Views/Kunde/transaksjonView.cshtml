@@ -1,28 +1,102 @@
 ﻿@model Nettbanken.Models.Transaksjon
 
+
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Transaksjonsside</title>
-</head>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Transaksjonsside</title>
+        <script src="~/scripts/jquery-3.1.1.js"></script>
+        <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
+        <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
 
-<body>
-    <table>
-        <tr>
-            <td>@Html.LabelFor(model => model.fraKonto)</td>
-            <td>@Html.LabelFor(model => model.tilKonto)</td>
-            <td>@Html.LabelFor(model => model.KID)</td>
-            <td>@Html.LabelFor(model => model.saldoUt)</td>
-        </tr>
-        <tr>
-            <td>@Html.EditorFor(model => model.fraKonto)</td>
-            <td>@Html.EditorFor(model => model.tilKonto)</td>
-            <td>@Html.EditorFor(model => model.KID)</td>
-            <td>@Html.EditorFor(model => model.saldoUt)</td>
-        </tr>
-        <tr>
-            <td>@Html.LabelFor(mode => Model.status)</td>
-        </tr>
-    </table>
-</body>
+        <script type="text/javascript">
+            // Metode som oppdaterer tabell med korrekt info
+            function printUtskrift()
+            {
+                $("#kontoInformasjon").load("/Kunde/hentKontoInformasjon", { kontonavn: $("#kontoDropdown").val(), personnr: @ViewBag.personnr });
+            }
+            function settKonto()
+            {
+                $("#settKonto").click( $("#konto").val($("#kontoDropdown").val()) );
+            }
+        </script>
+    </head>
+
+    <body>
+        <p>
+            <h2>Utfør betaling</h2>
+        </p>
+        <p>
+            <select id="kontoDropdown" onchange="printUtskrift(); settKonto();" >
+                <option disbaled selected hidden>---Sett konto---</option>
+                @foreach (var konto in ViewBag.kontoer)
+                {
+                    <option>@konto</option>
+                }
+            </select>
+        </p>
+
+        <p id="kontoInformasjon">
+            <!--Her kommer kontoinformasjon-->
+        </p>
+
+        <p>
+            @using (Html.BeginForm("transaksjonView", "Kunde", FormMethod.Post))
+            {
+
+                <fieldset>
+                    <div class="editor-lable">
+                        @Html.LabelFor(model => model.fraKonto)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.fraKonto, new { id = "konto" })
+                    </div>
+                    <div class="editor-lable">
+                        @Html.LabelFor(model => model.tilKonto)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.tilKonto)
+                    </div>
+                    <div class="editor-lable">
+                        @Html.LabelFor(model => model.KID)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.KID)
+                    </div>
+                    <div class="editor-lable">
+                        @Html.LabelFor(model => model.saldoUt)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.saldoUt)
+                    </div>
+                    <div class="editor-lable">
+                        @Html.LabelFor(model => model.dato)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.dato)
+                    </div>
+                    <div class="editor-lable">
+                        @Html.LabelFor(model => model.melding)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextAreaFor(model => model.melding)
+                    </div>
+
+                    <br />
+                    <div>
+                        <input type="button" value="Legg til" id="leggTil" />
+                        <input type="submit" value="Fullfør" id="fullfør" />
+                        @Html.ActionLink("Tilbake til hjemmeside", "hjemmesideView")
+                    </div>
+
+                </fieldset>
+            }
+        </p>
+
+        <p id="transaksjoner">
+            <!--Her kommer de tillagte transaksjonene-->
+        </p>
+
+    </body>
 </html>

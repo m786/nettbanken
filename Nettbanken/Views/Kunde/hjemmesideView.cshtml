@@ -12,9 +12,11 @@
     <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
 
     <script type="text/javascript">
+        // Metode som oppdaterer tabell med korrekt info
         function printUtskrift()
         {
-            $("#transaksjonsListe").load("/Kunde/hentTransaksjoner", { kontonavn: $("#kontoDropdown").val(), personnr: @ViewBag.personnr });
+            $("#kontoInformasjon").load("/Kunde/hentKontoInformasjon", { kontonavn: $("#kontoDropdown").val(), personnr: @ViewBag.personnr });
+            $("#kontoUtskrift").load("/Kunde/hentKontoUtskrift", { kontonavn: $("#kontoDropdown").val(), personnr: @ViewBag.personnr });
         }
     </script>
 </head>
@@ -31,14 +33,15 @@
 
     <div class="container">
         <div class="jumbotron">
-            <h1>Konto Oversikt</h1>
-            <p>Velg konto:</p>
+            <h2>Konto oversikt</h2>
+            <!--<h3>Velg konto:</h3>-->
 
             <div class="container">
 
                 <div class="row">
                     <div class="row">
-                        <select id="kontoDropdown">
+                        <select id="kontoDropdown" onchange="printUtskrift()">
+                            <option disbaled selected hidden>---Konto utskrift---</option>
                             @foreach (var konto in Model)
                             {
                                 <option>@konto</option>
@@ -47,17 +50,22 @@
                     </div>
                 </div>
                 <br/>
+
                 <div class="container">
                     <p>
-                        <input type="button" class="btn btn-primary" value="Utskrift" onclick="printUtskrift()"/>
-                        <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'" />
+                        <!--<input type="button" class="btn btn-primary" value="Utskrift" onclick="printUtskrift()"/>-->
+                        <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'"/>
                     </p>
                     <p>
                         <input type="button" class="btn btn-primary" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" />
                     </p>
                 </div>
 
-                <div id="transaksjonsListe">
+                <div id="kontoInformasjon">
+                    <!--Her kommer konto informasjon-->
+                </div>
+                <br/>
+                <div id="kontoUtskrift">
                     <!--Her kommer utskriftstabellen-->
                 </div>
 
