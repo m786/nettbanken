@@ -51,7 +51,8 @@ namespace Nettbanken.Models
                 {
                     var nyKunde = new Kunde
                     {
-                        bankId = "1337",
+                        //bankId = "1337",
+                        bankId = bid,
                         personNr = kunde.personNr,
                         passord = krypterPassord(kunde.passord),
                         fornavn = kunde.fornavn,
@@ -76,7 +77,8 @@ namespace Nettbanken.Models
                 // legger inne kunden og oppretter en ny rad i Poststeder
                 else
                 {
-                    kunde.bankId = "1337";
+                    // kunde.bankId = "1337";
+                    kunde.bankId = bid;
                     kunde.passord = krypterPassord(kunde.passord);
                     try
                     {
