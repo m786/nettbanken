@@ -1,5 +1,6 @@
 namespace Nettbanken.Models
 {
+    using Controllers;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,7 @@ namespace Nettbanken.Models
 
     public class DbModell : DbContext
     {
+        
 
         public DbModell()
             : base("name=NettbankDB") // Navnet på vår connectionString

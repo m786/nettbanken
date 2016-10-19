@@ -33,6 +33,11 @@ namespace Nettbanken.Models
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
         public static String registrerKunde(Kunde kunde)
         {
+            /////////dd/////////////
+            int bi = 10;
+            bi = bi += 1;
+            string bid = "111" + bi;
+            ///////////dd//////////////
             String OK = "";
            
             // Oppretter Database connection
@@ -87,7 +92,34 @@ namespace Nettbanken.Models
             }
 
             return OK;
-        } 
+        }
+
+        //Konto registrering: opprette konto for kunder samtidig som di registreres!
+        public static bool registrerNyKonto(Konto nyk)
+        {
+            using (var db = new DbModell())
+            {
+                var nyKonto = new Konto()
+                {
+                    kontoNr = nyk.kontoNr,
+                    saldo = nyk.saldo,
+                    kontoNavn = nyk.kontoNavn,
+                    personNr = nyk.personNr
+
+                };
+                try
+                {
+                    db.Kontoer.Add(nyKonto);
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    //db failure
+                    return false;
+                }
+            }
+            return true;
+        }
 
         // Innloggingsmetode for kunder
         public static Boolean kundeLogginn(Kunde kunde)
