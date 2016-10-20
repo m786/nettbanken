@@ -51,7 +51,10 @@
                         <div class="panel-body">
                             <span class="editor-lable">
                                 <!--skal ikke fylles av bruker---------------------->
-                                <input type="text" placeholder="@ViewBag.kontoer[0]" />
+                                <span class="editor-lable">
+                                    <b>@Html.LabelFor(model => model.fraKonto):</b>
+                                </span>
+                                <span ="editor-field" placeholder="@ViewBag.kontoer"></span>
                             </span>
                             <span class="editor-field">
                                 @Html.TextBoxFor(model => model.fraKonto, 
