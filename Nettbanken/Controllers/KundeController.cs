@@ -117,7 +117,7 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
-        // Siden for utføring av transaksjoner
+        // Siden for utføring av transaksjoner/////////////////////////////////////////////////////////////////////////////////////
         public ActionResult transaksjonView()
         {
             // Siden kan kun vises dersom man er innlogget
@@ -128,6 +128,8 @@ namespace Nettbanken.Controllers
                 {
                     ViewBag.personnr = (String)Session["personnr"];
                     ViewBag.kontoer = (List<String>)Session["kontoer"];
+
+
 
                     return View();
                 }
@@ -193,7 +195,9 @@ namespace Nettbanken.Controllers
             string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3" };
 
             int pernr = 011189211, tlf = 555555, konNr = 12345, postNr = 6789;
-
+            Models.Kunde k;
+            Models.Poststed p;
+            Models.Konto s;
 
             for (var i = 0; i < fornavn.Length; i++)
             {
@@ -202,9 +206,9 @@ namespace Nettbanken.Controllers
                 konNr += 1;
                 postNr += 1;
 
-                Models.Kunde k = new Models.Kunde();
-                Models.Poststed p = new Models.Poststed();
-                Models.Konto s = new Models.Konto();
+                 k = new Models.Kunde();
+                 p = new Models.Poststed();
+                 s = new Models.Konto();
 
                 p.poststed = poststed[i];
                 k.personNr = pernr + "";
@@ -221,8 +225,36 @@ namespace Nettbanken.Controllers
                 s.kontoNavn = k.fornavn + " " + k.etternavn;
                 s.personNr = k.personNr;
                 DBMetoder.registrerNyKonto(s);
-            }
 
+                if (i == fornavn.Length-1)
+                {
+                    pernr += i;
+                    //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
+                    Models.Konto e = new Models.Konto();
+                    e.kontoNr = 123456 + "";
+                    e.saldo = 50;
+                    e.kontoNavn = "Per" + " " + "Bakke"; 
+                    e.personNr = 11189211 + "";
+                    DBMetoder.registrerNyKonto(e);
+
+                    pernr += i;
+                    Models.Konto f = new Models.Konto();
+                    f.kontoNr = 123457 + "";
+                    f.saldo = 400;
+                    f.kontoNavn = "Per" + " " + "Bakke";
+                    f.personNr = 11189211 + "";
+
+                    DBMetoder.registrerNyKonto(f);
+
+                    pernr += i;
+                    Models.Konto g = new Models.Konto();
+                    g.kontoNr = 2221 + "";
+                    g.saldo = 50;
+                    g.kontoNavn = "Ola" + " " + "Hansen"; 
+                    g.personNr = 11189212 + "";
+                    DBMetoder.registrerNyKonto(g);
+                }
+            }
         }
         ///////////////////////////DummyData////////////////////////////////
 

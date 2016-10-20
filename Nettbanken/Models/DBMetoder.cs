@@ -9,6 +9,7 @@ namespace Nettbanken.Models
 {
     public class DBMetoder
     {
+       private static int bankId = 0;
 
         // Metode for kryptering av passord
         private static String krypterPassord(String passord)
@@ -34,9 +35,8 @@ namespace Nettbanken.Models
         public static String registrerKunde(Kunde kunde)
         {
             /////////dd/////////////
-            int bi = 10;
-            bi = bi += 1;
-            string bid = "111" + bi;
+            bankId = bankId += 1;
+            string bid = "" + bankId;
             ///////////dd//////////////
             String OK = "";
            
@@ -105,7 +105,7 @@ namespace Nettbanken.Models
                 {
                     kontoNr = nyk.kontoNr,
                     saldo = nyk.saldo,
-                    kontoNavn = nyk.kontoNavn,
+                    kontoNavn = nyk.kontoNavn, 
                     personNr = nyk.personNr
 
                 };
@@ -117,6 +117,7 @@ namespace Nettbanken.Models
                 catch (Exception e)
                 {
                     //db failure
+                    string ex = e.ToString();
                     return false;
                 }
             }
