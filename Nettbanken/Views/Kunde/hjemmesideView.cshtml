@@ -41,10 +41,10 @@
                 <div class="row">
                     <div class="row">
                         <select id="kontoDropdown" onchange="printUtskrift()">
-                            <option disbaled selected hidden>---Konto utskrift---</option>
+                            <option disbaled selected hidden>Velg Konto</option>
                             @foreach (var konto in Model)
                             {
-                                <option>@konto</option>
+                                <option>@konto</option> 
                             }
                         </select>
                     </div>

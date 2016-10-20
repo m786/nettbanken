@@ -128,9 +128,6 @@ namespace Nettbanken.Controllers
                 {
                     ViewBag.personnr = (String)Session["personnr"];
                     ViewBag.kontoer = (List<String>)Session["kontoer"];
-
-
-
                     return View();
                 }
                 return RedirectToAction("kundeLogginnView");
@@ -220,37 +217,37 @@ namespace Nettbanken.Controllers
                 k.postNr = p.postNr = postNr + "";
                 k.poststed = p;
                 DBMetoder.registrerKunde(k);
-                s.kontoNr = konNr + "";
+                s.kontoNr = ""+konNr;
                 s.saldo = 500;
-                s.kontoNavn = k.fornavn + " " + k.etternavn;
+                s.kontoNavn = k.fornavn + " " + k.etternavn+ ": " + konNr;
                 s.personNr = k.personNr;
                 DBMetoder.registrerNyKonto(s);
 
                 if (i == fornavn.Length-1)
                 {
-                    pernr += i;
+                    konNr += i;
                     //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
                     Models.Konto e = new Models.Konto();
-                    e.kontoNr = 123456 + "";
+                    e.kontoNr = "" + konNr;
                     e.saldo = 50;
-                    e.kontoNavn = "Per" + " " + "Bakke"; 
+                    e.kontoNavn = "Per" + " " + "Bakke"+ ": " + konNr; 
                     e.personNr = 11189211 + "";
                     DBMetoder.registrerNyKonto(e);
 
-                    pernr += i;
+                    konNr += i;
                     Models.Konto f = new Models.Konto();
-                    f.kontoNr = 123457 + "";
+                    f.kontoNr = "" + konNr;
                     f.saldo = 400;
-                    f.kontoNavn = "Per" + " " + "Bakke";
+                    f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
                     f.personNr = 11189211 + "";
 
                     DBMetoder.registrerNyKonto(f);
 
-                    pernr += i;
+                    konNr += i;
                     Models.Konto g = new Models.Konto();
-                    g.kontoNr = 2221 + "";
+                    g.kontoNr = "" + konNr;
                     g.saldo = 50;
-                    g.kontoNavn = "Ola" + " " + "Hansen"; 
+                    g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
                     g.personNr = 11189212 + "";
                     DBMetoder.registrerNyKonto(g);
                 }
