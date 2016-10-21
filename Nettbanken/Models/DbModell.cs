@@ -50,25 +50,34 @@ namespace Nettbanken.Models
     public class Kunde
     {
         [Display(Name = "BankID")]
+        [Required(ErrorMessage ="Vennligst fyll inn bankId")]
         public string bankId { get; set; } // BankID for innlogging
 
         [Key]
         [Display (Name = "Personnummer")]
+        [Required(ErrorMessage = "Vennligst fyll inn personNr")]
         public string personNr { get; set; }
         [Display(Name = "Passord")]
+        [Required(ErrorMessage = "Vennligst fyll inn passord")]
         public string passord { get; set; }
-
         [Display(Name = "Fornavn")]
+        [Required(ErrorMessage = "Vennligst fyll inn fornavn")]
         public string fornavn { get; set; }
         [Display(Name = "Etternavn")]
+        [Required(ErrorMessage = "Vennligst fyll inn etter navn")]
         public string etternavn { get; set; }
         [Display(Name = "Adresse")]
+        [Required(ErrorMessage = "Vennligst fyll inn adresse")]
         public string adresse { get; set; }
         [Display(Name = "Telefonnummer")]
+        [Required(ErrorMessage = "Vennligst fyll inn telefonNr")]
         public string telefonNr { get; set; }
         [Display(Name = "Postnummer")]
+       // [Required(ErrorMessage = "Vennligst fyll inn postnummer")]
         public string postNr { get; set; }
 
+        [Display(Name = "Poststed")]
+       // [Required(ErrorMessage = "Vennligst fyll inn poststed")]
         public virtual Poststed poststed { get; set; } // Hver kunde har kun et postnr og poststed
         public virtual List<Konto> konto { get; set; } // En kunde kan ha flere kontoer, aka List<Konto>
 
@@ -78,12 +87,14 @@ namespace Nettbanken.Models
     {
         [Key]
         [Display(Name = "Kontonummer")]
+        [Required(ErrorMessage = "Vennligst fyll inn kontonummer")]
         public string kontoNr { get; set; }
         [Display(Name = "Saldo")]
         public int saldo { get; set; }
         [Display(Name = "Kontonavn")]
         public string kontoNavn { get; set; }
         [Display(Name = "Personnummer")]
+        [Required(ErrorMessage = "Vennligst fyll inn personnummer")]
         public string personNr { get; set; }
 
 
@@ -102,14 +113,18 @@ namespace Nettbanken.Models
         [Display(Name = "Saldo inn")]
         public int saldoInn { get; set; }
         [Display(Name = "Saldo ut")]
+        [Required(ErrorMessage = "Vennligst fyll inn mengde")]
         public int saldoUt { get; set; }
         [Display(Name = "Dato")]
+        [Required(ErrorMessage = "Vennligst fyll inn dato")]
         public string dato { get; set; }
         [Display(Name = "KID")]
+        [Required(ErrorMessage = "Vennligst fyll inn KID")]
         public string KID { get; set; }
         [Display(Name = "Fra konto")]
         public string fraKonto { get; set; }
         [Display(Name = "Til konto")]
+        [Required(ErrorMessage = "Vennligst fyll inn konto")]
         public string tilKonto { get; set; }
         [Display(Name = "Melding")]
         public string melding { get; set; }
@@ -120,9 +135,13 @@ namespace Nettbanken.Models
     public class Poststed
     {
         [Key]
+        [Required(ErrorMessage = "Vennligst fyll inn postNr")]
         [Display(Name = "Postnummer")]
+        //[Required(ErrorMessage = "Vennligst fyll inn postnummer")]
         public string postNr { get; set; }
         [Display(Name = "Poststed")]
+        [Required(ErrorMessage = "Vennligst fyll poststed")]
+        // [Required(ErrorMessage = "Vennligst fyll inn poststed")]
         public string poststed { get; set; }
 
         // Hver poststed kan ha flere kunder/admins knyttet til seg

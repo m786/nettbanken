@@ -1,5 +1,6 @@
 ﻿
 @model Nettbanken.Models.Kunde
+
 <!DOCTYPE html>
 
 <html>
@@ -7,11 +8,14 @@
         <meta name="viewport" content="width=device-width" />
         <title>Kunde Logginn</title>
         <link href="~/Content/logginn_register.css" rel="stylesheet" type="text/css">
+
+
     </head>
 
     <body>
         @using (Html.BeginForm("kundeLogginnView", "Kunde", FormMethod.Post))
         {
+            @Html.AntiForgeryToken()
             <fieldset>
                 <div class="row">
                     <div class="header">
@@ -20,24 +24,27 @@
                         </div>
 
                         <div class="logginn-container">
-
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.bankId)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.bankId)
+                                @Html.ValidationMessageFor(model => model.bankId, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.personNr)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.personNr)
+                                @Html.ValidationMessageFor(model => model.personNr, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.passord)
                             </div>
                             <div class="editor-field">
                                 @Html.PasswordFor(model => model.passord)
+                                @Html.ValidationMessageFor(model => model.passord, "", new { @class = "text-danger" })
                             </div>
                             <br/>
                             <div>

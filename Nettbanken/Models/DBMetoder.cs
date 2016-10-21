@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nettbanken.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
@@ -32,17 +33,17 @@ namespace Nettbanken.Models
         
         
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
-        public static String registrerKunde(Kunde kunde)
+        public static String registrerKunde(Kunde kunde,bool erIkkeDummy) 
         {
-            /////////dd/////////////
-            bankId = bankId += 1;
-            string bid = "" + bankId;
-            ///////////dd//////////////
-            String OK = "";
            
+            String OK = "";
+
             // Oppretter Database connection
             using (var db = new DbModell())
             {
+                int bid = db.Kunder.Count(); 
+                bid += 1;
+                String bankId = bid + "";
                 // Sjekker om postnr og poststed allerede finnes
                 bool finnes = db.Poststeder.Any(p => p.postNr == kunde.poststed.postNr);
                 // Om postnr og poststed finnes så opprettes en ny kunde 
@@ -52,7 +53,7 @@ namespace Nettbanken.Models
                     var nyKunde = new Kunde
                     {
                         //bankId = "1337",
-                        bankId = bid,
+                        bankId = bankId,
                         personNr = kunde.personNr,
                         passord = krypterPassord(kunde.passord),
                         fornavn = kunde.fornavn,
@@ -66,6 +67,7 @@ namespace Nettbanken.Models
                     {
                         db.Kunder.Add(nyKunde);
                         db.SaveChanges();
+                       
                     }
                     catch (Exception feil)
                     {
@@ -78,20 +80,37 @@ namespace Nettbanken.Models
                 else
                 {
                     // kunde.bankId = "1337";
-                    kunde.bankId = bid;
+                    kunde.bankId = bankId; 
                     kunde.passord = krypterPassord(kunde.passord);
                     try
                     {
+                       
                         db.Kunder.Add(kunde);
                         db.SaveChanges();
+                        if (erIkkeDummy)
+                        {
+                            string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
+                            KundeController.opprettNyKontoVedNyKundeRegistrering(kundeInfo);
+                        }
                     }
-                    catch (Exception feil)
+                    catch (DbEntityValidationException deve)
                     {
-                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message;
+                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + deve.Message;
+                        //skriv ut feilen spesifikt
+                        foreach (var validationErrors in deve.EntityValidationErrors)
+                        {
+                            foreach (var validationError in validationErrors.ValidationErrors)
+                            {
+                                Trace.TraceInformation("Property: {0} Error: {1}",
+                                                        validationError.PropertyName,
+                                                        validationError.ErrorMessage);
+                            }
+                        }
                     }
                 }
              
             }
+            
 
             return OK;
         }
@@ -142,6 +161,7 @@ namespace Nettbanken.Models
 
                 return false;
             }
+
         }
 
         public static Transaksjon registrerTransaksjon(String personnr, Transaksjon t)
@@ -232,7 +252,7 @@ namespace Nettbanken.Models
         }
 
         // Metode som lager tabell for kontoutskrifter
-        public static String hentKontoUtskrift(String kontonavn, String personnr)
+        public static String hentKontoUtskrift(String kontonavn, String personnr) 
         {
             String kontoUtskrift =                        
                 "<p><h3>Konto utskrift</h3></p>" +

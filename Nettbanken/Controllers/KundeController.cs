@@ -8,19 +8,21 @@ using System.Web.Mvc;
 namespace Nettbanken.Controllers
 {
     
-
     // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
         // Returnerer forsiden til Nettbanken
         public ActionResult forsideView()
         {
-            var db = new DbModell();
-            var count = db.Kunder.Count();
-            if (count == 0) { //da er det ikke noe i db
-                    KundeController.dummyData(); // opprett dummy data 
-                }
-               
+            var db = new Models.DbModell();
+          try
+            {
+                var enDbKunde = db.Kunder.First();
+            }
+            catch(Exception e)
+            {
+                KundeController.dummyData(); // opprett dummy data 
+            }
             // Sjekker om session finnes, hvis ikke så settes den
             if (Session["innlogget"] == null)
             {
@@ -47,22 +49,26 @@ namespace Nettbanken.Controllers
         [HttpPost]
         public ActionResult kundeRegistreringView(Models.Kunde kunde)
         {
-            String OK;
-            
-            OK = Models.DBMetoder.registrerKunde(kunde);
-            
-            // Hvis OK er tom, så gikk registreringen bra, og går videre
-            if (OK == "")
+            ModelState.Remove("bankId");
+            ModelState.Remove("postNr"); 
+            if (ModelState.IsValid)//valider 
             {
-                return RedirectToAction("hjemmesideView");
-            }
+                String OK;
+                OK = Models.DBMetoder.registrerKunde(kunde,true); 
 
+                // Hvis OK er tom, så gikk registreringen bra, og går videre
+                if (OK == "")
+                {
+                    return RedirectToAction("hjemmesideView");
+                }
+            }
             return View();
         }
 
         // Kundens innloggingsside
         public ActionResult kundeLogginnView()
         {
+
             if (Session["innlogget"] != null)
             { 
                 bool innlogget = (bool)Session["innlogget"];
@@ -80,18 +86,26 @@ namespace Nettbanken.Controllers
         [HttpPost]
         public ActionResult kundeLogginnView(Models.Kunde kunde)
         {
-            // if-setning sjekker om kunden finnes i databasen
-            if (Models.DBMetoder.kundeLogginn(kunde))
+            //property som ikke trenger vare med valideringen for innlogging
+            ModelState.Remove("fornavn");
+            ModelState.Remove("etternavn");
+            ModelState.Remove("adresse");
+            ModelState.Remove("telefonNr");
+            ModelState.Remove("postNr");
+            if (ModelState.IsValid)//formValider
             {
-                Session["innlogget"] = true;
+                // if-setning sjekker om kunden finnes i databasen
+                if (Models.DBMetoder.kundeLogginn(kunde)) 
+                {
+                    Session["innlogget"] = true;
 
-                String personnr = kunde.personNr;
-                Session["personnr"] = kunde.personNr;
-                Session["kontoer"] = Models.DBMetoder.hentKontoer(personnr);
+                    String personnr = kunde.personNr;
+                    Session["personnr"] = kunde.personNr;
+                    Session["kontoer"] = Models.DBMetoder.hentKontoer(personnr);
 
-                return RedirectToAction("hjemmesideView");
+                    return RedirectToAction("hjemmesideView");
+                }
             }
-
             Session["innlogget"] = false;
             return View();
         }
@@ -150,9 +164,7 @@ namespace Nettbanken.Controllers
 
                     ViewBag.kontoer = kontoer;
                     ViewBag.personnr = personnr;
-
                     Models.Transaksjon t = Models.DBMetoder.registrerTransaksjon(personnr, transaksjon);
-
                     return RedirectToAction("hjemmesideView");
                 }
                 return RedirectToAction("kundeLogginnView");
@@ -216,7 +228,7 @@ namespace Nettbanken.Controllers
                 k.telefonNr = tlf + "";
                 k.postNr = p.postNr = postNr + "";
                 k.poststed = p;
-                DBMetoder.registrerKunde(k);
+                DBMetoder.registrerKunde(k,false);
                 s.kontoNr = ""+konNr;
                 s.saldo = 500;
                 s.kontoNavn = k.fornavn + " " + k.etternavn+ ": " + konNr;
@@ -254,6 +266,24 @@ namespace Nettbanken.Controllers
             }
         }
         ///////////////////////////DummyData////////////////////////////////
+        public static void opprettNyKontoVedNyKundeRegistrering(string[] nyKundeInfo) 
+        {
+            int n;
+            using (var db = new DbModell())
+            {
+                n = db.Kunder.Count();
+            }
+            string kontoNr = 3211 + "" + n; 
+            Models.Konto g = new Models.Konto();
+
+            g.kontoNr = kontoNr; 
+            g.saldo = 50;
+            g.kontoNavn = nyKundeInfo[0] + " " + nyKundeInfo[1]+ ": " + kontoNr; 
+            g.personNr = nyKundeInfo[2];
+            DBMetoder.registrerNyKonto(g);
+        }
 
     }
+    //feil melding
+   
 }

@@ -47,6 +47,9 @@
                 </select>
                 @using (Html.BeginForm("transaksjonView", "Kunde", FormMethod.Post))
                 {
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.AntiForgeryToken()
+
                     <fieldset class="form-inline">
                         <div class="panel-body">
                             <span class="editor-lable">
@@ -56,9 +59,11 @@
                                 </span>
                                 <span ="editor-field" placeholder="@ViewBag.kontoer"></span>
                             </span>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <span class="editor-field">
                                 @Html.TextBoxFor(model => model.fraKonto, 
                                new { id = "konto", @readonly = "readonly" })
+                                @Html.ValidationMessageFor(model => model.fraKonto, "", new { @class = "text-danger" })
                             </span>
                             <br>
                             <br>
@@ -67,6 +72,7 @@
                             </span>
                             <span class="editor-field">
                                 @Html.EditorFor(model => model.tilKonto)
+                                @Html.ValidationMessageFor(model => model.tilKonto, "", new { @class = "text-danger" })
                             </span>
                             <hr>
                             <span class="editor-lable">
@@ -74,6 +80,7 @@
                             </span>
                             <span class="editor-field">
                                 @Html.EditorFor(model => model.saldoUt)
+                                @Html.ValidationMessageFor(model => model.saldoUt, "", new { @class = "text-danger" })
                             </span>
                             <br>
                             <br>
@@ -82,6 +89,7 @@
                             </span>
                             <span class="editor-field">
                                 @Html.EditorFor(model => model.KID)
+                                @Html.ValidationMessageFor(model => model.KID, "", new { @class = "text-danger" })
                             </span>
                             <br>
                             <br>
@@ -91,6 +99,7 @@
                             <span>
                                 @Html.TextBoxFor(model => model.dato,
                                          new { @class = "datepicker" })
+                                @Html.ValidationMessageFor(model => model.dato, "", new { @class = "text-danger" })
                             </span>
                             <br>
                             <br>

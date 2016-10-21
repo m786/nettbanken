@@ -12,8 +12,7 @@
         <!--BeginForm har parameterene (metodenavn, kontrollernavn, postmethod)-->
         @using (Html.BeginForm("kundeRegistreringView", "Kunde", FormMethod.Post))
         {
-            //@Html.AntiForgeryToken()
-            //@Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
 
             <div class="row">
                 <div class="header">
@@ -24,46 +23,54 @@
                     <div class="logginn-container">
 
                         <fieldset>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.personNr)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.personNr)
+                                @Html.ValidationMessageFor(model => model.personNr, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.passord)
                             </div>
                             <div class="editor-field">
                                 @Html.PasswordFor(model => model.passord)
+                                @Html.ValidationMessageFor(model => model.passord, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.fornavn)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.fornavn)
+                                @Html.ValidationMessageFor(model => model.fornavn, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.etternavn)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.etternavn)
+                                @Html.ValidationMessageFor(model => model.etternavn, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.adresse)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.adresse)
+                                @Html.ValidationMessageFor(model => model.adresse, "", new { @class = "text-danger" })
                             </div>
                             <div class="editor-lable">
                                 @Html.LabelFor(model => model.telefonNr)
                             </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.telefonNr)
+                                @Html.ValidationMessageFor(model => model.telefonNr, "", new { @class = "text-danger" })
                             </div>
                             <!--Spesial tilfelle her. Vi trenger kun å kalle på Poststed klassen
                                 for å få både label og editor field for postnr og poststed-->
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.poststed)
+                                @Html.ValidationMessageFor(model => model.poststed, "", new { @class = "text-danger" })
                             </div>
 
                             <br />
