@@ -41,8 +41,16 @@
                         $("#tempTabell").load("/Kunde/betal"); 
                         break;
                     case "endre":
-                        var endre = $("#slettB").val();
-                        $("#tempTabell").load("/Kunde/endre",{endreNr: endre});
+                        var endre = $("#endreB").val();
+                        var fraKonto = $("#konto").val();
+                        var tilKonto = $("#tilKonto").val();
+                        var saldoUt = $("#saldoUt").val();
+                        var KID = $("#KID").val();
+                        var dato = $("#dato").val();
+                        var melding = $("#melding").val();
+
+                        var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
+                        $("#tempTabell").load("/Kunde/endre",{betalingNr: endre,info: info}); 
                         break;
                     case "slett":
                         var slett = $("#slettB").val();

@@ -325,15 +325,22 @@ namespace Nettbanken.Controllers
         public String slett(string betalingNr)
         {
             var betalingerListe = (List<string[]>)Session["tempTabell"];
-            int slettIndex = Int32.Parse(betalingNr);
-            betalingerListe.RemoveAt(slettIndex);
+            betalingerListe.RemoveAt(Int32.Parse(betalingNr));
             return oppdaterTabell();
         }
-        public void endre(int betalingNr)
+        public String endre(string betalingNr,string[] info)
         {
+            var betalingerListe = (List<string[]>)Session["tempTabell"];
+            string[] endreRad = betalingerListe.ElementAt(Int32.Parse(betalingNr));
+
+            for(int i=0;i<endreRad.Count()-1;i++)
+            {
+                endreRad[i] = info[i]; 
+            }
+            return oppdaterTabell(); 
 
         }
-        public void betal(int betalingNr)
+        public void betal(string betalingNr)
         {
 
         }
