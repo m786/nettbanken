@@ -103,8 +103,14 @@ namespace Nettbanken.Controllers
                     Session["innlogget"] = true;
 
                     String personnr = kunde.personNr;
+                    // Initialiserer betalingsListe, trenger en verdi hvis ikke gir det en error ved oppstart
+                    var betalingsListe = new List<String[]>();
+                    String[] temp = { "initializer" };
+                    betalingsListe.Add(temp);
+
                     Session["personnr"] = kunde.personNr;
                     Session["kontoer"] = Models.DBMetoder.hentKontoer(personnr);
+                    Session["tempTabell"] = betalingsListe;
 
                     return RedirectToAction("hjemmesideView");
                 }
@@ -287,34 +293,25 @@ namespace Nettbanken.Controllers
         }
        
        // [HttpPost]
-        public String tempTr(Models.Transaksjon tr)
+        public String tempTr(String[] infoliste)
         {
-            String[] tempBetalingsDetaljer = new String[6]; 
-            //disse skal inn til DB hvis betal trykt. senere..
-            tempBetalingsDetaljer[0] = tr.fraKonto;
-            tempBetalingsDetaljer[1] = tr.tilKonto;
-            tempBetalingsDetaljer[2] = tr.saldoUt.ToString();
-            tempBetalingsDetaljer[3] = tr.KID;
-            tempBetalingsDetaljer[4] = tr.dato;
-            tempBetalingsDetaljer[5] = tr.melding;
-
-            if (betalingerListe == null)
-            {
-                betalingerListe = new List<string[]>();
-            }
-            betalingerListe.Add(tempBetalingsDetaljer);
+            // Session ble intialisert ved innlogging
+            // Brukes for å bevare lista med temp betalinger (Huske-mekanisme)
+            var betalingerListe = (List<string[]>)Session["tempTabell"];
+            betalingerListe.Add(infoliste);
+            Session["tempTabell"] = betalingerListe;
 
             String tempTable = "<table>" + "<tr>" + 
                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
                 "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" + 
                 "</tr>";
-            for (var i =0; i< betalingerListe.Count;i++)
+            for (var i = 1; i< betalingerListe.Count;i++)
             {
                 String[] tmp = betalingerListe.ElementAt(i);
                 tempTable +=
                        "<tr>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" +tmp[4] + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2]+ "</td>" +
                        "</tr>";
