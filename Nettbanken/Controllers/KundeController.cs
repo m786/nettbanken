@@ -11,7 +11,7 @@ namespace Nettbanken.Controllers
     // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
-       private List<string[]> betalingerListe;
+       
         
 
         // Returnerer forsiden til Nettbanken
@@ -300,26 +300,66 @@ namespace Nettbanken.Controllers
             var betalingerListe = (List<string[]>)Session["tempTabell"];
             betalingerListe.Add(infoliste);
             Session["tempTabell"] = betalingerListe;
+            int betalingNr = 0;
 
-            String tempTable = "<table>" + "<tr>" + 
+            String tempTable = "<table>" + "<tr>" +
+                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
                 "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" + 
                 "</tr>";
-            for (var i = 1; i< betalingerListe.Count;i++)
+            for (var i = 1; i< betalingerListe.Count;i++) 
             {
-                String[] tmp = betalingerListe.ElementAt(i);
+                String[] tmp = betalingerListe.ElementAt(i); 
                 tempTable +=
                        "<tr>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" +tmp[4] + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2]+ "</td>" +
                        "</tr>";
             }
-            tempTable += "</table></div>";
-            return tempTable;//trenger å legge dette inn til div for tabellen med id=tempTabell
+            tempTable += "</table>";
+            return tempTable; 
         }
-        
+        public String slett(string betalingNr)
+        {
+            var betalingerListe = (List<string[]>)Session["tempTabell"];
+            int slettIndex = Int32.Parse(betalingNr);
+            betalingerListe.RemoveAt(slettIndex);
+            return oppdaterTabell();
+        }
+        public void endre(int betalingNr)
+        {
+
+        }
+        public void betal(int betalingNr)
+        {
+
+        }
+        public String oppdaterTabell()
+        {
+            var betalingerListe = (List<string[]>)Session["tempTabell"];
+            String tempTable = "<table>" + "<tr>" +
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
+               "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
+               "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
+               "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" +
+               "</tr>";
+            for (var i = 1; i < betalingerListe.Count; i++)
+            {
+                String[] tmp = betalingerListe.ElementAt(i);
+                tempTable +=
+                       "<tr>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
+                       "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
+                       "</tr>";
+            }
+            tempTable += "</table>";
+            return tempTable;
+        }
 
     }
     

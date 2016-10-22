@@ -34,6 +34,23 @@
                 var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
                 $("#tempTabell").load("/Kunde/tempTr", {infoliste: info})
             }
+            function knapper(id)
+            {
+                switch(id) {
+                    case "betal":
+                        $("#tempTabell").load("/Kunde/betal"); 
+                        break;
+                    case "endre":
+                        var endre = $("#slettB").val();
+                        $("#tempTabell").load("/Kunde/endre",{endreNr: endre});
+                        break;
+                    case "slett":
+                        var slett = $("#slettB").val();
+                        $("#tempTabell").load("/Kunde/slett",{betalingNr: slett}); 
+                        break;
+                    default:
+                }
+            }
         </script>
     </head>
 
@@ -94,7 +111,7 @@
                                 <b>@Html.LabelFor(model => model.saldoUt):</b>
                             </span>
                             <span class="editor-field">
-                                @Html.EditorFor(model => model.saldoUt, new {id = "saldoUt"})
+                                @Html.EditorFor(model => model.saldoUt, new { id = "saldoUt" })
                                 @Html.ValidationMessageFor(model => model.saldoUt, "", new { @class = "text-danger" })
                             </span>
                             <br>
@@ -103,7 +120,7 @@
                                 <b>@Html.LabelFor(model => model.KID):</b>
                             </span>
                             <span class="editor-field">
-                                @Html.EditorFor(model => model.KID, new { id = "KID"})
+                                @Html.EditorFor(model => model.KID, new { id = "KID" })
                                 @Html.ValidationMessageFor(model => model.KID, "", new { @class = "text-danger" })
                             </span>
                             <br>
@@ -122,19 +139,19 @@
                                 <b>@Html.LabelFor(model => model.melding)</b>
                             </span>
                             <span class="editor-field">
-                                @Html.EditorFor(model => model.melding, new { id = "melding"})
+                                @Html.EditorFor(model => model.melding, new { id = "melding" })
                             </span>
                             <br>
                             <br>
                         </div>
-                                                                                     <!---->
+                        <!---->
                         <div class="panel-footer">
                             <p class="col-lg-2 col-lg-offset-4">
-                               
+
                                 <input type="button" class="btn btn-primary btn-lg" value="Tilbake" onclick="location.href='@Url.Action("hjemmesideView","Kunde")'" />
                             </p>
-                            <p class="col-lg-2 col-lg-offset-4"
-                               ><input type="button" id="leggTil" value="Legg til" class="btn btn-primary btn-lg" onclick="leggtilTemp()"/>
+                            <p class="col-lg-2 col-lg-offset-4">
+                                <input type="button" id="leggTil" value="Legg til" class="btn btn-primary btn-lg" onclick="leggtilTemp()" />
                             </p>
                         </div>
 
@@ -151,9 +168,9 @@
                     
                 </div>
                 <div class="panel-footer">
-                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" href="#" role="button">Slett</a></p>
-                    <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg" href="#" role="button">Endre</a></p>
-                    <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg" href="#" role="button">Betal</a></p>
+                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg"  id="slett" onclick="knapper('slett')" role="button">Slett</a><label for="slettB">Slett Betaling NR:</label><input id="slettB" type="text" ></p>
+                    <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg"  id="endre" onclick="knapper('endre')" role="button">Endre</a><label for="endreB">Endre Betaling NR:</label><input id="endreB" type="text" ></p>
+                    <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg"  id="betal" onclick="knapper('betal')" role="button">Betal</a></p> 
                 </div>
             </div>
         </div>
