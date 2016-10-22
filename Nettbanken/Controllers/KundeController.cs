@@ -24,7 +24,7 @@ namespace Nettbanken.Controllers
             }
             catch(Exception e)
             {
-                KundeController.dummyData(); // opprett dummy data 
+                DBMetoder.dummyData(); // opprett dummy data  
             }
             // Sjekker om session finnes, hvis ikke så settes den
             if (Session["innlogget"] == null)
@@ -109,6 +109,7 @@ namespace Nettbanken.Controllers
                     betalingsListe.Add(temp);
 
                     Session["personnr"] = kunde.personNr;
+                   // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
                     Session["kontoer"] = Models.DBMetoder.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
 
@@ -204,94 +205,6 @@ namespace Nettbanken.Controllers
             return Models.DBMetoder.hentKontoUtskrift(kontonavn, personnr);
         }
 
-        ///////////////////////////DummyData////////////////////////////////
-        public static void dummyData() 
-        {
-            string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi" };
-            string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda" };
-            string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo" };
-            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3" };
-
-            int pernr = 011189211, tlf = 555555, konNr = 12345, postNr = 6789;
-            Models.Kunde k;
-            Models.Poststed p;
-            Models.Konto s;
-
-            for (var i = 0; i < fornavn.Length; i++)
-            {
-                pernr += i;
-                tlf += 1;
-                konNr += 1;
-                postNr += 1;
-
-                 k = new Models.Kunde();
-                 p = new Models.Poststed();
-                 s = new Models.Konto();
-
-                p.poststed = poststed[i];
-                k.personNr = pernr + "";
-                k.passord = "asdfasdf";
-                k.fornavn = fornavn[i];
-                k.etternavn = etternavn[i];
-                k.adresse = adresse[i];
-                k.telefonNr = tlf + "";
-                k.postNr = p.postNr = postNr + "";
-                k.poststed = p;
-                DBMetoder.registrerKunde(k,false);
-                s.kontoNr = ""+konNr;
-                s.saldo = 500;
-                s.kontoNavn = k.fornavn + " " + k.etternavn+ ": " + konNr;
-                s.personNr = k.personNr;
-                DBMetoder.registrerNyKonto(s);
-
-                if (i == fornavn.Length-1)
-                {
-                    konNr += i;
-                    //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
-                    Models.Konto e = new Models.Konto();
-                    e.kontoNr = "" + konNr;
-                    e.saldo = 50;
-                    e.kontoNavn = "Per" + " " + "Bakke"+ ": " + konNr; 
-                    e.personNr = 11189211 + "";
-                    DBMetoder.registrerNyKonto(e);
-
-                    konNr += i;
-                    Models.Konto f = new Models.Konto();
-                    f.kontoNr = "" + konNr;
-                    f.saldo = 400;
-                    f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
-                    f.personNr = 11189211 + "";
-
-                    DBMetoder.registrerNyKonto(f);
-
-                    konNr += i;
-                    Models.Konto g = new Models.Konto();
-                    g.kontoNr = "" + konNr;
-                    g.saldo = 50;
-                    g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
-                    g.personNr = 11189212 + "";
-                    DBMetoder.registrerNyKonto(g);
-                }
-            }
-        }
-        ////////////////////////////////////////////////////////////////////////////////
-        public static void opprettNyKontoVedNyKundeRegistrering(string[] nyKundeInfo) 
-        {
-            int n;
-            using (var db = new DbModell())
-            {
-                n = db.Kunder.Count();
-            }
-            string kontoNr = 3211 + "" + n; 
-            Models.Konto g = new Models.Konto();
-
-            g.kontoNr = kontoNr; 
-            g.saldo = 50;
-            g.kontoNavn = nyKundeInfo[0] + " " + nyKundeInfo[1]+ ": " + kontoNr; 
-            g.personNr = nyKundeInfo[2];
-            DBMetoder.registrerNyKonto(g);
-        }
-       
        // [HttpPost]
         public String tempTr(String[] infoliste)
         {
@@ -340,9 +253,12 @@ namespace Nettbanken.Controllers
             return oppdaterTabell(); 
 
         }
-        public void betal(string betalingNr)
+        public String betal()
         {
-
+            DBMetoder.registrerBetaling((List<string[]>)Session["tempTabell"], (String)Session["personnr"]);
+            var betalingerListe = (List<string[]>)Session["tempTabell"];
+            betalingerListe.Clear();//clear transaction buffer
+            return "<div>Det er ingen betaling som er lagt til</div>";
         }
         public String oppdaterTabell()
         {
