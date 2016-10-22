@@ -1,4 +1,6 @@
 ﻿@model Nettbanken.Models.Transaksjon
+   
+
 
 
 <!DOCTYPE html>
@@ -20,6 +22,12 @@
             {
                 $("#settKonto").click( $("#konto").val($("#kontoDropdown").val()) );
             }
+            $(document).ready(function() {
+                $('#leggTil').click(function() {
+
+                    $('#tempTabell').load('/Kunde/tempTr');    
+                });
+            });
         </script>
     </head>
 
@@ -45,7 +53,7 @@
                         <option>@konto</option>
                     }
                 </select>
-                @using (Html.BeginForm("transaksjonView", "Kunde", FormMethod.Post))
+                @using (Html.BeginForm("", "", FormMethod.Post))
                 {
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @Html.AntiForgeryToken()
@@ -53,18 +61,19 @@
                     <fieldset class="form-inline">
                         <div class="panel-body">
                             <span class="editor-lable">
-                                <!--skal ikke fylles av bruker---------------------->
                                 <span class="editor-lable">
                                     <b>@Html.LabelFor(model => model.fraKonto):</b>
                                 </span>
                                 <span ="editor-field" placeholder="@ViewBag.kontoer"></span>
                             </span>
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <!--skal ikke fylles av bruker---------------------->
                             <span class="editor-field">
                                 @Html.TextBoxFor(model => model.fraKonto, 
                                new { id = "konto", @readonly = "readonly" })
                                 @Html.ValidationMessageFor(model => model.fraKonto, "", new { @class = "text-danger" })
                             </span>
+                            <!------------------------------------------------------->
                             <br>
                             <br>
                             <span class="editor-lable">
@@ -112,13 +121,14 @@
                             <br>
                             <br>
                         </div>
-
+                                                                                     <!---->
                         <div class="panel-footer">
                             <p class="col-lg-2 col-lg-offset-4">
+                               
                                 <input type="button" class="btn btn-primary btn-lg" value="Tilbake" onclick="location.href='@Url.Action("hjemmesideView","Kunde")'" />
                             </p>
                             <p class="col-lg-2 col-lg-offset-4"
-                               ><input type="submit" value="Legg til" class="btn btn-primary btn-lg" />
+                               ><input type="button" id="leggTil" value="Legg til" class="btn btn-primary btn-lg" />
                             </p>
                         </div>
 
@@ -130,29 +140,9 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"><strong>Betalinger:</strong></h3>
                 </div>
-                <div class="panel-body">
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Betalingsdato:</th>
-                                <th>Mottaker:</th>
-                                <th>Beløp:</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Dato kommer hit</td>
-                                <td>mottakerskonto</td>
-                                <td>beløp her</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div id="tempTabell" class="panel-body">
+                    <!--tempTabell-->
+                    
                 </div>
                 <div class="panel-footer">
                     <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" href="#" role="button">Slett</a></p>

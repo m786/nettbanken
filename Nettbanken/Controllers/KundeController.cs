@@ -11,6 +11,9 @@ namespace Nettbanken.Controllers
     // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
+       private List<string[]> betalingerListe;
+        
+
         // Returnerer forsiden til Nettbanken
         public ActionResult forsideView()
         {
@@ -177,7 +180,7 @@ namespace Nettbanken.Controllers
         public ActionResult loggUt()
         {
             Session["innlogget"] = false;
-            Session["personnr"] = null;
+            Session["personnr"] = null; 
             Session["kontoer"] = null;
             return RedirectToAction("kundeLogginnView");
 
@@ -265,7 +268,7 @@ namespace Nettbanken.Controllers
                 }
             }
         }
-        ///////////////////////////DummyData////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         public static void opprettNyKontoVedNyKundeRegistrering(string[] nyKundeInfo) 
         {
             int n;
@@ -282,8 +285,46 @@ namespace Nettbanken.Controllers
             g.personNr = nyKundeInfo[2];
             DBMetoder.registrerNyKonto(g);
         }
+       
+       // [HttpPost]
+        public String tempTr(Models.Transaksjon tr)
+        {
+            String[] tempBetalingsDetaljer = new String[6]; 
+            //disse skal inn til DB hvis betal trykt. senere..
+            tempBetalingsDetaljer[0] = tr.fraKonto;
+            tempBetalingsDetaljer[1] = tr.tilKonto;
+            tempBetalingsDetaljer[2] = tr.saldoUt.ToString();
+            tempBetalingsDetaljer[3] = tr.KID;
+            tempBetalingsDetaljer[4] = tr.dato;
+            tempBetalingsDetaljer[5] = tr.melding;
+
+            if (betalingerListe == null)
+            {
+                betalingerListe = new List<string[]>();
+            }
+            betalingerListe.Add(tempBetalingsDetaljer);
+
+            String tempTable = "<table>" + "<tr>" + 
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
+                "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" + 
+                "</tr>";
+            for (var i =0; i< betalingerListe.Count;i++)
+            {
+                String[] tmp = betalingerListe.ElementAt(i);
+                tempTable +=
+                       "<tr>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
+                       "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
+                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2]+ "</td>" +
+                       "</tr>";
+            }
+            tempTable += "</table></div>";
+            return tempTable;//trenger å legge dette inn til div for tabellen med id=tempTabell
+        }
+        
 
     }
-    //feil melding
+    
    
 }
