@@ -242,7 +242,7 @@ namespace Nettbanken.Controllers
             betalingerListe.RemoveAt(Int32.Parse(betalingNr));
             return oppdaterTabell();
         }
-        '
+        
         public String endre(string betalingNr,string[] info)
         {
             var betalingerListe = (List<string[]>)Session["tempTabell"];
