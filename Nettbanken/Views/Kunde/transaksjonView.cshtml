@@ -105,7 +105,8 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"><strong>Betalingesdetalijer:</strong></h3>
                 </div>
-                <select id="kontoDropdown" onchange="settKonto();">
+                <label style="margin-left:1%;"><b>Velg konto:</b></label>
+                <select class="valg" id="kontoDropdown" onchange="settKonto();">
                     <option disbaled defaultSelected hidden>---Sett konto---</option>
                     @foreach (var konto in ViewBag.kontoer)
                     {
@@ -123,11 +124,11 @@
                                 <span class="editor-lable">
                                     <b>@Html.LabelFor(model => model.fraKonto):</b>
                                 </span>
-                                <span ="editor-field" placeholder="@ViewBag.kontoer"></span>
+                                <span placeholder="@ViewBag.kontoer"></span>
                             </span>
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <!--skal ikke fylles av bruker---------------------->
-                            <span class="editor-field">
+                            <span class="form-control">
                                 @Html.TextBoxFor(model => model.fraKonto,
                                     new { id = "konto", @readonly = "readonly" })
                                 @Html.ValidationMessageFor(model => model.fraKonto, "", new { @class = "text-danger" })
@@ -138,7 +139,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.tilKonto):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control2">
                                 @Html.EditorFor(model => model.tilKonto, new { id = "tilKonto" })
                                 @Html.ValidationMessageFor(model => model.tilKonto, "", new { @class = "text-danger" })
                             </span>
@@ -146,7 +147,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.saldoUt):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control3">
                                 @Html.EditorFor(model => model.saldoUt, new { id = "saldoUt" })
                                 @Html.ValidationMessageFor(model => model.saldoUt, "", new { @class = "text-danger" })
                             </span>
@@ -155,7 +156,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.KID):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control4">
                                 @Html.EditorFor(model => model.KID, new { id = "KID" })
                                 @Html.ValidationMessageFor(model => model.KID, "", new { @class = "text-danger" })
                             </span>
@@ -164,7 +165,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.dato):</b>
                             </span>
-                            <span>
+                            <span class="form-control5">
                                 @Html.TextBoxFor(model => model.dato,
                                          new { @class = "datepicker", id = "dato" })
                                 @Html.ValidationMessageFor(model => model.dato, "", new { @class = "text-danger" })
@@ -174,14 +175,14 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.melding)</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control6">
                                 @Html.EditorFor(model => model.melding, new { id = "melding" })
                             </span>
                             <br>
                             <br>
                         </div>
                         <!---->
-                        <div class="panel-footer">
+                        <div class="panel-footer1">
                             <p class="col-lg-2 col-lg-offset-4">
 
                                 <input type="button" class="btn btn-primary btn-lg" value="Tilbake" onclick="location.href='@Url.Action("hjemmesideView","Kunde")'" />
@@ -204,6 +205,7 @@
                     
                 </div>
                 <div class="panel-footer">
+
                     <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg"  id="slett" onclick="knapper('slett')" role="button">Slett</a>
                     <label for="slettB">Slett Betaling NR:</label><input id="slettB" type="text" ></p>
 
@@ -214,16 +216,6 @@
                 </div>
             </div>
         </div>
-
-        <footer class="text-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <p>Copyright Â© Nettbanken. All rights reserved.</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
 
     </body>
 </html>
