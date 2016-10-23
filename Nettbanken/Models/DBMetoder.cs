@@ -162,6 +162,24 @@ namespace Nettbanken.Models
 
         }
 
+        public static void registrerBetaling(List<string[]> betalingerTilDb, string pNr)
+        {
+            for (int i = 1; i < betalingerTilDb.Count(); i++)
+            {
+                Transaksjon t = new Transaksjon();
+                string[] rad = betalingerTilDb.ElementAt(i);
+                t.fraKonto = rad[0];
+                t.tilKonto = rad[1];
+                t.saldoUt = Int32.Parse(rad[2]);
+                t.KID = rad[3];
+                t.dato = rad[4];
+                t.melding = rad[5];
+                registrerTransaksjon(pNr, t);
+            }
+
+
+        }
+
         public static Transaksjon registrerTransaksjon(String personnr, Transaksjon t)
         {
             using (var db = new DbModell())
@@ -289,25 +307,9 @@ namespace Nettbanken.Models
             kontoUtskrift += "</table>";
             return kontoUtskrift;
         }
-        public static void registrerBetaling(List<string[]> betalingerTilDb,string pNr)
-        {
-              for(int i = 1; i<betalingerTilDb.Count();i++)
-            {
-                Transaksjon t = new Transaksjon();
-                string[] rad = betalingerTilDb.ElementAt(i);
-                t.fraKonto = rad[0];
-                t.tilKonto = rad[1];
-                t.saldoUt = Int32.Parse(rad[2]);
-                t.KID = rad[3];
-                t.dato = rad[4];
-                t.melding = rad[5]; 
-                registrerTransaksjon(pNr,t);
-            }
 
-            
-        }
+        // DUMMY DATA SEKSJON. BRUKES FOR Å OPPRETTE DUMMY DATA NÅR DATABASEN OPPRETTES PÅ NYTT
 
-        ///////////////////////////DummyData////////////////////////////////
         public static void dummyData()
         {
             string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi" };
@@ -377,7 +379,7 @@ namespace Nettbanken.Models
                 }
             }
         }
-        ////////////////////////////////////////////////////////////////////////////////
+
         public static void opprettNyKontoVedNyKundeRegistrering(string[] nyKundeInfo)
         {
             int n;
@@ -394,19 +396,6 @@ namespace Nettbanken.Models
             g.personNr = nyKundeInfo[2];
             DBMetoder.registrerNyKonto(g);
         }
-        /* @@@@@@@@@ CATCH METODE SOM FANGER OPP EN UNIK FEIL, IKKE SLETT@@@@@@@@@
-            catch (DbEntityValidationException dbEx)
-            {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        Trace.TraceInformation("Property: {0} Error: {1}",
-                            validationError.PropertyName,
-                            validationError.ErrorMessage);
-                    }
-                }
-             }
-        */
+
     }
 }

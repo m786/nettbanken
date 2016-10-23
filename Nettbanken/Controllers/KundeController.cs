@@ -235,12 +235,14 @@ namespace Nettbanken.Controllers
             tempTable += "</table>";
             return tempTable; 
         }
+
         public String slett(string betalingNr)
         {
             var betalingerListe = (List<string[]>)Session["tempTabell"];
             betalingerListe.RemoveAt(Int32.Parse(betalingNr));
             return oppdaterTabell();
         }
+        '
         public String endre(string betalingNr,string[] info)
         {
             var betalingerListe = (List<string[]>)Session["tempTabell"];
@@ -253,6 +255,7 @@ namespace Nettbanken.Controllers
             return oppdaterTabell(); 
 
         }
+
         public String betal()
         {
             DBMetoder.registrerBetaling((List<string[]>)Session["tempTabell"], (String)Session["personnr"]);
@@ -260,6 +263,7 @@ namespace Nettbanken.Controllers
             betalingerListe.Clear();//clear transaction buffer
             return "<div>Det er ingen betaling som er lagt til</div>";
         }
+
         public String oppdaterTabell()
         {
             var betalingerListe = (List<string[]>)Session["tempTabell"];
