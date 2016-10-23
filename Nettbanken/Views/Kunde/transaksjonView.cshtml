@@ -24,36 +24,64 @@
             }
             function leggtilTemp()
             {
+                // Henter data fra feltene og blanker dem ut
                 var fraKonto = $("#konto").val();
-                var tilKonto = $("#tilKonto").val();
-                var saldoUt = $("#saldoUt").val();
-                var KID = $("#KID").val();
-                var dato = $("#dato").val();
-                var melding = $("#melding").val();
+                var tilKonto = $("#tilKonto").val(); 
+                $("#tilKonto").val("");
+                var saldoUt = $("#saldoUt").val(); 
+                $("#saldoUt").val("");
+                var KID = $("#KID").val(); 
+                $("#KID").val("");
+                var dato = $("#dato").val(); 
+                $("#dato").val("");
+                var melding = $("#melding").val(); 
+                $("#melding").val("");
 
                 var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
                 $("#tempTabell").load("/Kunde/tempTr", {infoliste: info})
             }
             function knapper(id)
             {
-                switch(id) {
+                switch(id) 
+                {
                     case "betal":
+                        $("#endreB").val("");
+                        $("#slettB").val("");
+                        $("#tilKonto").val("");
+                        $("#saldoUt").val("");
+                        $("#KID").val("");
+                        $("#dato").val("");
+                        $("#melding").val("");
                         $("#tempTabell").load("/Kunde/betal"); 
                         break;
                     case "endre":
                         var endre = $("#endreB").val();
+                        $("#endreB").val("");
+                        $("#slettB").val("");
                         var fraKonto = $("#konto").val();
-                        var tilKonto = $("#tilKonto").val();
-                        var saldoUt = $("#saldoUt").val();
-                        var KID = $("#KID").val();
-                        var dato = $("#dato").val();
-                        var melding = $("#melding").val();
+                        var tilKonto = $("#tilKonto").val(); 
+                        $("#tilKonto").val("");
+                        var saldoUt = $("#saldoUt").val(); 
+                        $("#saldoUt").val("");
+                        var KID = $("#KID").val(); 
+                        $("#KID").val("");
+                        var dato = $("#dato").val(); 
+                        $("#dato").val("");
+                        var melding = $("#melding").val(); 
+                        $("#melding").val("");
 
                         var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
                         $("#tempTabell").load("/Kunde/endre",{betalingNr: endre,info: info}); 
                         break;
                     case "slett":
                         var slett = $("#slettB").val();
+                        $("#endreB").val("");
+                        $("#slettB").val("");
+                        $("#tilKonto").val("");
+                        $("#saldoUt").val("");
+                        $("#KID").val("");
+                        $("#dato").val("");
+                        $("#melding").val("");
                         $("#tempTabell").load("/Kunde/slett",{betalingNr: slett}); 
                         break;
                     default:
@@ -78,7 +106,7 @@
                     <h3 class="panel-title"><strong>Betalingesdetalijer:</strong></h3>
                 </div>
                 <select id="kontoDropdown" onchange="settKonto();">
-                    <option disbaled selected hidden>---Sett konto---</option>
+                    <option disbaled defaultSelected hidden>---Sett konto---</option>
                     @foreach (var konto in ViewBag.kontoer)
                     {
                         <option>@konto</option>
@@ -178,8 +206,10 @@
                 <div class="panel-footer">
                     <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg"  id="slett" onclick="knapper('slett')" role="button">Slett</a>
                     <label for="slettB">Slett Betaling NR:</label><input id="slettB" type="text" ></p>
+
                     <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg"  id="endre" onclick="knapper('endre')" role="button">Endre</a>
                     <label for="endreB">Endre Betaling NR:</label><input id="endreB" type="text" ></p>
+
                     <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg"  id="betal" onclick="knapper('betal')" role="button">Betal</a></p> 
                 </div>
             </div>

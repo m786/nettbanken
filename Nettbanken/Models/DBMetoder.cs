@@ -33,7 +33,7 @@ namespace Nettbanken.Models
         
         
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
-        public static String registrerKunde(Kunde kunde,bool erIkkeDummy) 
+        public static String registrerKunde(Kunde kunde) 
         {
            
             String OK = "";
@@ -66,7 +66,8 @@ namespace Nettbanken.Models
                     {
                         db.Kunder.Add(nyKunde);
                         db.SaveChanges();
-                       
+                        string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
+                        opprettNyKontoVedNyKundeRegistrering(kundeInfo);
                     }
                     catch (Exception feil)
                     {
@@ -81,30 +82,17 @@ namespace Nettbanken.Models
                     kunde.bankId = bankId; 
                     kunde.passord = krypterPassord(kunde.passord);
                     try
-                    {
-                       
+                    {               
                         db.Kunder.Add(kunde);
                         db.SaveChanges();
-                        if (erIkkeDummy)
-                        {
-                            string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
-                            opprettNyKontoVedNyKundeRegistrering(kundeInfo);
-                        }
+                        string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
+                        opprettNyKontoVedNyKundeRegistrering(kundeInfo);
                     }
-                    catch (DbEntityValidationException deve)
+                    catch (Exception feil)
                     {
-                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + deve.Message;
-                        //skriv ut feilen spesifikt
-                        foreach (var validationErrors in deve.EntityValidationErrors)
-                        {
-                            foreach (var validationError in validationErrors.ValidationErrors)
-                            {
-                                Trace.TraceInformation("Property: {0} Error: {1}",
-                                                        validationError.PropertyName,
-                                                        validationError.ErrorMessage);
-                            }
-                        }
+                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message;
                     }
+
                 }
              
             }
@@ -159,24 +147,6 @@ namespace Nettbanken.Models
 
                 return false;
             }
-
-        }
-
-        public static void registrerBetaling(List<string[]> betalingerTilDb, string pNr)
-        {
-            for (int i = 1; i < betalingerTilDb.Count(); i++)
-            {
-                Transaksjon t = new Transaksjon();
-                string[] rad = betalingerTilDb.ElementAt(i);
-                t.fraKonto = rad[0];
-                t.tilKonto = rad[1];
-                t.saldoUt = Int32.Parse(rad[2]);
-                t.KID = rad[3];
-                t.dato = rad[4];
-                t.melding = rad[5];
-                registrerTransaksjon(pNr, t);
-            }
-
 
         }
 
@@ -342,7 +312,7 @@ namespace Nettbanken.Models
                 k.telefonNr = tlf + "";
                 k.postNr = p.postNr = postNr + "";
                 k.poststed = p;
-                DBMetoder.registrerKunde(k, false);
+                DBMetoder.registrerKunde(k);
                 s.kontoNr = "" + konNr;
                 s.saldo = 500;
                 s.kontoNavn = k.fornavn + " " + k.etternavn + ": " + konNr;
@@ -388,7 +358,7 @@ namespace Nettbanken.Models
                 n = db.Kunder.Count();
             }
             string kontoNr = 3211 + "" + n;
-            Models.Konto g = new Models.Konto();
+            Konto g = new Konto();
 
             g.kontoNr = kontoNr;
             g.saldo = 50;

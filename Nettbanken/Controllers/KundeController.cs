@@ -18,7 +18,7 @@ namespace Nettbanken.Controllers
         public ActionResult forsideView()
         {
             var db = new Models.DbModell();
-          try
+            try
             {
                 var enDbKunde = db.Kunder.First();
             }
@@ -57,7 +57,7 @@ namespace Nettbanken.Controllers
             if (ModelState.IsValid)//valider 
             {
                 String OK;
-                OK = Models.DBMetoder.registrerKunde(kunde,true); 
+                OK = Models.DBMetoder.registrerKunde(kunde); 
 
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
                 if (OK == "")
@@ -159,9 +159,9 @@ namespace Nettbanken.Controllers
 
             return RedirectToAction("forsideView");
         }
-
+        
         [HttpPost]
-        public ActionResult transaksjonView(Models.Transaksjon transaksjon)
+        public ActionResult transaksjonView(Transaksjon transaksjon)
         {
             // Siden kan kun vises dersom man er innlogget
             if (Session["innlogget"] != null)
@@ -174,7 +174,7 @@ namespace Nettbanken.Controllers
 
                     ViewBag.kontoer = kontoer;
                     ViewBag.personnr = personnr;
-                    Models.Transaksjon t = Models.DBMetoder.registrerTransaksjon(personnr, transaksjon);
+                    Transaksjon t = DBMetoder.registrerTransaksjon(personnr, transaksjon);
                     return RedirectToAction("hjemmesideView");
                 }
                 return RedirectToAction("kundeLogginnView");
@@ -182,7 +182,7 @@ namespace Nettbanken.Controllers
 
             return RedirectToAction("forsideView");
         }
-
+        
         // Metode for utlogging
         public ActionResult loggUt()
         {
@@ -205,7 +205,6 @@ namespace Nettbanken.Controllers
             return Models.DBMetoder.hentKontoUtskrift(kontonavn, personnr);
         }
 
-       // [HttpPost]
         public String tempTr(String[] infoliste)
         {
             // Session ble intialisert ved innlogging
@@ -242,25 +241,40 @@ namespace Nettbanken.Controllers
             betalingerListe.RemoveAt(Int32.Parse(betalingNr));
             return oppdaterTabell();
         }
-        '
+        
         public String endre(string betalingNr,string[] info)
         {
             var betalingerListe = (List<string[]>)Session["tempTabell"];
             string[] endreRad = betalingerListe.ElementAt(Int32.Parse(betalingNr));
 
-            for(int i=0;i<endreRad.Count()-1;i++)
+            for(int i=0;i<endreRad.Count();i++)
             {
                 endreRad[i] = info[i]; 
             }
-            return oppdaterTabell(); 
 
+            return oppdaterTabell(); 
         }
 
         public String betal()
         {
-            DBMetoder.registrerBetaling((List<string[]>)Session["tempTabell"], (String)Session["personnr"]);
+            var betalingerTilDB = (List<string[]>)Session["tempTabell"];
+            var pNr = (string)Session["personnr"];
+
+            for (int i = 1; i < betalingerTilDB.Count(); i++)
+            {
+                Transaksjon t = new Transaksjon();
+                string[] rad = betalingerTilDB.ElementAt(i);
+                t.fraKonto = rad[0];
+                t.tilKonto = rad[1];
+                t.saldoUt = Int32.Parse(rad[2]);
+                t.KID = rad[3];
+                t.dato = rad[4];
+                t.melding = rad[5];
+                DBMetoder.registrerTransaksjon(pNr, t);
+            }
+
             var betalingerListe = (List<string[]>)Session["tempTabell"];
-            betalingerListe.Clear();//clear transaction buffer
+            betalingerListe.Clear(); //clear transaction buffer
             return "<div>Det er ingen betaling som er lagt til</div>";
         }
 
