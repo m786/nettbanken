@@ -1,9 +1,11 @@
-﻿using Nettbanken.Models;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Nettbanken.BLL;
+using Nettbanken.Models;
 
 namespace Nettbanken.Controllers
 {
@@ -15,16 +17,11 @@ namespace Nettbanken.Controllers
         public ActionResult forsideView()
         {
             // Tester om det er data i databasen, hvis ikke opprettes dummydata
-            var db = new Models.DbModell();
-            try
-            {
-                var enDbKunde = db.Kunder.First();
-            }
-            catch(Exception e)
-            {
-                DBMetoder.dummyData();  
-            }
+            var nettbankenBLL = new NettbankBLL();
+            nettbankenBLL.startsjekk();
+            
             // Sjekker om session finnes, hvis ikke så settes den
+
             if (Session["innlogget"] == null)
             {
                 Session["innlogget"] = false;
@@ -48,14 +45,14 @@ namespace Nettbanken.Controllers
         // View som brukes når kunde registrer seg
         // Pga oppsett i view, så returnerer det et objekt av kunde.
         [HttpPost]
-        public ActionResult kundeRegistreringView(Models.Kunde kunde)
+        public ActionResult kundeRegistreringView(Kunde kunde)
         {
             ModelState.Remove("bankId");
             ModelState.Remove("postNr"); 
             if (ModelState.IsValid)//valider 
             {
-                String OK;
-                OK = DBMetoder.registrerKunde(kunde); 
+                var nettbankBLL = new NettbankBLL();
+                String OK = nettbankBLL.registrerKunde(kunde);
 
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
                 if (OK == "")
@@ -96,8 +93,9 @@ namespace Nettbanken.Controllers
 
             if (ModelState.IsValid)//formValider
             {
+                var nettbankBLL = new NettbankBLL();
                 // if-setning sjekker om kunden finnes i databasen
-                if (DBMetoder.kundeLogginn(kunde)) 
+                if (nettbankBLL.kundeLogginn(kunde)) 
                 {
                     Session["innlogget"] = true;
 
@@ -110,7 +108,7 @@ namespace Nettbanken.Controllers
    
                     Session["personnr"] = kunde.personNr;
                     // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
-                    Session["kontoer"] = DBMetoder.hentKontoer(personnr);
+                    Session["kontoer"] = nettbankBLL.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
 
                     return RedirectToAction("hjemmesideView");
@@ -187,13 +185,15 @@ namespace Nettbanken.Controllers
         // Kaller på metode som henter konto informasjon
         public String hentKontoInformasjon(String kontonavn, String personnr)
         {
-            return DBMetoder.hentKontoInformasjon(kontonavn, personnr);
+            var nettbankBLL = new NettbankBLL();
+            return nettbankBLL.hentKontoInformasjon(kontonavn, personnr);
         }
 
         // Kaller på metode som henter gitt kontoutskrift
         public String hentKontoUtskrift(String kontonavn, String personnr)
         {
-            return DBMetoder.hentKontoUtskrift(kontonavn, personnr);
+            var nettbankBLL = new NettbankBLL();
+            return nettbankBLL.hentKontoUtskrift(kontonavn, personnr);
         }
 
         // Metode som legger til en transaksjon temporert
@@ -267,6 +267,7 @@ namespace Nettbanken.Controllers
         // Betaler alle temporære betalinger
         public String betal()
         {
+            var nettbankBLL = new NettbankBLL();
             var betalingsListe = (List<String[]>)Session["tempTabell"];
             if (betalingsListe.Count > 1)
             {
@@ -280,7 +281,7 @@ namespace Nettbanken.Controllers
                     t.KID = rad[3];
                     t.dato = rad[4];
                     t.melding = rad[5];
-                    DBMetoder.registrerTransaksjon(t);
+                    nettbankBLL.registrerTransaksjon(t);
                 }
 
                 betalingsListe.Clear(); //clear transaction buffer

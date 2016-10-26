@@ -1,19 +1,18 @@
-﻿using Nettbanken.Controllers;
+﻿
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
+using Nettbanken.Models;
 
-namespace Nettbanken.Models
+namespace Nettbanken.DAL
 {
-    public class DBMetoder
+    public class NettbankDAL
     {
        private static int bankId = 0;
 
         // Metode for kryptering av passord
-        private static String krypterPassord(String passord)
+        public static String krypterPassord(String passord)
         {
             String innPassord, utPassord;
             byte[] inndata, utdata;
@@ -33,25 +32,25 @@ namespace Nettbanken.Models
         
         
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
-        public static String registrerKunde(Kunde kunde) 
+        public String registrerKunde(Kunde kunde) 
         {         
             String OK = "";
 
             // Oppretter Database connection
-            using (var db = new DbModell())
+            using (var db = new DBContext())
             {
                 int bid = db.Kunder.Count(); 
                 bid += 1;
                 String bankId = bid + "";
                 string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
                 // Sjekker om postnr og poststed allerede finnes
-                bool finnes = db.Poststeder.Any(p => p.postNr == kunde.poststed.postNr);
+                bool finnes = db.Poststeder.Any(p => p.postNr == kunde.postNr);
 
                 // Om postnr og poststed finnes så opprettes en ny kunde 
                 // uten noe i Poststed klasse-attributett til kunden
                 if (finnes)
                 {
-                    var nyKunde = new Kunde
+                    var nyKunde = new KundeDB
                     {
                         bankId = bankId,
                         personNr = kunde.personNr,
@@ -60,7 +59,7 @@ namespace Nettbanken.Models
                         etternavn = kunde.etternavn,
                         adresse = kunde.adresse,
                         telefonNr = kunde.telefonNr,
-                        postNr = kunde.poststed.postNr
+                        postNr = kunde.postNr
                     };
 
                     try
@@ -79,11 +78,27 @@ namespace Nettbanken.Models
                 // legger inne kunden og oppretter en ny rad i Poststeder
                 else
                 {
-                    kunde.bankId = bankId; 
-                    kunde.passord = krypterPassord(kunde.passord);
+                    var nyKunde = new KundeDB
+                    {
+                        bankId = bankId,
+                        personNr = kunde.personNr,
+                        passord = krypterPassord(kunde.passord),
+                        fornavn = kunde.fornavn,
+                        etternavn = kunde.etternavn,
+                        adresse = kunde.adresse,
+                        telefonNr = kunde.telefonNr,
+                        postNr = kunde.postNr
+                    };
+
+                    var nyPoststed = new PoststedDB
+                    {
+                        postNr = kunde.postNr,
+                        poststed = kunde.poststed
+                    };
                     try
-                    {               
-                        db.Kunder.Add(kunde);
+                    {
+                        nyKunde.poststed = nyPoststed;
+                        db.Kunder.Add(nyKunde);
                         db.SaveChanges();
                         opprettStandardkonto(kundeInfo);
                     }
@@ -101,16 +116,16 @@ namespace Nettbanken.Models
         }
 
         //Konto registrering: opprette konto for kunder samtidig som di registreres!
-        public static bool registrerNyKonto(Konto nyk)
+        public bool registrerNyKonto(Konto nykonto)
         {
-            using (var db = new DbModell())
+            using (var db = new DBContext())
             {
-                var nyKonto = new Konto()
+                var nyKonto = new KontoDB()
                 {
-                    kontoNr = nyk.kontoNr,
-                    saldo = nyk.saldo,
-                    kontoNavn = nyk.kontoNavn, 
-                    personNr = nyk.personNr
+                    kontoNr = nykonto.kontoNr,
+                    saldo = nykonto.saldo,
+                    kontoNavn = nykonto.kontoNavn, 
+                    personNr = nykonto.personNr
                 };
                 try
                 {
@@ -130,12 +145,12 @@ namespace Nettbanken.Models
         // Innloggingsmetode for kunder
         public static Boolean kundeLogginn(Kunde kunde)
         {
-            using (var db = new DbModell())
+            using (var db = new DBContext())
             {
                 // krypterer det gitte passordet 
                 // og sjekker oppgitte personnr og passord mot database
                 String passord = krypterPassord(kunde.passord);
-                Kunde fantKunde = db.Kunder.FirstOrDefault
+                KundeDB fantKunde = db.Kunder.FirstOrDefault
                     (k => k.personNr == kunde.personNr && k.passord == passord && k.bankId == kunde.bankId);
 
                 if (fantKunde != null)
@@ -148,19 +163,32 @@ namespace Nettbanken.Models
 
         }
 
-        public static Transaksjon registrerTransaksjon(Transaksjon transaksjon)
+        public Transaksjon registrerTransaksjon(Transaksjon transaksjon)
         {
-            using (var db = new DbModell())
+            using (var db = new DBContext())
             {
-                Konto funnetKonto = db.Kontoer.FirstOrDefault(k => k.kontoNavn == transaksjon.fraKonto);
+                KontoDB funnetKonto = db.Kontoer.FirstOrDefault(k => k.kontoNavn == transaksjon.fraKonto);
                 if (funnetKonto != null)
                 {
                     transaksjon.status = "Midlertidig Status";
                     transaksjon.saldoInn = 0;
-                    transaksjon.konto = funnetKonto;
+
+                    var nytransaksjon = new TransaksjonDB()
+                    {
+                        status = transaksjon.status,
+                        saldoInn = transaksjon.saldoInn,
+                        saldoUt = transaksjon.saldoUt,
+                        dato = transaksjon.dato,
+                        KID = transaksjon.KID,
+                        fraKonto = transaksjon.fraKonto,
+                        tilKonto = transaksjon.tilKonto,
+                        melding = transaksjon.melding,
+                        konto = funnetKonto
+                    };
+                    
                     try
                     {
-                        db.Transaksjoner.Add(transaksjon);
+                        db.Transaksjoner.Add(nytransaksjon);
                         db.SaveChanges();
                         return transaksjon;
                     }
@@ -174,11 +202,11 @@ namespace Nettbanken.Models
         }
 
         // Henter alle kontoer som tilhører gitt personnr
-        public static List<String> hentKontoer(String personnr)
+        public List<String> hentKontoer(String personnr)
         {
             var kontoer = new List<String>();
 
-            using (var db = new Models.DbModell())
+            using (var db = new DBContext())
             {
                 // henter alle kontoer
                 var tmp = db.Kontoer.ToList();
@@ -196,7 +224,7 @@ namespace Nettbanken.Models
         }
 
         // Meetode som lager tabellen for konto informasjon
-        public static String hentKontoInformasjon(String kontonavn, String personnr)
+        public String hentKontoInformasjon(String kontonavn, String personnr)
         {
             String kontoInformasjon =
                 "<p><h3>Konto informasjon</h3></p>" +
@@ -208,7 +236,7 @@ namespace Nettbanken.Models
                 "</tr>";
 
             // Finner korrekt konto og kunde
-            using (var db = new DbModell())
+            using (var db = new DBContext())
             {
                 var info = db.Kontoer.Where(k => k.kontoNavn == kontonavn && k.personNr == personnr);
                 foreach (var i in info)
@@ -227,7 +255,7 @@ namespace Nettbanken.Models
         }
 
         // Metode som lager tabell for kontoutskrifter
-        public static String hentKontoUtskrift(String kontonavn, String personnr) 
+        public String hentKontoUtskrift(String kontonavn, String personnr) 
         {
             String kontoUtskrift =                        
                 "<p><h3>Konto utskrift</h3></p>" +
@@ -244,7 +272,7 @@ namespace Nettbanken.Models
                 "</tr>";
 
             // Finner riktig konto og kunde
-            using (var db = new DbModell())
+            using (var db = new DBContext())
             {
                 var transaksjoner = db.Transaksjoner.Where(t => t.konto.kontoNavn == kontonavn && t.konto.personNr == personnr);
                 foreach (var t in transaksjoner)
@@ -267,8 +295,21 @@ namespace Nettbanken.Models
             return kontoUtskrift;
         }
 
-        // DUMMY DATA SEKSJON. BRUKES FOR Å OPPRETTE DUMMY DATA NÅR DATABASEN OPPRETTES PÅ NYTT
+        public void startsjekk()
+        {
+            var db = new DBContext();
+            try
+            {
+                var enDbKunde = db.Kunder.First();
+            }
+            catch (Exception e)
+            {
+                dummyData();
+            }
+        }
 
+
+        // Oppretter dummy data dersom databasen er tom
         public static void dummyData()
         {
             string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi" };
@@ -277,84 +318,117 @@ namespace Nettbanken.Models
             string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3" };
 
             int pernr = 011189211, tlf = 555555, konNr = 12345, postNr = 6789;
-            Kunde k;
-            Poststed p;
-            Konto s;
+            KundeDB k;
+            PoststedDB p;
+            KontoDB s;
 
-            for (var i = 0; i < fornavn.Length; i++)
+            using (var db = new DBContext())
             {
-                pernr += i;
-                tlf += 1;
-                konNr += 1;
-                postNr += 1;
-
-                k = new Kunde();
-                p = new Poststed();
-                s = new Konto();
-
-                p.poststed = poststed[i];
-                k.personNr = pernr + "";
-                k.passord = "dummypassord";
-                k.fornavn = fornavn[i];
-                k.etternavn = etternavn[i];
-                k.adresse = adresse[i];
-                k.telefonNr = tlf + "";
-                k.postNr = p.postNr = postNr + "";
-                k.poststed = p;
-                DBMetoder.registrerKunde(k);
-                s.kontoNr = "" + konNr;
-                s.saldo = 500;
-                s.kontoNavn = k.fornavn + " " + k.etternavn + ": " + konNr;
-                s.personNr = k.personNr;
-                DBMetoder.registrerNyKonto(s);
-
-                if (i == fornavn.Length - 1)
+                for (var i = 0; i < fornavn.Length; i++)
                 {
-                    konNr += i;
-                    //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
-                    Models.Konto e = new Models.Konto();
-                    e.kontoNr = "" + konNr;
-                    e.saldo = 50;
-                    e.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
-                    e.personNr = 11189211 + "";
-                    DBMetoder.registrerNyKonto(e);
+                    pernr += i;
+                    tlf += 1;
+                    konNr += 1;
+                    postNr += 1;
 
-                    konNr += i;
-                    Models.Konto f = new Models.Konto();
-                    f.kontoNr = "" + konNr;
-                    f.saldo = 400;
-                    f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
-                    f.personNr = 11189211 + "";
+                    k = new KundeDB();
+                    p = new PoststedDB();
+                    s = new KontoDB();
 
-                    DBMetoder.registrerNyKonto(f);
+                    p.poststed = poststed[i];
+                    k.personNr = pernr + "";
+                    k.passord = "dummypassord";
+                    k.fornavn = fornavn[i];
+                    k.etternavn = etternavn[i];
+                    k.adresse = adresse[i];
+                    k.telefonNr = tlf + "";
+                    k.postNr = p.postNr = postNr + "";
+                    k.poststed = p;
 
-                    konNr += i;
-                    Models.Konto g = new Models.Konto();
-                    g.kontoNr = "" + konNr;
-                    g.saldo = 50;
-                    g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
-                    g.personNr = 11189212 + "";
-                    DBMetoder.registrerNyKonto(g);
+                    s.kontoNr = "" + konNr;
+                    s.saldo = 500;
+                    s.kontoNavn = k.fornavn + " " + k.etternavn + ": " + konNr;
+                    s.personNr = k.personNr;
+
+                    try
+                    {
+                        db.Kunder.Add(k);
+                        db.Kontoer.Add(s);
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+
+                    if (i == fornavn.Length - 1)
+                    {
+                        konNr += i;
+                        //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
+                        KontoDB e = new KontoDB();
+                        e.kontoNr = "" + konNr;
+                        e.saldo = 50;
+                        e.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
+                        e.personNr = 11189211 + "";
+
+                        konNr += i;
+                        KontoDB f = new KontoDB();
+                        f.kontoNr = "" + konNr;
+                        f.saldo = 400;
+                        f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
+                        f.personNr = 11189211 + "";
+
+                        konNr += i;
+                        KontoDB g = new KontoDB();
+                        g.kontoNr = "" + konNr;
+                        g.saldo = 50;
+                        g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
+                        g.personNr = 11189212 + "";
+
+                        try
+                        {
+                            db.Kontoer.Add(e);
+                            db.Kontoer.Add(f);
+                            db.Kontoer.Add(g);
+                        }
+                        catch (Exception x)
+                        {
+                      
+                        }      
+                    }
+
+                }
+            }
+
+        }
+
+        public void opprettStandardkonto(string[] nyKundeInfo)
+        {
+            int n;
+            using (var db = new DBContext())
+            {
+                n = db.Kunder.Count();
+                string kontonr = 3211 + "" + n;
+
+                var nykonto = new KontoDB()
+                {
+                    kontoNr = kontonr,
+                    saldo = 50,
+                    kontoNavn = nyKundeInfo[0] + " " + nyKundeInfo[1] + ": " + kontonr,
+                    personNr = nyKundeInfo[2],
+                };
+
+                try
+                {
+                    db.Kontoer.Add(nykonto);
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+
                 }
             }
         }
 
-        public static void opprettStandardkonto(string[] nyKundeInfo)
-        {
-            int n;
-            using (var db = new DbModell())
-            {
-                n = db.Kunder.Count();
-            }
-            string kontoNr = 3211 + "" + n;
-            Konto g = new Konto();
-
-            g.kontoNr = kontoNr;
-            g.saldo = 50;
-            g.kontoNavn = nyKundeInfo[0] + " " + nyKundeInfo[1] + ": " + kontoNr;
-            g.personNr = nyKundeInfo[2];
-            DBMetoder.registrerNyKonto(g);
-        }
 
     }
 }

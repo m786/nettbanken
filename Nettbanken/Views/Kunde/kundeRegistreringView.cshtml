@@ -66,8 +66,16 @@
                                 @Html.EditorFor(model => model.telefonNr)
                                 @Html.ValidationMessageFor(model => model.telefonNr, "", new { @class = "text-danger" })
                             </div>
-                            <!--Spesial tilfelle her. Vi trenger kun å kalle på Poststed klassen
-                                for å få både label og editor field for postnr og poststed-->
+                            <div class="editor-lable">
+                                @Html.LabelFor(model => model.postNr)
+                            </div>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.postNr)
+                                @Html.ValidationMessageFor(model => model.postNr, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="editor-lable">
+                                @Html.LabelFor(model => model.poststed)
+                            </div>
                             <div class="editor-field">
                                 @Html.EditorFor(model => model.poststed)
                                 @Html.ValidationMessageFor(model => model.poststed, "", new { @class = "text-danger" })
