@@ -34,8 +34,7 @@ namespace Nettbanken.Models
         
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
         public static String registrerKunde(Kunde kunde) 
-        {
-           
+        {         
             String OK = "";
 
             // Oppretter Database connection
@@ -44,8 +43,10 @@ namespace Nettbanken.Models
                 int bid = db.Kunder.Count(); 
                 bid += 1;
                 String bankId = bid + "";
+                string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
                 // Sjekker om postnr og poststed allerede finnes
                 bool finnes = db.Poststeder.Any(p => p.postNr == kunde.poststed.postNr);
+
                 // Om postnr og poststed finnes så opprettes en ny kunde 
                 // uten noe i Poststed klasse-attributett til kunden
                 if (finnes)
@@ -66,8 +67,7 @@ namespace Nettbanken.Models
                     {
                         db.Kunder.Add(nyKunde);
                         db.SaveChanges();
-                        string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
-                        opprettNyKontoVedNyKundeRegistrering(kundeInfo);
+                        opprettStandardkonto(kundeInfo);
                     }
                     catch (Exception feil)
                     {
@@ -85,8 +85,7 @@ namespace Nettbanken.Models
                     {               
                         db.Kunder.Add(kunde);
                         db.SaveChanges();
-                        string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
-                        opprettNyKontoVedNyKundeRegistrering(kundeInfo);
+                        opprettStandardkonto(kundeInfo);
                     }
                     catch (Exception feil)
                     {
@@ -112,7 +111,6 @@ namespace Nettbanken.Models
                     saldo = nyk.saldo,
                     kontoNavn = nyk.kontoNavn, 
                     personNr = nyk.personNr
-
                 };
                 try
                 {
@@ -150,25 +148,16 @@ namespace Nettbanken.Models
 
         }
 
-        public static Transaksjon registrerTransaksjon(String personnr, Transaksjon t)
+        public static Transaksjon registrerTransaksjon(Transaksjon transaksjon)
         {
             using (var db = new DbModell())
             {
-                Konto funnetKonto = db.Kontoer.FirstOrDefault(k => k.kontoNavn == t.fraKonto);
+                Konto funnetKonto = db.Kontoer.FirstOrDefault(k => k.kontoNavn == transaksjon.fraKonto);
                 if (funnetKonto != null)
                 {
-                    var transaksjon = new Transaksjon()
-                    {
-                        status = "Midlertidig Status",
-                        saldoInn = 0,
-                        saldoUt = t.saldoUt,
-                        dato = t.dato,
-                        KID = t.KID,
-                        fraKonto = funnetKonto.kontoNr,
-                        tilKonto = t.tilKonto,
-                        melding = t.melding,
-                        konto = funnetKonto
-                    };
+                    transaksjon.status = "Midlertidig Status";
+                    transaksjon.saldoInn = 0;
+                    transaksjon.konto = funnetKonto;
                     try
                     {
                         db.Transaksjoner.Add(transaksjon);
@@ -288,9 +277,9 @@ namespace Nettbanken.Models
             string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3" };
 
             int pernr = 011189211, tlf = 555555, konNr = 12345, postNr = 6789;
-            Models.Kunde k;
-            Models.Poststed p;
-            Models.Konto s;
+            Kunde k;
+            Poststed p;
+            Konto s;
 
             for (var i = 0; i < fornavn.Length; i++)
             {
@@ -299,13 +288,13 @@ namespace Nettbanken.Models
                 konNr += 1;
                 postNr += 1;
 
-                k = new Models.Kunde();
-                p = new Models.Poststed();
-                s = new Models.Konto();
+                k = new Kunde();
+                p = new Poststed();
+                s = new Konto();
 
                 p.poststed = poststed[i];
                 k.personNr = pernr + "";
-                k.passord = "asdfasdf";
+                k.passord = "dummypassord";
                 k.fornavn = fornavn[i];
                 k.etternavn = etternavn[i];
                 k.adresse = adresse[i];
@@ -350,7 +339,7 @@ namespace Nettbanken.Models
             }
         }
 
-        public static void opprettNyKontoVedNyKundeRegistrering(string[] nyKundeInfo)
+        public static void opprettStandardkonto(string[] nyKundeInfo)
         {
             int n;
             using (var db = new DbModell())

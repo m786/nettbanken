@@ -1,8 +1,5 @@
 ﻿@model Nettbanken.Models.Transaksjon
    
-
-
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,11 +10,9 @@
         <link href="~/Content/Transaksjon_bootstrap1.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript">
-            // Metode som oppdaterer tabell med korrekt info
-            function printUtskrift()
-            {
-                $("#kontoInformasjon").load("/Kunde/hentKontoInformasjon", { kontonavn: $("#kontoDropdown").val(), personnr: @ViewBag.personnr });
-            }
+            $(document).ready(function () {
+                $("#datoui").datepicker({ dateFormat: 'dd/mm/yy' });
+            });
             function settKonto()
             {
                 $("#settKonto").click( $("#konto").val($("#kontoDropdown").val()) );
@@ -38,7 +33,7 @@
                 $("#melding").val("");
 
                 var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
-                $("#tempTabell").load("/Kunde/tempTr", {infoliste: info})
+                $("#tempTabell").load("/Kunde/tempTransaksjon", {infoliste: info})
             }
             function knapper(id)
             {
@@ -95,9 +90,8 @@
             <div class="container-fluid">
                 <div class="navbar-header">
                     <img src="~/Content/images/nettbanken.png" width="200px">
-
                 </div>
-                <!-- /.container-fluid -->
+            </div>
         </nav>
 
         <div class="container">
@@ -113,6 +107,7 @@
                         <option>@konto</option>
                     }
                 </select>
+
                 @using (Html.BeginForm("", "", FormMethod.Post))
                 {
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -120,15 +115,12 @@
 
                     <fieldset class="form-inline">
                         <div class="panel-body">
-                            <span class="editor-lable">
-                                <span class="editor-lable">
-                                    <b>@Html.LabelFor(model => model.fraKonto):</b>
-                                </span>
-                                <span placeholder="@ViewBag.kontoer"></span>
-                            </span>
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <!--skal ikke fylles av bruker---------------------->
-                            <span class="form-control">
+                            <span class="editor-lable">
+                                <b>@Html.LabelFor(model => model.fraKonto):</b>
+                            </span>
+                            <span class="editor-field">
                                 @Html.TextBoxFor(model => model.fraKonto,
                                     new { id = "konto", @readonly = "readonly" })
                                 @Html.ValidationMessageFor(model => model.fraKonto, "", new { @class = "text-danger" })
@@ -139,7 +131,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.tilKonto):</b>
                             </span>
-                            <span class="form-control2">
+                            <span class="editor-field">
                                 @Html.EditorFor(model => model.tilKonto, new { id = "tilKonto" })
                                 @Html.ValidationMessageFor(model => model.tilKonto, "", new { @class = "text-danger" })
                             </span>
@@ -147,7 +139,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.saldoUt):</b>
                             </span>
-                            <span class="form-control3">
+                            <span class="editor-field">
                                 @Html.EditorFor(model => model.saldoUt, new { id = "saldoUt" })
                                 @Html.ValidationMessageFor(model => model.saldoUt, "", new { @class = "text-danger" })
                             </span>
@@ -156,7 +148,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.KID):</b>
                             </span>
-                            <span class="form-control4">
+                            <span class="editor-field">
                                 @Html.EditorFor(model => model.KID, new { id = "KID" })
                                 @Html.ValidationMessageFor(model => model.KID, "", new { @class = "text-danger" })
                             </span>
@@ -165,17 +157,16 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.dato):</b>
                             </span>
-                            <span class="form-control5">
-                                @Html.TextBoxFor(model => model.dato,
-                                         new { @class = "datepicker", id = "dato" })
-                                @Html.ValidationMessageFor(model => model.dato, "", new { @class = "text-danger" })
+                            <span class="editor-field">                          
+                               @Html.EditorFor(model => model.dato, new { id = "datoui" })
+                               @Html.ValidationMessageFor(model => model.dato, "", new { @class = "text-danger" })                                
                             </span>
                             <br>
                             <br>
                             <span class="editor-lable">
-                                <b>@Html.LabelFor(model => model.melding)</b>
+                                <b>@Html.LabelFor(model => model.melding):</b>
                             </span>
-                            <span class="form-control6">
+                            <span class="editor-field">
                                 @Html.EditorFor(model => model.melding, new { id = "melding" })
                             </span>
                             <br>
@@ -191,7 +182,6 @@
                                 <input type="button" id="leggTil" value="Legg til" class="btn btn-primary btn-lg" onclick="leggtilTemp()" />
                             </p>
                         </div>
-
                     </fieldset>
                 }
             </div>
@@ -202,7 +192,7 @@
                 </div>
                 <div id="tempTabell" class="panel-body">
                     <!--tempTabell-->
-                    
+                    <p><b>Betalinger legges til her!</b></p>
                 </div>
                 <div class="panel-footer">
 
@@ -215,7 +205,6 @@
                     <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg"  id="betal" onclick="knapper('betal')" role="button">Betal</a></p> 
                 </div>
             </div>
-        </div>
-
+        
     </body>
 </html>

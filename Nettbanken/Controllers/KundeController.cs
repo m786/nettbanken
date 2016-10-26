@@ -11,12 +11,10 @@ namespace Nettbanken.Controllers
     // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
-       
-        
-
         // Returnerer forsiden til Nettbanken
         public ActionResult forsideView()
         {
+            // Tester om det er data i databasen, hvis ikke opprettes dummydata
             var db = new Models.DbModell();
             try
             {
@@ -24,7 +22,7 @@ namespace Nettbanken.Controllers
             }
             catch(Exception e)
             {
-                DBMetoder.dummyData(); // opprett dummy data  
+                DBMetoder.dummyData();  
             }
             // Sjekker om session finnes, hvis ikke så settes den
             if (Session["innlogget"] == null)
@@ -57,7 +55,7 @@ namespace Nettbanken.Controllers
             if (ModelState.IsValid)//valider 
             {
                 String OK;
-                OK = Models.DBMetoder.registrerKunde(kunde); 
+                OK = DBMetoder.registrerKunde(kunde); 
 
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
                 if (OK == "")
@@ -87,7 +85,7 @@ namespace Nettbanken.Controllers
         
         // View som brukes når kunde prøver å logge inn
         [HttpPost]
-        public ActionResult kundeLogginnView(Models.Kunde kunde)
+        public ActionResult kundeLogginnView(Kunde kunde)
         {
             //property som ikke trenger vare med valideringen for innlogging
             ModelState.Remove("fornavn");
@@ -95,27 +93,30 @@ namespace Nettbanken.Controllers
             ModelState.Remove("adresse");
             ModelState.Remove("telefonNr");
             ModelState.Remove("postNr");
+
             if (ModelState.IsValid)//formValider
             {
                 // if-setning sjekker om kunden finnes i databasen
-                if (Models.DBMetoder.kundeLogginn(kunde)) 
+                if (DBMetoder.kundeLogginn(kunde)) 
                 {
                     Session["innlogget"] = true;
 
-                    String personnr = kunde.personNr;
                     // Initialiserer betalingsListe, trenger en verdi hvis ikke gir det en error ved oppstart
                     var betalingsListe = new List<String[]>();
                     String[] temp = { "initializer" };
                     betalingsListe.Add(temp);
 
+                    String personnr = kunde.personNr;
+   
                     Session["personnr"] = kunde.personNr;
-                   // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
-                    Session["kontoer"] = Models.DBMetoder.hentKontoer(personnr);
+                    // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
+                    Session["kontoer"] = DBMetoder.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
 
                     return RedirectToAction("hjemmesideView");
                 }
             }
+
             Session["innlogget"] = false;
             return View();
         }
@@ -141,7 +142,7 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
-        // Siden for utføring av transaksjoner/////////////////////////////////////////////////////////////////////////////////////
+        // Siden for utføring av transaksjoner
         public ActionResult transaksjonView()
         {
             // Siden kan kun vises dersom man er innlogget
@@ -152,6 +153,18 @@ namespace Nettbanken.Controllers
                 {
                     ViewBag.personnr = (String)Session["personnr"];
                     ViewBag.kontoer = (List<String>)Session["kontoer"];
+
+                    // Resetter betalinhsliste om den har blitt brukt før
+                    var betalingsListe = (List<String[]>)Session["tempTabell"];
+                    if (betalingsListe.Count > 1)
+                    {
+                        betalingsListe.Clear(); //clear transaction buffer
+                        String[] temp = { "initializer" };
+                        betalingsListe.Add(temp);
+                    }
+
+                    Session["tempTabell"] = betalingsListe;
+
                     return View();
                 }
                 return RedirectToAction("kundeLogginnView");
@@ -159,36 +172,14 @@ namespace Nettbanken.Controllers
 
             return RedirectToAction("forsideView");
         }
-        
-        [HttpPost]
-        public ActionResult transaksjonView(Transaksjon transaksjon)
-        {
-            // Siden kan kun vises dersom man er innlogget
-            if (Session["innlogget"] != null)
-            {
-                bool innlogget = (bool)Session["innlogget"];
-                if (innlogget)
-                {
-                    var personnr = (String)Session["personnr"];
-                    var kontoer = (List<String>)Session["kontoer"];
 
-                    ViewBag.kontoer = kontoer;
-                    ViewBag.personnr = personnr;
-                    Transaksjon t = DBMetoder.registrerTransaksjon(personnr, transaksjon);
-                    return RedirectToAction("hjemmesideView");
-                }
-                return RedirectToAction("kundeLogginnView");
-            }
-
-            return RedirectToAction("forsideView");
-        }
-        
         // Metode for utlogging
         public ActionResult loggUt()
         {
             Session["innlogget"] = false;
             Session["personnr"] = null; 
             Session["kontoer"] = null;
+            Session["tempTabell"] = null;
             return RedirectToAction("kundeLogginnView");
 
         }
@@ -196,100 +187,126 @@ namespace Nettbanken.Controllers
         // Kaller på metode som henter konto informasjon
         public String hentKontoInformasjon(String kontonavn, String personnr)
         {
-            return Models.DBMetoder.hentKontoInformasjon(kontonavn, personnr);
+            return DBMetoder.hentKontoInformasjon(kontonavn, personnr);
         }
 
         // Kaller på metode som henter gitt kontoutskrift
         public String hentKontoUtskrift(String kontonavn, String personnr)
         {
-            return Models.DBMetoder.hentKontoUtskrift(kontonavn, personnr);
+            return DBMetoder.hentKontoUtskrift(kontonavn, personnr);
         }
 
-        public String tempTr(String[] infoliste)
+        // Metode som legger til en transaksjon temporert
+        public String tempTransaksjon(String[] infoliste)
         {
-            // Session ble intialisert ved innlogging
-            // Brukes for å bevare lista med temp betalinger (Huske-mekanisme)
-            var betalingerListe = (List<string[]>)Session["tempTabell"];
-            betalingerListe.Add(infoliste);
-            Session["tempTabell"] = betalingerListe;
-            int betalingNr = 0;
-
-            String tempTable = "<table>" + "<tr>" +
-                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
-                "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" + 
-                "</tr>";
-            for (var i = 1; i< betalingerListe.Count;i++) 
+            if (ModelState.IsValid)
             {
-                String[] tmp = betalingerListe.ElementAt(i); 
-                tempTable +=
-                       "<tr>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" +tmp[4] + "</td>" +
-                       "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2]+ "</td>" +
-                       "</tr>";
+                // Session ble intialisert ved innlogging
+                // Brukes for å bevare lista med temp betalinger (Huske-mekanisme)
+                var betalingsListe = (List<string[]>)Session["tempTabell"];
+                betalingsListe.Add(infoliste);
+                Session["tempTabell"] = betalingsListe;
+
+                String tempTable = "<table>" + "<tr>" +
+                     "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
+                    "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
+                    "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
+                    "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" +
+                    "</tr>";
+                for (var i = 1; i < betalingsListe.Count; i++)
+                {
+                    String[] tmp = betalingsListe.ElementAt(i);
+                    tempTable +=
+                           "<tr>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
+                           "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
+                           "</tr>";
+                }
+                tempTable += "</table>";
+                return tempTable;
             }
-            tempTable += "</table>";
-            return tempTable; 
+
+            return null;
         }
 
+        // Metode som endrer på en temporær transaksjon
+        public String endre(string betalingNr, string[] info)
+        {
+            if (ModelState.IsValid)
+            {
+                var betalingsListe = (List<string[]>)Session["tempTabell"];
+                string[] endreRad = betalingsListe.ElementAt(Int32.Parse(betalingNr));
+
+                for (int i = 0; i < endreRad.Count(); i++)
+                {
+                    endreRad[i] = info[i];
+                }
+
+                return oppdaterTabell();
+            }
+
+            return null;
+        }
+
+        // Sletter temporære betalinger
         public String slett(string betalingNr)
         {
-            var betalingerListe = (List<string[]>)Session["tempTabell"];
-            betalingerListe.RemoveAt(Int32.Parse(betalingNr));
-            return oppdaterTabell();
+            if (ModelState.IsValid)
+            {
+                var betalingsListe = (List<string[]>)Session["tempTabell"];
+                betalingsListe.RemoveAt(Int32.Parse(betalingNr));
+
+                return oppdaterTabell();
+            }
+
+            return null;
         }
         
-        public String endre(string betalingNr,string[] info)
-        {
-            var betalingerListe = (List<string[]>)Session["tempTabell"];
-            string[] endreRad = betalingerListe.ElementAt(Int32.Parse(betalingNr));
-
-            for(int i=0;i<endreRad.Count();i++)
-            {
-                endreRad[i] = info[i]; 
-            }
-
-            return oppdaterTabell(); 
-        }
-
+        // Betaler alle temporære betalinger
         public String betal()
         {
-            var betalingerTilDB = (List<string[]>)Session["tempTabell"];
-            var pNr = (string)Session["personnr"];
-
-            for (int i = 1; i < betalingerTilDB.Count(); i++)
+            var betalingsListe = (List<String[]>)Session["tempTabell"];
+            if (betalingsListe.Count > 1)
             {
-                Transaksjon t = new Transaksjon();
-                string[] rad = betalingerTilDB.ElementAt(i);
-                t.fraKonto = rad[0];
-                t.tilKonto = rad[1];
-                t.saldoUt = Int32.Parse(rad[2]);
-                t.KID = rad[3];
-                t.dato = rad[4];
-                t.melding = rad[5];
-                DBMetoder.registrerTransaksjon(pNr, t);
+                for (int i = 1; i < betalingsListe.Count(); i++)
+                {
+                    Transaksjon t = new Transaksjon();
+                    string[] rad = betalingsListe.ElementAt(i);
+                    t.fraKonto = rad[0];
+                    t.tilKonto = rad[1];
+                    t.saldoUt = Int32.Parse(rad[2]);
+                    t.KID = rad[3];
+                    t.dato = rad[4];
+                    t.melding = rad[5];
+                    DBMetoder.registrerTransaksjon(t);
+                }
+
+                betalingsListe.Clear(); //clear transaction buffer
+                String[] temp = { "initializer" };
+                betalingsListe.Add(temp);
+
+                return "<div><b>Betalinger fullført.</b> <br/> " +
+                    "Legg til nye betalinger eller gå tilbake til hjemmesiden for å se tillagte betalinger.</div>";
             }
 
-            var betalingerListe = (List<string[]>)Session["tempTabell"];
-            betalingerListe.Clear(); //clear transaction buffer
-            return "<div>Det er ingen betaling som er lagt til</div>";
+            return "<div><b>Du må legge til betalinger før utførelse av betalinger!</b></div>";
         }
 
+        // Oppdaterer tabellen som viser alle temporære betalinger
         public String oppdaterTabell()
         {
-            var betalingerListe = (List<string[]>)Session["tempTabell"];
+            var betalingsListe = (List<string[]>)Session["tempTabell"];
             String tempTable = "<table>" + "<tr>" +
                 "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
                "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
                "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
                "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" +
                "</tr>";
-            for (var i = 1; i < betalingerListe.Count; i++)
+            for (var i = 1; i < betalingsListe.Count; i++)
             {
-                String[] tmp = betalingerListe.ElementAt(i);
+                String[] tmp = betalingsListe.ElementAt(i);
                 tempTable +=
                        "<tr>" +
                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
@@ -299,9 +316,9 @@ namespace Nettbanken.Controllers
                        "</tr>";
             }
             tempTable += "</table>";
+
             return tempTable;
         }
-
     }
     
    
