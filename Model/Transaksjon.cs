@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Nettbanken.Models
 {
+    // Transaksjon domenemodell, flat transaksjon
     public class Transaksjon
     {
         [Display(Name = "Transaksjonsnummer")]

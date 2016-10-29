@@ -7,6 +7,7 @@ using Nettbanken.Models;
 
 namespace Nettbanken.DAL
 {
+    // Klasse for alle metoder som interagerer med databasen, aka DAL
     public class NettbankDAL
     {
        private static int bankId = 0;
@@ -41,7 +42,7 @@ namespace Nettbanken.DAL
             {
                 int bid = db.Kunder.Count(); 
                 bid += 1;
-                String bankId = bid + "";
+                String bankId = bid.ToString();
                 string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
                 // Sjekker om postnr og poststed allerede finnes
                 bool finnes = db.Poststeder.Any(p => p.postNr == kunde.postNr);
@@ -104,7 +105,7 @@ namespace Nettbanken.DAL
                     }
                     catch (Exception feil)
                     {
-                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message;
+                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message + feil.InnerException;
                     }
 
                 }
@@ -142,8 +143,28 @@ namespace Nettbanken.DAL
             return true;
         }
 
+        // Innloggingsmetode for admins
+        public Boolean adminLogginn(Admin admin)
+        {
+            using (var db = new DBContext())
+            {
+                // krypterer det gitte passordet 
+                // og sjekker oppgitte personnr og passord mot database
+                String passord = krypterPassord(admin.passord);
+                AdminDB fantAdmin = db.Admins.FirstOrDefault
+                    (a => a.adminId == admin.adminId && a.passord == passord);
+
+                if (fantAdmin != null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         // Innloggingsmetode for kunder
-        public static Boolean kundeLogginn(Kunde kunde)
+        public Boolean kundeLogginn(Kunde kunde)
         {
             using (var db = new DBContext())
             {
@@ -162,7 +183,7 @@ namespace Nettbanken.DAL
             }
 
         }
-
+        // Registrerer transaksjon
         public Transaksjon registrerTransaksjon(Transaksjon transaksjon)
         {
             using (var db = new DBContext())
@@ -295,6 +316,7 @@ namespace Nettbanken.DAL
             return kontoUtskrift;
         }
 
+        // Sjekker ved hver oppstart om dummy data finnes
         public void startsjekk()
         {
             var db = new DBContext();
@@ -312,12 +334,15 @@ namespace Nettbanken.DAL
         // Oppretter dummy data dersom databasen er tom
         public static void dummyData()
         {
-            string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi" };
-            string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda" };
-            string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo" };
-            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3" };
+            string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi", "Eirik", "Martin" };
+            string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda", "Solo", "Haugen" };
+            string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo", "Langesund", "Skien" };
+            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3", "Acestreet 13", "Gangveien 9" };
+            string kundePassord = krypterPassord("passord");
+            string adminPassord = krypterPassord("ghettoadmin");
 
-            int pernr = 011189211, tlf = 555555, konNr = 12345, postNr = 6789;
+            int pernr = 118921160, tlf = 12345678, konNr = 12345, postNr = 6789, bankid = 0, adminid = 0;
+            AdminDB a;
             KundeDB k;
             PoststedDB p;
             KontoDB s;
@@ -330,77 +355,107 @@ namespace Nettbanken.DAL
                     tlf += 1;
                     konNr += 1;
                     postNr += 1;
+                    bankid += 1;
 
-                    k = new KundeDB();
-                    p = new PoststedDB();
-                    s = new KontoDB();
-
-                    p.poststed = poststed[i];
-                    k.personNr = pernr + "";
-                    k.passord = "dummypassord";
-                    k.fornavn = fornavn[i];
-                    k.etternavn = etternavn[i];
-                    k.adresse = adresse[i];
-                    k.telefonNr = tlf + "";
-                    k.postNr = p.postNr = postNr + "";
-                    k.poststed = p;
-
-                    s.kontoNr = "" + konNr;
-                    s.saldo = 500;
-                    s.kontoNavn = k.fornavn + " " + k.etternavn + ": " + konNr;
-                    s.personNr = k.personNr;
-
-                    try
+                    // Lager 7 Kundekontoer
+                    if (i < fornavn.Length - 2)
                     {
-                        db.Kunder.Add(k);
-                        db.Kontoer.Add(s);
-                    }
-                    catch (Exception e)
-                    {
+                        k = new KundeDB();
+                        p = new PoststedDB();
+                        s = new KontoDB();
 
-                    }
+                        k.bankId = bankid.ToString();
+                        p.poststed = poststed[i];
+                        k.personNr = pernr.ToString();
+                        k.passord = kundePassord;
+                        k.fornavn = fornavn[i];
+                        k.etternavn = etternavn[i];
+                        k.adresse = adresse[i];
+                        k.telefonNr = tlf.ToString();
+                        k.postNr = p.postNr = postNr.ToString();
+                        k.poststed = p;
 
-                    if (i == fornavn.Length - 1)
-                    {
-                        konNr += i;
-                        //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
-                        KontoDB e = new KontoDB();
-                        e.kontoNr = "" + konNr;
-                        e.saldo = 50;
-                        e.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
-                        e.personNr = 11189211 + "";
-
-                        konNr += i;
-                        KontoDB f = new KontoDB();
-                        f.kontoNr = "" + konNr;
-                        f.saldo = 400;
-                        f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
-                        f.personNr = 11189211 + "";
-
-                        konNr += i;
-                        KontoDB g = new KontoDB();
-                        g.kontoNr = "" + konNr;
-                        g.saldo = 50;
-                        g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
-                        g.personNr = 11189212 + "";
+                        s.kontoNr = konNr.ToString();
+                        s.saldo = 500;
+                        s.kontoNavn = k.fornavn + " " + k.etternavn + ": " + konNr;
+                        s.personNr = k.personNr;
 
                         try
                         {
-                            db.Kontoer.Add(e);
-                            db.Kontoer.Add(f);
-                            db.Kontoer.Add(g);
+                            db.Kunder.Add(k);
+                            db.Kontoer.Add(s);
+                            db.SaveChanges();
                         }
-                        catch (Exception x)
+                        catch (Exception e) { }
+
+                        // Legger til esktra kontoer en gang 
+                        if (i == fornavn.Length - 3)
                         {
-                      
-                        }      
+                            konNr += i;
+                            //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
+                            KontoDB e = new KontoDB();
+                            e.kontoNr = konNr.ToString();
+                            e.saldo = 50;
+                            e.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
+                            e.personNr = "118921160";
+
+                            konNr += i;
+                            KontoDB f = new KontoDB();
+                            f.kontoNr = konNr.ToString();
+                            f.saldo = 400;
+                            f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
+                            f.personNr = "118921160";
+
+                            konNr += i;
+                            KontoDB g = new KontoDB();
+                            g.kontoNr = konNr.ToString();
+                            g.saldo = 50;
+                            g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
+                            g.personNr = "118921161";
+
+                            try
+                            {
+                                db.Kontoer.Add(e);
+                                db.Kontoer.Add(f);
+                                db.Kontoer.Add(g);
+                                db.SaveChanges();
+                            }
+                            catch (Exception x) { }
+
+                        }
                     }
 
-                }
-            }
+                    else
+                    {
+                        adminid += 1;
+
+                        a = new AdminDB();
+                        p = new PoststedDB();
+
+                        a.adminId = adminid.ToString();
+                        a.passord = adminPassord;
+                        a.fornavn = fornavn[i];
+                        a.etternavn = etternavn[i];
+                        a.adresse = adresse[i];
+                        a.telefonNr = tlf.ToString();
+
+                        p.poststed = poststed[i];
+                        a.postNr = p.postNr = postNr.ToString();
+                        a.poststed = p;
+                        try
+                        {
+                            db.Admins.Add(a);
+                            db.SaveChanges();
+                        }
+                        catch (Exception feil) { }
+                    }
+
+                } // forloop slutt
+            } // DB slutt
 
         }
 
+        // Oppretter en standard konto for hver ny kunde registrring
         public void opprettStandardkonto(string[] nyKundeInfo)
         {
             int n;

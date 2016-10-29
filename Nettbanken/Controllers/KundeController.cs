@@ -20,17 +20,18 @@ namespace Nettbanken.Controllers
             var nettbankenBLL = new NettbankBLL();
             nettbankenBLL.startsjekk();
             
+            // Kunde session
             // Sjekker om session finnes, hvis ikke så settes den
-
             if (Session["innlogget"] == null)
             {
                 Session["innlogget"] = false;
-                ViewBag.innlogget = false;
             }
-            // ViewBag får session verdien ellers.
-            else
+
+            // Admin Session
+            // Sjekker om session finnes, hvis ikke så settes den
+            if (Session["innloggetAdmin"] == null)
             {
-                ViewBag.innlogget = (bool)Session["innlogget"];
+                Session["innloggetAdmin"] = false;
             }
 
             return View();
@@ -48,7 +49,6 @@ namespace Nettbanken.Controllers
         public ActionResult kundeRegistreringView(Kunde kunde)
         {
             ModelState.Remove("bankId");
-            ModelState.Remove("postNr"); 
             if (ModelState.IsValid)//valider 
             {
                 var nettbankBLL = new NettbankBLL();
@@ -57,16 +57,31 @@ namespace Nettbanken.Controllers
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
                 if (OK == "")
                 {
-                    return RedirectToAction("hjemmesideView");
+                    return RedirectToAction("forsideView");
                 }
             }
             return View();
         }
 
+        // Innloggingsside for admins
+        public ActionResult adminLogginnView()
+        {
+            if (Session["innloggetAdmin"] != null)
+            {
+                bool innlogget = (bool)Session["innloggetAdmin"];
+                if (innlogget)
+                {
+                    return RedirectToAction("adminsideView");
+                }
+                return View();
+            }
+
+            return RedirectToAction("forsideView");
+        }
+
         // Kundens innloggingsside
         public ActionResult kundeLogginnView()
         {
-
             if (Session["innlogget"] != null)
             { 
                 bool innlogget = (bool)Session["innlogget"];
@@ -79,12 +94,39 @@ namespace Nettbanken.Controllers
 
             return RedirectToAction("forsideView");
         }
-        
+
+        // Viewet som brukes når admin prøver å logge seg inn
+        [HttpPost]
+        public ActionResult adminLogginnView(Admin admin)
+        {
+            // Property som ikke trenger vare med valideringen for innlogging
+            ModelState.Remove("fornavn");
+            ModelState.Remove("etternavn");
+            ModelState.Remove("adresse");
+            ModelState.Remove("telefonNr");
+            ModelState.Remove("postNr");
+
+            if (ModelState.IsValid)
+            {
+                var nettbankBLL = new NettbankBLL();
+                if (nettbankBLL.adminLogginn(admin))
+                {
+                    // Hvis en logger seg inn som admin, så logges kundekonto ut dersom en kundekonto er innlogget
+                    Session["innloggetAdmin"] = true;
+                    Session["innlogget"] = false;
+                    return RedirectToAction("adminsideView");
+                }
+            }
+
+            Session["innloggetAdmin"] = false;
+            return View();
+        }
+
         // View som brukes når kunde prøver å logge inn
         [HttpPost]
         public ActionResult kundeLogginnView(Kunde kunde)
         {
-            //property som ikke trenger vare med valideringen for innlogging
+            // Property som ikke trenger vare med valideringen for innlogging
             ModelState.Remove("fornavn");
             ModelState.Remove("etternavn");
             ModelState.Remove("adresse");
@@ -97,6 +139,8 @@ namespace Nettbanken.Controllers
                 // if-setning sjekker om kunden finnes i databasen
                 if (nettbankBLL.kundeLogginn(kunde)) 
                 {
+                    // Hvis en logger seg inn som kunde, så logges adminbruker ut dersom en adminbruker er innlogget
+                    Session["innloggetAdmin"] = false;
                     Session["innlogget"] = true;
 
                     // Initialiserer betalingsListe, trenger en verdi hvis ikke gir det en error ved oppstart
@@ -117,6 +161,23 @@ namespace Nettbanken.Controllers
 
             Session["innlogget"] = false;
             return View();
+        }
+
+        // Hjemmesiden til admins
+        public ActionResult adminsideView()
+        {
+            // Siden kan kun vises dersom man er innlogget
+            if (Session["innloggetAdmin"] != null)
+            {
+                bool innlogget = (bool)Session["innloggetAdmin"];
+                if (innlogget)
+                {
+                    return View();
+                }
+                return RedirectToAction("adminLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
         }
 
         // Hjemmesiden til kunde etter suksessfull innlogging
@@ -174,12 +235,21 @@ namespace Nettbanken.Controllers
         // Metode for utlogging
         public ActionResult loggUt()
         {
-            Session["innlogget"] = false;
-            Session["personnr"] = null; 
-            Session["kontoer"] = null;
-            Session["tempTabell"] = null;
-            return RedirectToAction("kundeLogginnView");
+            // Kun en kunde/admin kan være innlogget til enhver tid, dermed sjekker vi hvem som er innlogget
+            // basert på hvem, så utføres utlike utloggingsactions
+            if ((Boolean)Session["innlogget"])
+            {
+                Session["innlogget"] = false;
+                Session["personnr"] = null;
+                Session["kontoer"] = null;
+                Session["tempTabell"] = null;
+            }
+            else
+            {
+                Session["innloggetAdmin"] = false;
+            }
 
+            return RedirectToAction("forsideView");
         }
 
         // Kaller på metode som henter konto informasjon

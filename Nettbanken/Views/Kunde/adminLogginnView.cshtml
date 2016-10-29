@@ -1,0 +1,63 @@
+﻿
+@model Nettbanken.Models.Admin
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Admin Logginn</title>
+    <link href="~/Content/logginn_register.css" rel="stylesheet" type="text/css">
+
+
+</head>
+
+<body>
+    @using (Html.BeginForm("adminLogginnView", "Kunde", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <div class="row">
+                <div class="header">
+                    <div class="header-container">
+                        <img src="~/Content/images/nettbanken.png" class="logo">
+                    </div>
+
+                    <div class="logginn-container">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.adminId)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.adminId)
+                            @Html.ValidationMessageFor(model => model.adminId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.passord)
+                        </div>
+                        <div class="editor-field">
+                            @Html.PasswordFor(model => model.passord)
+                            @Html.ValidationMessageFor(model => model.passord, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+                        <div>
+                            <input type="submit" value="Logg inn" />
+                        </div>
+                        <br/>
+                        <p>Admin ID: 1</p> 
+                        <p>Passord: ghettoadmin</p>
+
+                    </div>
+
+                    <div class="footer-container">
+                        <div>
+                            @Html.ActionLink("Tilbake til forside", "forsideView")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    }
+</body>
+
+</html>

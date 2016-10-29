@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Nettbanken.Models
 {
+    // Konto domenemodell, flat konto
     public class Konto
     {
         [Display(Name = "Kontonummer")]
