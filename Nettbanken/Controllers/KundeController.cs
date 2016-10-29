@@ -310,6 +310,7 @@ namespace Nettbanken.Controllers
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
 
+                // Sjekker om oppgitte endringsnummer tilhører en temporær betaling
                 try
                 {
                     String[] endreRad = betalingsListe.ElementAt(Int32.Parse(betalingNr));
@@ -336,6 +337,7 @@ namespace Nettbanken.Controllers
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
 
+                // Sjekker om oppgitte slettenummer tilhører en temporær betaling
                 try
                 {
                     betalingsListe.RemoveAt(Int32.Parse(betalingNr));
