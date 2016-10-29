@@ -57,7 +57,7 @@ namespace Nettbanken.Controllers
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
                 if (OK == "")
                 {
-                    return RedirectToAction("forsideView");
+                    return RedirectToAction("kundeLogginnView");
                 }
             }
             return View();
@@ -105,6 +105,7 @@ namespace Nettbanken.Controllers
             ModelState.Remove("adresse");
             ModelState.Remove("telefonNr");
             ModelState.Remove("postNr");
+            ModelState.Remove("poststed");
 
             if (ModelState.IsValid)
             {
@@ -132,6 +133,7 @@ namespace Nettbanken.Controllers
             ModelState.Remove("adresse");
             ModelState.Remove("telefonNr");
             ModelState.Remove("postNr");
+            ModelState.Remove("poststed");
 
             if (ModelState.IsValid)//formValider
             {
@@ -307,14 +309,21 @@ namespace Nettbanken.Controllers
             if (ModelState.IsValid)
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
-                string[] endreRad = betalingsListe.ElementAt(Int32.Parse(betalingNr));
 
-                for (int i = 0; i < endreRad.Count(); i++)
+                try
                 {
-                    endreRad[i] = info[i];
-                }
+                    String[] endreRad = betalingsListe.ElementAt(Int32.Parse(betalingNr));
+                    for (int i = 0; i < endreRad.Count(); i++)
+                    {
+                        endreRad[i] = info[i];
+                    }
 
-                return oppdaterTabell();
+                    return oppdaterTabell();
+                }
+                catch (Exception feil)
+                {
+                    return oppdaterTabell() + "<div><b>Oppgitte endringsnummer finnes ikke!</b></div>"; 
+                }
             }
 
             return null;
@@ -326,9 +335,16 @@ namespace Nettbanken.Controllers
             if (ModelState.IsValid)
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
-                betalingsListe.RemoveAt(Int32.Parse(betalingNr));
 
-                return oppdaterTabell();
+                try
+                {
+                    betalingsListe.RemoveAt(Int32.Parse(betalingNr));
+                    return oppdaterTabell();
+                }
+                catch (Exception feil)
+                {
+                    return oppdaterTabell() + "<div><b>Oppgitte slettenummer finnes ikke!</b></div>";
+                }
             }
 
             return null;
