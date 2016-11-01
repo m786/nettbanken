@@ -100,7 +100,7 @@
                     <h3 class="panel-title"><strong>Betalingesdetalijer:</strong></h3>
                 </div>
                 <label style="margin-left:1%;"><b>Velg konto:</b></label>
-                <select class="valg" id="kontoDropdown" onchange="settKonto();">
+                <select class="valg" id="kontoDropdown" onchange="settKonto();" style="border-color:black;">
                     <option disbaled defaultSelected hidden>---Sett konto---</option>
                     @foreach (var konto in ViewBag.kontoer)
                     {
@@ -120,7 +120,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.fraKonto):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control">
                                 @Html.TextBoxFor(model => model.fraKonto,
                                     new { id = "konto", @readonly = "readonly" })
                                 @Html.ValidationMessageFor(model => model.fraKonto, "", new { @class = "text-danger" })
@@ -131,7 +131,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.tilKonto):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control2">
                                 @Html.EditorFor(model => model.tilKonto, new { id = "tilKonto" })
                                 @Html.ValidationMessageFor(model => model.tilKonto, "", new { @class = "text-danger" })
                             </span>
@@ -139,7 +139,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.saldoUt):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control3">
                                 @Html.EditorFor(model => model.saldoUt, new { id = "saldoUt" })
                                 @Html.ValidationMessageFor(model => model.saldoUt, "", new { @class = "text-danger" })
                             </span>
@@ -148,7 +148,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.KID):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control4">
                                 @Html.EditorFor(model => model.KID, new { id = "KID" })
                                 @Html.ValidationMessageFor(model => model.KID, "", new { @class = "text-danger" })
                             </span>
@@ -157,7 +157,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.dato):</b>
                             </span>
-                            <span class="editor-field">                          
+                            <span class="form-control5">                          
                                @Html.EditorFor(model => model.dato, new { id = "datoui" })
                                @Html.ValidationMessageFor(model => model.dato, "", new { @class = "text-danger" })                                
                             </span>
@@ -166,7 +166,7 @@
                             <span class="editor-lable">
                                 <b>@Html.LabelFor(model => model.melding):</b>
                             </span>
-                            <span class="editor-field">
+                            <span class="form-control6">
                                 @Html.EditorFor(model => model.melding, new { id = "melding" })
                             </span>
                             <br>
@@ -195,12 +195,20 @@
                     <p><b>Betalinger legges til her!</b></p>
                 </div>
                 <div class="panel-footer">
+                 <div class="fotter-panel">
+                     <label for="slettB" style="margin-left:4%;">Slett Betaling NR:</label>
+                     <input id="slettB" type="text" style="border-color:black;">
 
-                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg"  id="slett" onclick="knapper('slett')" role="button">Slett</a>
-                    <label for="slettB">Slett Betaling NR:</label><input id="slettB" type="text" ></p>
+                     <label for="endreB" style="margin-left:7%;">Endre Betaling NR:</label>
+                     <input id="endreB" type="text" style="border-color:black;">
+                 </div>
+                    
 
-                    <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg"  id="endre" onclick="knapper('endre')" role="button">Endre</a>
-                    <label for="endreB">Endre Betaling NR:</label><input id="endreB" type="text" ></p>
+                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" id="slett" onclick="knapper('slett')" role="button" style="margin-left:-29%;">Slett</a></p>
+                    
+
+                    <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg" id="endre" onclick="knapper('endre')" role="button" style="margin-left:-22%;">Endre</a></p>
+                    
 
                     <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg"  id="betal" onclick="knapper('betal')" role="button">Betal</a></p> 
                 </div>

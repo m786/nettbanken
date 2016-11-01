@@ -56,3 +56,20 @@ min-height:300px;
 padding:30px 40px;
 background-color:#FAFBFD;
 }
+.form-btn, .form-btn:hover, .form-btn:active, .form-btn:focus{
+    color: #FFFFFF;
+    border-radius: 2px;
+    border: none;
+    background-color: #7fc37e;
+    transition: background-color 300ms ease-out;
+    -webkit-transition: background-color 300ms ease-out;
+    -moz-transition: background-color 300ms ease-out;
+    -o-transition: background-color 300ms ease-out;
+    display: block;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+}
