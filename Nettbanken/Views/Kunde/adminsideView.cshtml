@@ -1,10 +1,117 @@
 ﻿<html>
+<head>
+    <title>Nettbanken</title>
+    <link rel="stylesheet" href="css/forside_bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/Admin_Veiw.css" />
+</head>
+
 <body>
-    <h2>
-        Er inne his adminside!
-    </h2>
-    <div>
-        <input type="button" class="btn btn-primary" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" />
+    
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <img src="images/nettbanken.png" width="200px">
+            </div>
+        </div>
+        <!-- /bar end -->
+        </div>
+        <!-- /.container end -->
+    </nav>
+
+    <div id="panel">
+
+        <div class="header">
+            <div class="title"><a>Administrator</a></div>
+        </div>
+
+        <div class="Gull_farge">
+            <ul></ul>
+        </div>
+
+        <div id="høyre_side">
+            <div id="høyre_content">
+                <h2>Kunder</h2>
+
+
+                <table id="høyre_kolom">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>PersonNR</th>
+                            <th>Fornavn</th>
+                            <th>Etternavn</th>
+                            <th>KontoNR</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="linje1">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="button grønn">Endre</button></td>
+                            <td><button class="button rød">Slett</button></td>
+                        </tr>
+                        <tr class="linje2">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="button grønn">Endre</button></td>
+                            <td><button class="button rød">Slett</button></td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="12">
+                                <a href="#" class="button rød" onclick="location.href='@Url.Action("loggUt","Kunde")'">LoggUt</a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="knapper_under_panel">
+                </div>
+
+
+            </div>
+        </div><!-- end of right content-->
+
+
+        <div class="venstre_bar" id="venstre_bar">
+            <h2>Alternativer:</h2>
+
+            <ul>
+                <li><a href="#" class="selected">Kunder</a></li>
+                <li><a href="#">Opprett konto</a></li>
+                <li><a href="#">Betalinger</a></li>
+            </ul>
+        </div>
+
+
+        <div class="clear"></div>
+    </div> <!--end of center_content-->
     </div>
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p>Copyright Â© Nettbanken. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
