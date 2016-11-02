@@ -293,6 +293,11 @@ namespace Nettbanken.Controllers
                            "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
                            "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
                            "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
+
+                           //finn en maate aa lytte paa disse knappene!!! blir jquery!  dette   gaar ann men vi trenger unike id for hver knapper nummerere dem!!
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button"+ " id=\""+i+"\"  onclick=\"alert(this.id+'slett')\""+">Slett</button></td>" +
+                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" + " id=\"" + i + "\"  onclick=\"alert(this.id)\"" + ">Endre</button></td>" +
+                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" + " id=\"" + i + "\"  onclick=\"alert(this.id)\"" + ">Betal</button></td>" +
                            "</tr>";
                 }
                 tempTable += "</table>";
