@@ -53,6 +53,24 @@
     <Compile Include="KundeControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{38c30f2e-4b81-4fd1-9368-c4fd92a6dbda}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{e3cc00b7-428c-412f-8394-f08aefc57e72}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{61ed801f-e4a3-43b9-875e-5f579cec5d0e}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nettbanken\Nettbanken.csproj">
+      <Project>{b9ea1288-56f7-4ef0-8811-273d41c04fd5}</Project>
+      <Name>Nettbanken</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

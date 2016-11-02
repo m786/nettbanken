@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Nettbanken.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Nettbanken.DAL
 {
@@ -12,30 +14,55 @@ namespace Nettbanken.DAL
     {
        private static int bankId = 0;
 
-        // Metode for kryptering av passord
-        public static String krypterPassord(String passord)
+        // Metode for kryptering av passord + salt
+        public static String krypterPassord(String passord, byte[] salt)
         {
-            String innPassord, utPassord;
-            byte[] inndata, utdata;
+            String utPassord;
+            byte[] innPassord, tmpPassord, utdata;
 
-            // Lagrer passord og oppretter krypteringsalgoritme
-            innPassord = passord;
-            var algoritme = System.Security.Cryptography.SHA512.Create();
+            // Lagrer passord i bytearray og oppretter krypteringsalgoritme
+            innPassord = Encoding.ASCII.GetBytes(passord);
+            var algoritme = SHA512.Create();
 
-            // gjør string om til byte array og krypterer det
-            inndata = System.Text.Encoding.ASCII.GetBytes(innPassord);
-            utdata = algoritme.ComputeHash(inndata);
+            // Legger til saltet på slutten av passordet
+            tmpPassord = new byte[innPassord.Length + salt.Length];
 
-            utPassord = System.Text.Encoding.ASCII.GetString(utdata);
+            for (int i = 0; i < innPassord.Length; i++)
+            {
+                tmpPassord[i] = innPassord[i];
+            }
+            for (int i = 0; i < salt.Length; i++)
+            {
+                tmpPassord[innPassord.Length + i] = salt[i];
+            }
+
+            // Kyrpterer bytearrayet og gjør det om til en string før retur
+            utdata = algoritme.ComputeHash(tmpPassord);
+            utPassord = Encoding.ASCII.GetString(utdata);
 
             return utPassord;
+        }
+
+        // Genererer tilfeldig salt
+        public static byte[] genererSalt()
+        {
+            // Fyller ut et byte array med tilfeldige bytes
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            // Genererer et tilfeldig tall mellom 16 og 64
+            Random rnd = new Random();
+            int num = rnd.Next(16,64);
+
+            byte[] buffer = new byte[num];
+            rng.GetBytes(buffer);
+
+            return buffer;
         }
         
         
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
-        public String registrerKunde(Kunde kunde) 
-        {         
-            String OK = "";
+        public Boolean registrerKunde(Kunde kunde) 
+        {
+            Boolean OK = true;
 
             // Oppretter Database connection
             using (var db = new DBContext())
@@ -44,6 +71,8 @@ namespace Nettbanken.DAL
                 bid += 1;
                 String bankId = bid.ToString();
                 string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
+                byte[] salt = genererSalt();
+
                 // Sjekker om postnr og poststed allerede finnes
                 bool finnes = db.Poststeder.Any(p => p.postNr == kunde.postNr);
 
@@ -55,7 +84,8 @@ namespace Nettbanken.DAL
                     {
                         bankId = bankId,
                         personNr = kunde.personNr,
-                        passord = krypterPassord(kunde.passord),
+                        passord = krypterPassord(kunde.passord, salt),
+                        salt = salt,
                         fornavn = kunde.fornavn,
                         etternavn = kunde.etternavn,
                         adresse = kunde.adresse,
@@ -71,7 +101,7 @@ namespace Nettbanken.DAL
                     }
                     catch (Exception feil)
                     {
-                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message;
+                        OK = false;
                     }
 
                 }
@@ -83,7 +113,8 @@ namespace Nettbanken.DAL
                     {
                         bankId = bankId,
                         personNr = kunde.personNr,
-                        passord = krypterPassord(kunde.passord),
+                        passord = krypterPassord(kunde.passord,salt),
+                        salt = salt,
                         fornavn = kunde.fornavn,
                         etternavn = kunde.etternavn,
                         adresse = kunde.adresse,
@@ -105,7 +136,7 @@ namespace Nettbanken.DAL
                     }
                     catch (Exception feil)
                     {
-                        OK = "Det oppstod en feil i registrering av kunden! Feil: " + feil.Message + feil.InnerException;
+                        OK = false;
                     }
 
                 }
@@ -148,15 +179,18 @@ namespace Nettbanken.DAL
         {
             using (var db = new DBContext())
             {
-                // krypterer det gitte passordet 
-                // og sjekker oppgitte personnr og passord mot database
-                String passord = krypterPassord(admin.passord);
+                // Sjekker oppgitte adminID mot databasen om admin finnes
                 AdminDB fantAdmin = db.Admins.FirstOrDefault
-                    (a => a.adminId == admin.adminId && a.passord == passord);
+                    (a => a.adminId == admin.adminId);
 
                 if (fantAdmin != null)
                 {
-                    return true;
+                    // Dersom admin finnes så sjekker vi om oppgitte passord er korrekt
+                    String passord = krypterPassord(admin.passord, fantAdmin.salt);
+                    if (passord == fantAdmin.passord)
+                    {
+                        return true;
+                    }
                 }
 
                 return false;
@@ -168,15 +202,18 @@ namespace Nettbanken.DAL
         {
             using (var db = new DBContext())
             {
-                // krypterer det gitte passordet 
-                // og sjekker oppgitte personnr og passord mot database
-                String passord = krypterPassord(kunde.passord);
+                // Sjekker oppgitte personnr og bankid mot databasen om kunden finnes
                 KundeDB fantKunde = db.Kunder.FirstOrDefault
-                    (k => k.personNr == kunde.personNr && k.passord == passord && k.bankId == kunde.bankId);
+                    (k => k.personNr == kunde.personNr && k.bankId == kunde.bankId);
 
                 if (fantKunde != null)
                 {
-                    return true;
+                    // Dersom kunden finnes så sjekker vi om oppgitte passord er korrekt
+                    String passord = krypterPassord(kunde.passord, fantKunde.salt);
+                    if (passord == fantKunde.passord)
+                    { 
+                        return true;
+                    }
                 }
 
                 return false;
@@ -338,8 +375,7 @@ namespace Nettbanken.DAL
             string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda", "Solo", "Haugen" };
             string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo", "Langesund", "Skien" };
             string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3", "Acestreet 13", "Gangveien 9" };
-            string kundePassord = krypterPassord("passord");
-            string adminPassord = krypterPassord("ghettoadmin");
+            byte[] kundeSalt, adminSalt;
 
             int pernr = 118921160, tlf = 12345678, konNr = 12345, postNr = 6789, bankid = 0, adminid = 0;
             AdminDB a;
@@ -356,6 +392,7 @@ namespace Nettbanken.DAL
                     konNr += 1;
                     postNr += 1;
                     bankid += 1;
+                    kundeSalt = genererSalt();
 
                     // Lager 7 Kundekontoer
                     if (i < fornavn.Length - 2)
@@ -367,7 +404,8 @@ namespace Nettbanken.DAL
                         k.bankId = bankid.ToString();
                         p.poststed = poststed[i];
                         k.personNr = pernr.ToString();
-                        k.passord = kundePassord;
+                        k.passord = krypterPassord("passord", kundeSalt);
+                        k.salt = kundeSalt;
                         k.fornavn = fornavn[i];
                         k.etternavn = etternavn[i];
                         k.adresse = adresse[i];
@@ -428,12 +466,14 @@ namespace Nettbanken.DAL
                     else
                     {
                         adminid += 1;
+                        adminSalt = genererSalt();
 
                         a = new AdminDB();
                         p = new PoststedDB();
 
                         a.adminId = adminid.ToString();
-                        a.passord = adminPassord;
+                        a.passord = krypterPassord("ghettoadmin", adminSalt);
+                        a.salt = adminSalt;
                         a.fornavn = fornavn[i];
                         a.etternavn = etternavn[i];
                         a.adresse = adresse[i];

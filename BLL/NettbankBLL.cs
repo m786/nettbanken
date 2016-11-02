@@ -10,19 +10,20 @@ namespace Nettbanken.BLL
     {
         private static int bankId = 0;
 
-        // Metode for kryptering av passord
+        /* Metode for kryptering av passord
         public String krypterPassord(String passord)
         {
             String utPassord = NettbankDAL.krypterPassord(passord);
 
             return utPassord;
         }
+        */
 
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
-        public String registrerKunde(Kunde kunde)
+        public Boolean registrerKunde(Kunde kunde)
         {
             var nettbankDAL = new NettbankDAL();
-            String OK = nettbankDAL.registrerKunde(kunde);
+            Boolean OK = nettbankDAL.registrerKunde(kunde);
 
             return OK;
         }

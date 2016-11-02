@@ -22,6 +22,8 @@ namespace Nettbanken.Models
         [Required(ErrorMessage = "Vennligst fyll inn passord")]
         public string passord { get; set; }
 
+        public byte[] salt { get; set; }
+
         [Display(Name = "Fornavn")]
         [Required(ErrorMessage = "Vennligst fyll inn fornavn")]
         [RegularExpression(@"[A-ZÆØÅa-zæøå]{2,}", ErrorMessage = "Fornavn kan kun inneholde 2 eller flere bokstaver")]

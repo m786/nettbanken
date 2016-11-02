@@ -41,6 +41,8 @@ namespace Nettbanken.DAL
 
         public string passord { get; set; }
 
+        public byte[] salt { get; set; }
+
         public string fornavn { get; set; }
 
         public string etternavn { get; set; }
@@ -61,6 +63,8 @@ namespace Nettbanken.DAL
         public string personNr { get; set; }
 
         public string passord { get; set; }
+
+        public byte[] salt { get; set; }
         
         public string fornavn { get; set; }
         

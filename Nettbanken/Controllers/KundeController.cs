@@ -52,10 +52,9 @@ namespace Nettbanken.Controllers
             if (ModelState.IsValid)//valider 
             {
                 var nettbankBLL = new NettbankBLL();
-                String OK = nettbankBLL.registrerKunde(kunde);
 
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
-                if (OK == "")
+                if (nettbankBLL.registrerKunde(kunde))
                 {
                     return RedirectToAction("kundeLogginnView");
                 }
