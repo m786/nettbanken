@@ -10,6 +10,18 @@ namespace Nettbanken.BLL
     {
         //private static int bankId = 0;
 
+        private INettbankDAL _repository;
+
+        public NettbankBLL()
+        {
+            _repository = new NettbankDAL();
+        }
+
+        public NettbankBLL(INettbankDAL stub)
+        {
+            _repository = stub;
+        }
+
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
 
@@ -25,56 +37,43 @@ namespace Nettbanken.BLL
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
         public Boolean registrerKunde(Kunde kunde)
         {
-            var nettbankDAL = new NettbankDAL();
-            Boolean OK = nettbankDAL.registrerKunde(kunde);
-
-            return OK;
+            return _repository.registrerKunde(kunde);
         }
 
         //Konto registrering: opprette konto for kunder samtidig som di registreres!
-        public bool registrerNyKonto(Konto nyKonto)
+        public Boolean registrerNyKonto(Konto nyKonto)
         {
-            var nettbankDAL = new NettbankDAL();
-
-            return nettbankDAL.registrerNyKonto(nyKonto);
+            return _repository.registrerNyKonto(nyKonto);
         }
 
         // Oppretter ny konto ved ny kunde
         public void opprettStandardkonto(string[] nyKundeinfo)
         {
-            var nettbankDAL = new NettbankDAL();
-            nettbankDAL.opprettStandardkonto(nyKundeinfo);
+            _repository.opprettStandardkonto(nyKundeinfo);
         }
 
         // Innloggingsmetode for admin
         public Boolean adminLogginn(Admin admin)
         {
-            var nettbankDAL = new NettbankDAL();
-
-            return nettbankDAL.adminLogginn(admin);
+            return _repository.adminLogginn(admin);
         }
 
         // Innloggingsmetode for kunder
         public Boolean kundeLogginn(Kunde kunde)
         {
-            var nettbankDAL = new NettbankDAL();
-
-            return nettbankDAL.kundeLogginn(kunde);
+            return _repository.kundeLogginn(kunde);
         }
 
         // Registrerer en transaksjon
         public Transaksjon registrerTransaksjon(Transaksjon transaksjon)
         {
-            var nettbankDAL = new NettbankDAL();
-
-            return nettbankDAL.registrerTransaksjon(transaksjon);
+            return _repository.registrerTransaksjon(transaksjon);
         }
 
         // Henter alle kontoer som tilhører gitt personnr
         public List<String> hentKontoer(String personnr)
         {
-            var nettbankDAL = new NettbankDAL();
-            var kontoer = nettbankDAL.hentKontoer(personnr);
+            var kontoer = _repository.hentKontoer(personnr);
 
             return kontoer;
         }
@@ -82,8 +81,7 @@ namespace Nettbanken.BLL
         // Meetode som lager tabellen for konto informasjon
         public String hentKontoInformasjon(String kontonavn, String personnr)
         {
-            var nettbankDAL = new NettbankDAL();
-            String kontoInformasjon = nettbankDAL.hentKontoInformasjon(kontonavn, personnr);
+            String kontoInformasjon = _repository.hentKontoInformasjon(kontonavn, personnr);
  
             return kontoInformasjon;
         }
@@ -91,8 +89,7 @@ namespace Nettbanken.BLL
         // Metode som lager tabell for kontoutskrifter
         public String hentKontoUtskrift(String kontonavn, String personnr)
         {
-            var nettbankDAL = new NettbankDAL();
-            String kontoUtskrift = nettbankDAL.hentKontoUtskrift(kontonavn, personnr);
+            String kontoUtskrift = _repository.hentKontoUtskrift(kontonavn, personnr);
 
             return kontoUtskrift;
         }
@@ -100,8 +97,7 @@ namespace Nettbanken.BLL
         // Startsjekk som sjekker for dummydata
         public void startsjekk()
         {
-            var nettbankDAL = new NettbankDAL();
-            nettbankDAL.startsjekk();
+            _repository.startsjekk();
         }
         
     }

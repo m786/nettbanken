@@ -8,6 +8,6 @@ namespace Nettbanken.BLL
 {
     public interface INettbankBLL
     {
-        bool interfaceTEST();
+        Boolean interfaceTEST();
     }
 }

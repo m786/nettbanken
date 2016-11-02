@@ -9,6 +9,7 @@ namespace Enhetstesting
         [TestMethod]
         public void TestMethod1()
         {
+
         }
     }
 }

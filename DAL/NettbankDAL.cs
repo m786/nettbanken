@@ -17,10 +17,7 @@ namespace Nettbanken.DAL
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
 
-        public Boolean interfaceTEST()
-        {
-            return true;
-        }
+        // Admin metode skal inn her
 
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
@@ -68,8 +65,7 @@ namespace Nettbanken.DAL
 
             return buffer;
         }
-        
-        
+          
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
         public Boolean registrerKunde(Kunde kunde) 
         {
@@ -159,7 +155,7 @@ namespace Nettbanken.DAL
         }
 
         //Konto registrering: opprette konto for kunder samtidig som di registreres!
-        public bool registrerNyKonto(Konto nykonto)
+        public Boolean registrerNyKonto(Konto nykonto)
         {
             using (var db = new DBContext())
             {
