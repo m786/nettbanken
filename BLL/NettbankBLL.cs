@@ -6,18 +6,21 @@ using Nettbanken.Models;
 namespace Nettbanken.BLL
 {
     // Logikk laget som blir brukt til å aksessere DAL for databasemetoder
-    public class NettbankBLL
+    public class NettbankBLL : INettbankBLL
     {
-        private static int bankId = 0;
+        //private static int bankId = 0;
 
-        /* Metode for kryptering av passord
-        public String krypterPassord(String passord)
+        // ---------------------------------------------------------------------------------------
+        // Admin Metoder
+
+        public bool interfaceTEST()
         {
-            String utPassord = NettbankDAL.krypterPassord(passord);
-
-            return utPassord;
+            return true;
         }
-        */
+
+
+        // ---------------------------------------------------------------------------------------
+        // Kunde Metoder
 
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
         public Boolean registrerKunde(Kunde kunde)

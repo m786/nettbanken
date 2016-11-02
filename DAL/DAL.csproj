@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="INettbankDAL.cs" />
     <Compile Include="NettbankDALStub.cs" />
     <Compile Include="NettbankDAL.cs" />
     <Compile Include="DBContext.cs" />

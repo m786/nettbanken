@@ -10,9 +10,20 @@ using System.Text;
 namespace Nettbanken.DAL
 {
     // Klasse for alle metoder som interagerer med databasen, aka DAL
-    public class NettbankDAL
+    public class NettbankDAL : INettbankDAL
     {
-       private static int bankId = 0;
+        //private static int bankId = 0;
+
+        // ---------------------------------------------------------------------------------------
+        // Admin Metoder
+
+        public Boolean interfaceTEST()
+        {
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------------------
+        // Kunde Metoder
 
         // Metode for kryptering av passord + salt
         public static String krypterPassord(String passord, byte[] salt)

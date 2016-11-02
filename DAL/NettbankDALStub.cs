@@ -2,34 +2,12 @@
 using Nettbanken.DAL;
 using Nettbanken.Models;
 
-namespace DAL
+namespace Nettbanken.DAL
 {
-    public class NettbankDALStub : DBContext
+    public class NettbankDALStub : INettbankDAL
     {
-
-        public String krypterPassord(String passord)
+        public Boolean interfaceTEST()
         {
-            if (passord == "" || passord.Length < 7)
-            {
-                return "";
-            }
-
-            return "ok";
-        }
-
-        public String registrerKunde(Kunde kunde)
-        {
-
-            if (kunde.fornavn == "" || kunde.etternavn == "" || kunde.adresse == "" || kunde.personNr.Length > 11 || kunde.postNr.Length > 4 || kunde.telefonNr.Length > 8 || kunde.poststed == "" || kunde.bankId == "" || kunde.passord.Length < 8)
-            {
-                return "";
-            }
-            return "ok";
-        }
-
-        public bool registrerNyKonto(Konto nykonto)
-        {
-            //hva bør testes her?hva kan gå galt ?
             return true;
         }
     }
