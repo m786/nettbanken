@@ -6,6 +6,7 @@ using System.Web;
 using Nettbanken.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Nettbanken.DAL;
 
 namespace Nettbanken.DAL
 {
@@ -18,6 +19,213 @@ namespace Nettbanken.DAL
         // Admin Metoder
 
         // Admin metode skal inn her
+
+        public List<Kunde> alleKunder()
+        {
+            var db = new DBContext();
+            List<Kunde> alleKunder = db.Kunder.Select(k => new Kunde()
+            {
+                personNr = k.personNr,
+                fornavn = k.fornavn,
+                etternavn = k.etternavn,
+                adresse = k.adresse,
+                postNr = k.postNr,
+                poststed = k.Poststeder.Poststed,
+                telefonNr = k.telefonNr
+            }
+                                ).ToList();
+            return alleKunder;
+        }
+
+        public Boolean registrerNyKunde(Kunde kunde)
+        {
+            Boolean OK = true;
+
+            // Oppretter Database connection
+            using (var db = new DBContext())
+            {
+                int bid = db.Kunder.Count();
+                bid += 1;
+                String bankId = bid.ToString();
+                string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
+                byte[] salt = genererSalt();
+
+                // Sjekker om postnr og poststed allerede finnes
+                bool finnes = db.Poststeder.Any(p => p.postNr == kunde.postNr);
+
+                // Om postnr og poststed finnes så opprettes en ny kunde 
+                // uten noe i Poststed klasse-attributett til kunden
+                if (finnes)
+                {
+                    var nyKunde = new KundeDB
+                    {
+                        bankId = bankId,
+                        personNr = kunde.personNr,
+                        passord = krypterPassord(lagPassord(), salt),
+                        salt = salt,
+                        fornavn = kunde.fornavn,
+                        etternavn = kunde.etternavn,
+                        adresse = kunde.adresse,
+                        telefonNr = kunde.telefonNr,
+                        postNr = kunde.postNr
+                    };
+
+                    try
+                    {
+                        db.Kunder.Add(nyKunde);
+                        db.SaveChanges();
+                        opprettStandardkonto(kundeInfo);
+                    }
+                    catch (Exception feil)
+                    {
+                        OK = false;
+                    }
+
+                }
+                // Postnr og poststed finnes ikke, 
+                // legger inne kunden og oppretter en ny rad i Poststeder
+                else
+                {
+                    var nyKunde = new KundeDB
+                    {
+                        bankId = bankId,
+                        personNr = kunde.personNr,
+                        passord = krypterPassord(lagPassord(), salt),
+                        salt = salt,
+                        fornavn = kunde.fornavn,
+                        etternavn = kunde.etternavn,
+                        adresse = kunde.adresse,
+                        telefonNr = kunde.telefonNr,
+                        postNr = kunde.postNr
+                    };
+
+                    var nyPoststed = new PoststedDB
+                    {
+                        postNr = kunde.postNr,
+                        poststed = kunde.poststed
+                    };
+                    try
+                    {
+                        nyKunde.poststed = nyPoststed;
+                        db.Kunder.Add(nyKunde);
+                        db.SaveChanges();
+                        opprettStandardkonto(kundeInfo);
+                    }
+                    catch (Exception feil)
+                    {
+                        OK = false;
+                    }
+
+                }
+
+            }
+
+
+            return OK;
+        }
+        //Her genereres tilfeldig passord for en ny kunde som admin lager,passordet skal da sendes 
+        //til kunden på mail eller sms.
+        private static string lagPassord()
+        {
+            string velgFra = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
+            char[] bokstaver = new char[10];
+            Random tilfeldig = new Random();
+
+            for (int i = 0; i < 10; i++)
+            {
+                bokstaver[i] = velgFra[tilfeldig.Next(0, velgFra.Length)];
+            }
+
+            return new string(bokstaver);
+        }
+        //Admin skal kunne endre eksisterende kunde info om nødvendig.
+        public bool endreKunde(int personNr, Kunde innKunde)
+        {
+            var db = new DBContext();
+            try
+            {
+                KundeDB endreKunde = db.Kunder.Find(personNr);
+                endreKunde.personNr = innKunde.personNr;
+                endreKunde.fornavn = innKunde.fornavn;
+                endreKunde.etternavn = innKunde.etternavn;
+                endreKunde.adresse = innKunde.adresse;
+                endreKunde.telefonNr = innKunde.telefonNr;
+                if (endreKunde.postNr != innKunde.postNr)
+                {
+                    // sjekker om postnr allerede finnes
+                    Poststeder eksisterendePoststed = db.Poststeder.FirstOrDefault(p => p.Postnr == innKunde.postnr);
+                    if (eksisterendePoststed == null)
+                    {
+                        // Om postedet ikke eksisterer så legges det inn her
+                        var nyttPoststed = new Poststeder()
+                        {
+                            Postnr = innKunde.postNr,
+                            Poststed = innKunde.poststed
+                        };
+                        db.Poststeder.Add(nyttPoststed);
+                    }
+                    else
+                    {   // Endrer postnr
+                        endreKunde.postNr = innKunde.postNr;
+                    }
+                };
+                db.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool slettKunde(int personNr)
+        {
+            var db = new DBContext();
+            try
+            {
+                KundeDB slettKunde = db.Kunder.Find(personNr);
+                //dersom kunden har 0 kr på konten skal det være mulig å slette,hva skal i if testen ?
+                if ()
+                {
+                    db.Kunder.Remove(slettKunde);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception feil)
+            {
+                return false;
+            }
+        }
+        //Under her er listet søkfunksjoner, skal kunne søke en kunde via tlf,personnr,navn og eventuelt liste opp alle kunder med et gitt postnr
+        public Kunde finnKunde(string sok)
+        {
+            var db = new DBContext();
+
+            var funnetKunde = db.Kunder.Find(sok);
+
+            if (funnetKunde == null)
+            {
+                return null;
+            }
+            else
+            {
+                var utKunde = new Kunde()
+                {
+                    personNr = funnetKunde.persoNr,
+                    fornavn = funnetKunde.fornavn,
+                    etternavn = funnetKunde.etternavn,
+                    adresse = funnetKunde.adresse,
+                    postNr = funnetKunde.postNr,
+                    telefonNr = funnetKunde.telefonNr,
+                    poststed = funnetKunde.Poststeder.Poststed
+                };
+                return utKunde;
+            }
+        }
+       
+      
+      
 
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
