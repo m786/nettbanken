@@ -293,10 +293,10 @@ namespace Nettbanken.Controllers
                            "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
                            "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
                            "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
-
-                           //finn en maate aa lytte paa disse knappene!!! blir jquery!  dette   gaar ann men vi trenger unike id for hver knapper nummerere dem!!
-                           "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button"+ " id=\""+i+ "\"onclick=\"knapper('slett',this.id)\"" + ">Slett</button></td>" +
-                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" + " id=\""+i+ "\"onclick=\"knapper('endre',this.id)\"" + ">Endre</button></td>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" +
+                           "button"+ " id=\""+i+ "\"onclick=\"knapper('slett',this.id)\"" + ">Slett</button></td>" +
+                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" +
+                            "button" + " id=\""+i+ "\"onclick=\"knapper('endre',this.id)\"" + ">Endre</button></td>" +
                            "</tr>";
                 }
                 tempTable += "</table>";
@@ -405,9 +405,10 @@ namespace Nettbanken.Controllers
                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
-
-                        "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" + " id=\"" + i + "\"onclick=\"knapper('slett',this.id)\"" + ">Slett</button></td>" +
-                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" + " id=\"" + i + "\"onclick=\"knapper('endre',this.id)\"" + ">Endre</button></td>" +
+                        "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" +
+                        "button" + " id=\"" + i + "\"onclick=\"knapper('slett',this.id)\"" + ">Slett</button></td>" +
+                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" +
+                            " id=\"" + i + "\"onclick=\"knapper('endre',this.id)\"" + ">Endre</button></td>" +
                        "</tr>";
             }
             tempTable += "</table>";
