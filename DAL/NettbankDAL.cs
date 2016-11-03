@@ -422,7 +422,7 @@ namespace Nettbanken.DAL
 
                         s.kontoNr = konNr.ToString();
                         s.saldo = 500;
-                        s.kontoNavn = k.fornavn + " " + k.etternavn + ": " + konNr;
+                        s.kontoNavn = ""+konNr;
                         s.personNr = k.personNr;
 
                         try
@@ -441,21 +441,21 @@ namespace Nettbanken.DAL
                             KontoDB e = new KontoDB();
                             e.kontoNr = konNr.ToString();
                             e.saldo = 50;
-                            e.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
+                            e.kontoNavn = "" + konNr;
                             e.personNr = "118921160";
 
                             konNr += i;
                             KontoDB f = new KontoDB();
                             f.kontoNr = konNr.ToString();
                             f.saldo = 400;
-                            f.kontoNavn = "Per" + " " + "Bakke" + ": " + konNr;
+                            f.kontoNavn = "" + konNr;
                             f.personNr = "118921160";
 
                             konNr += i;
                             KontoDB g = new KontoDB();
                             g.kontoNr = konNr.ToString();
                             g.saldo = 50;
-                            g.kontoNavn = "Ola" + " " + "Hansen" + ": " + konNr;
+                            g.kontoNavn = "" + konNr;
                             g.personNr = "118921161";
 
                             try
