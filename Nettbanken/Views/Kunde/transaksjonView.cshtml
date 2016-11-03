@@ -35,7 +35,7 @@
                 var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
                 $("#tempTabell").load("/Kunde/tempTransaksjon", {infoliste: info})
             }
-            function knapper(id)
+            function knapper(id,indeks)
             {
                 switch(id) 
                 {
@@ -50,7 +50,7 @@
                         $("#tempTabell").load("/Kunde/betal"); 
                         break;
                     case "endre":
-                        var endre = $("#endreB").val();
+                        //var endre = $("#endreB").val();
                         $("#endreB").val("");
                         $("#slettB").val("");
                         var fraKonto = $("#konto").val();
@@ -66,10 +66,10 @@
                         $("#melding").val("");
 
                         var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
-                        $("#tempTabell").load("/Kunde/endre",{betalingNr: endre,info: info}); 
+                        $("#tempTabell").load("/Kunde/endre", { betalingNr: indeks, info: info });
                         break;
                     case "slett":
-                        var slett = $("#slettB").val();
+                        //var slett = $("#slettB").val();
                         $("#endreB").val("");
                         $("#slettB").val("");
                         $("#tilKonto").val("");
@@ -77,7 +77,7 @@
                         $("#KID").val("");
                         $("#dato").val("");
                         $("#melding").val("");
-                        $("#tempTabell").load("/Kunde/slett",{betalingNr: slett}); 
+                        $("#tempTabell").load("/Kunde/slett", { betalingNr: indeks });
                         break;
                     default:
                 }
@@ -204,7 +204,7 @@
                  </div>
                     
 
-                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" id="slett" onclick="knapper('slett')" role="button" style="margin-left:-29%;">Slett</a></p>
+                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" id="slett" onclick="knapper('slett','1')" role="button" style="margin-left:-29%;">Slett</a></p>
                     
 
                     <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg" id="endre" onclick="knapper('endre')" role="button" style="margin-left:-22%;">Endre</a></p>
