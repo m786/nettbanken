@@ -178,19 +178,22 @@ namespace Nettbanken.DAL
             }
         }
 
-        public bool slettKunde(int personNr)
+        public bool slettKunde(string personNr)
         {
             var db = new DBContext();
+            var ok = sjekkSaldo(personNr);
+            
             try
             {
                 KundeDB slettKunde = db.Kunder.Find(personNr);
-                //dersom kunden har 0 kr på konten skal det være mulig å slette,hva skal i if testen ?
-                if ()
+                
+                if (ok)
                 {
                     db.Kunder.Remove(slettKunde);
                     db.SaveChanges();
                     return true;
                 }
+                return false;
             }
             catch (Exception feil)
             {
@@ -224,6 +227,26 @@ namespace Nettbanken.DAL
             }
         }
        
+        public Boolean sjekkSaldo(String personnr)
+        {
+            var ok = false;
+            using (var db = new DBContext())
+            {
+                var sjekkSaldo = db.Kontoer.Where(k =>k.personNr == personnr);
+                
+                foreach (var i in sjekkSaldo)
+                {
+                    if(i.saldo == 0)
+                    {
+                        ok = true;
+                    }
+     
+                }
+
+            }
+            return ok;
+        }
+    }
       
       
 
