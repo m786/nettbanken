@@ -40,8 +40,6 @@
                 switch(id) 
                 {
                     case "betal":
-                        $("#endreB").val("");
-                        $("#slettB").val("");
                         $("#tilKonto").val("");
                         $("#saldoUt").val("");
                         $("#KID").val("");
@@ -50,9 +48,6 @@
                         $("#tempTabell").load("/Kunde/betal"); 
                         break;
                     case "endre":
-                        //var endre = $("#endreB").val();
-                        $("#endreB").val("");
-                        $("#slettB").val("");
                         var fraKonto = $("#konto").val();
                         var tilKonto = $("#tilKonto").val(); 
                         $("#tilKonto").val("");
@@ -69,9 +64,6 @@
                         $("#tempTabell").load("/Kunde/endre", { betalingNr: indeks, info: info });
                         break;
                     case "slett":
-                        //var slett = $("#slettB").val();
-                        $("#endreB").val("");
-                        $("#slettB").val("");
                         $("#tilKonto").val("");
                         $("#saldoUt").val("");
                         $("#KID").val("");
@@ -174,13 +166,9 @@
                         </div>
                         <!---->
                         <div class="panel-footer1">
-                            <p class="col-lg-2 col-lg-offset-4">
-
-                                <input type="button" class="btn btn-primary btn-lg" value="Tilbake" onclick="location.href='@Url.Action("hjemmesideView","Kunde")'" />
-                            </p>
-                            <p class="col-lg-2 col-lg-offset-4">
-                                <input type="button" id="leggTil" value="Legg til" class="btn btn-primary btn-lg" onclick="leggtilTemp()" />
-                            </p>
+                            <p class="col-lg-2 col-lg-offset-4"><input type="button" class="btn btn-primary btn-lg" value="Tilbake" onclick="location.href='@Url.Action("hjemmesideView","Kunde")'" /></p>
+                            <p class="col-lg-2 col-lg-offset-4"><input type="button" class="btn btn-primary btn-lg" id="leggTil" value="Legg til" onclick="leggtilTemp()" /></p>
+                            <p class="col-lg-2 col-lg-offset-4"><input type="button" class="btn btn-primary btn-lg" id="betal" value="Betal" onclick="knapper('betal')" /></p>
                         </div>
                     </fieldset>
                 }
@@ -193,25 +181,7 @@
                 <div id="tempTabell" class="panel-body">
                     <!--tempTabell-->
                     <p><b>Betalinger legges til her!</b></p>
-                </div>
-                <div class="panel-footer">
-                 <div class="fotter-panel">
-                     <label for="slettB" style="margin-left:4%;">Slett Betaling NR:</label>
-                     <input id="slettB" type="text" style="border-color:black;">
-
-                     <label for="endreB" style="margin-left:7%;">Endre Betaling NR:</label>
-                     <input id="endreB" type="text" style="border-color:black;">
-                 </div>
-                    
-
-                    <p class="col-lg-2 col-lg-offset-1"><a class="btn btn-primary btn-lg" id="slett" onclick="knapper('slett','1')" role="button" style="margin-left:-29%;">Slett</a></p>
-                    
-
-                    <p class="col-lg-2 col-lg-offset-2"><a class="btn btn-primary btn-lg" id="endre" onclick="knapper('endre')" role="button" style="margin-left:-22%;">Endre</a></p>
-                    
-
-                    <p class="col-lg-2 col-lg-offset-3"><a class="btn btn-primary btn-lg"  id="betal" onclick="knapper('betal')" role="button">Betal</a></p> 
-                </div>
+                </div
             </div>
         
     </body>
