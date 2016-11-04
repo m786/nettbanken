@@ -35,53 +35,53 @@
                 <h2>Kunder</h2>
 
 
-                <table id="høyre_kolom">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>PersonNR</th>
-                            <th>Fornavn</th>
-                            <th>Etternavn</th>
-                            <th>KontoNR</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
+                <table class="table">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].fornavn)
+                           
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].etternavn)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].adresse)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].postNr)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].poststed)
+                        </th>
+                        <th></th>
+                    </tr>
 
-                    <tbody>
-                        <tr class="linje1">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="button grønn">Endre</button></td>
-                            <td><button class="button rød">Slett</button></td>
-                        </tr>
-                        <tr class="linje2">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="button grønn">Endre</button></td>
-                            <td><button class="button rød">Slett</button></td>
-                        </tr>
-                    </tbody>
-
-                    <tfoot>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <td colspan="12">
-                                <a href="#" class="button rød" onclick="location.href='@Url.Action("loggUt","Kunde")'">LoggUt</a>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.fornavn)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.etternavn)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.adresse)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.postNr)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.poststed)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Endre", "Endre", new { id = item.personNr }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Detalj", "Detaljer", new { id = item.personNr }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Slette", "Slett", new { id = item.personNr }, new { @class = "btn btn-danger" })
                             </td>
                         </tr>
-                    </tfoot>
+                    }
+
                 </table>
 
                 <div class="knapper_under_panel">
