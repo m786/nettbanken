@@ -38,8 +38,12 @@
                 <table class="table">
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model[0].fornavn)
+                            @Html.DisplayNameFor(model => model[0].personNr)
                            
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].fornavn)
+
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model[0].etternavn)
@@ -59,6 +63,9 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.personNr)
+                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.fornavn)
                             </td>
@@ -83,7 +90,7 @@
                     }
 
                 </table>
-
+                @Html.ActionLink("Registrer", "Registrer", new { tom = "" }, new { @class = "btn btn-success" })
                 <div class="knapper_under_panel">
                 </div>
 

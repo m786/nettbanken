@@ -11,9 +11,9 @@ namespace Nettbanken.DAL
     {
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
-        
-        // Admin metode skal inn her
 
+        // Admin metode skal inn her
+        List<Kunde> alleKunder();
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 
