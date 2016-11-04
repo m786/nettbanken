@@ -83,14 +83,14 @@
                             </td>
                             <td>
                                 @Html.ActionLink("Endre", "Endre", new { id = item.personNr }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Detalj", "Detaljer", new { id = item.personNr }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("info", "Detaljer", new { id = item.personNr }, new { @class = "btn btn-primary" })
                                 @Html.ActionLink("Slette", "Slett", new { id = item.personNr }, new { @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }
 
                 </table>
-                @Html.ActionLink("Registrer", "Registrer", new { tom = "" }, new { @class = "btn btn-success" })
+                @Html.ActionLink("Registrer ny Kunde", "Registrer", new { tom = "" }, new { @class = "btn btn-success" })
                 <div class="knapper_under_panel">
                 </div>
 
