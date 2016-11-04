@@ -30,7 +30,7 @@ namespace Nettbanken.DAL
                 etternavn = k.etternavn,
                 adresse = k.adresse,
                 postNr = k.postNr,
-                poststed = k.Poststeder.Poststed,
+                poststed = k.poststed.poststed,
                 telefonNr = k.telefonNr
             }
                                 ).ToList();
@@ -153,16 +153,16 @@ namespace Nettbanken.DAL
                 if (endreKunde.postNr != innKunde.postNr)
                 {
                     // sjekker om postnr allerede finnes
-                    Poststeder eksisterendePoststed = db.Poststeder.FirstOrDefault(p => p.Postnr == innKunde.postnr);
-                    if (eksisterendePoststed == null)
+                    bool finnes = db.Poststeder.Any(p => p.postNr == innKunde.postNr);
+                    if (finnes)
                     {
                         // Om postedet ikke eksisterer så legges det inn her
-                        var nyttPoststed = new Poststeder()
+                        var nyPoststed = new PoststedDB
                         {
-                            Postnr = innKunde.postNr,
-                            Poststed = innKunde.poststed
+                            postNr = innKunde.postNr,
+                            poststed = innKunde.poststed
                         };
-                        db.Poststeder.Add(nyttPoststed);
+                     
                     }
                     else
                     {   // Endrer postnr
@@ -215,13 +215,13 @@ namespace Nettbanken.DAL
             {
                 var utKunde = new Kunde()
                 {
-                    personNr = funnetKunde.persoNr,
+                    personNr = funnetKunde.personNr,
                     fornavn = funnetKunde.fornavn,
                     etternavn = funnetKunde.etternavn,
                     adresse = funnetKunde.adresse,
                     postNr = funnetKunde.postNr,
                     telefonNr = funnetKunde.telefonNr,
-                    poststed = funnetKunde.Poststeder.Poststed
+                    poststed = funnetKunde.poststed.poststed
                 };
                 return utKunde;
             }
@@ -246,7 +246,7 @@ namespace Nettbanken.DAL
             }
             return ok;
         }
-    }
+    
       
       
 

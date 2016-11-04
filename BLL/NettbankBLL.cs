@@ -30,6 +30,10 @@ namespace Nettbanken.BLL
             return true;
         }
 
+        public List<Kunde> alleKunder()
+        {
+            return _repository.alleKunder();
+        }
 
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder

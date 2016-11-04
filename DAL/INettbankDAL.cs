@@ -24,6 +24,7 @@ namespace Nettbanken.DAL
         Boolean kundeLogginn(Kunde kunde);
         Transaksjon registrerTransaksjon(Transaksjon transaksjon);
         List<String> hentKontoer(String personnr);
+        List<Kunde> alleKunder();
         String hentKontoInformasjon(String kontonavn, String personnr);
         String hentKontoUtskrift(String kontonavn, String personnr);
         void startsjekk();

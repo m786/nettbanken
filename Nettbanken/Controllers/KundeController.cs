@@ -114,6 +114,7 @@ namespace Nettbanken.Controllers
                     // Hvis en logger seg inn som admin, så logges kundekonto ut dersom en kundekonto er innlogget
                     Session["innloggetAdmin"] = true;
                     Session["innlogget"] = false;
+                   
                     return RedirectToAction("adminsideView");
                 }
             }
@@ -167,13 +168,16 @@ namespace Nettbanken.Controllers
         // Hjemmesiden til admins
         public ActionResult adminsideView()
         {
+            var nettbankBLL = new NettbankBLL();
             // Siden kan kun vises dersom man er innlogget
             if (Session["innloggetAdmin"] != null)
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
+
+                List<Kunde> alleKunder = nettbankBLL.alleKunder();
                 if (innlogget)
                 {
-                    return View();
+                    return View(alleKunder);
                 }
                 return RedirectToAction("adminLogginnView");
             }

@@ -12,6 +12,10 @@ namespace Nettbanken.DAL
         // Admin Metoder
 
         // Admin metode skal inn her
+        public List<Kunde> alleKunder()
+        {
+            return null;
+        }
 
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
