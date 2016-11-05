@@ -51,12 +51,40 @@ namespace Nettbanken.Controllers
             ModelState.Remove("bankId");
             if (ModelState.IsValid)//valider 
             {
+                // Hvis en kunde allerede er logget inn og prøver å lage ny kunde, så logges den innloggede ut
+                if ((Boolean)Session["innlogget"])
+                {
+                    Session["innlogget"] = false;
+                    Session["personnr"] = null;
+                    Session["bankid"] = null;
+                    Session["kontoer"] = null;
+                    Session["tempTabell"] = null;
+                }
+                if ((Boolean)Session["innloggetAdmin"])
+                {
+                    Session["innloggetAdmin"] = false;
+                }
                 var nettbankBLL = new NettbankBLL();
 
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
                 if (nettbankBLL.registrerKunde(kunde))
                 {
-                    return RedirectToAction("kundeLogginnView");
+                    Session["innlogget"] = true;
+
+                    // Initialiserer betalingsListe, trenger en verdi hvis ikke gir det en error ved oppstart
+                    var betalingsListe = new List<String[]>();
+                    String[] temp = { "initializer" };
+                    betalingsListe.Add(temp);
+
+                    String personnr = kunde.personNr;
+   
+                    Session["personnr"] = kunde.personNr;
+                    Session["bankid"] = kunde.bankId;
+                    // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
+                    Session["kontoer"] = nettbankBLL.hentKontoer(personnr);
+                    Session["tempTabell"] = betalingsListe;
+
+                    return RedirectToAction("hjemmesideView");
                 }
             }
             return View();
@@ -153,6 +181,7 @@ namespace Nettbanken.Controllers
                     String personnr = kunde.personNr;
    
                     Session["personnr"] = kunde.personNr;
+                    Session["bankid"] = kunde.bankId;
                     // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
                     Session["kontoer"] = nettbankBLL.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
@@ -246,6 +275,7 @@ namespace Nettbanken.Controllers
             {
                 Session["innlogget"] = false;
                 Session["personnr"] = null;
+                Session["bankid"] = null;
                 Session["kontoer"] = null;
                 Session["tempTabell"] = null;
             }

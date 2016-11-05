@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nettbanken.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,23 @@ namespace Nettbanken.BLL
 {
     public interface INettbankBLL
     {
-        Boolean interfaceTEST();
+        // ---------------------------------------------------------------------------------------
+        // Admin Metoder
+
+        Boolean adminLogginn(Admin admin);
+        List<Kunde> alleKunder();
+
+        // ---------------------------------------------------------------------------------------
+        // Kunde Metoder
+
+        Boolean registrerKunde(Kunde kunde);
+        Boolean registrerNyKonto(Konto nyKonto);
+        void opprettStandardkonto(string[] nyKundeinfo);
+        Boolean kundeLogginn(Kunde kunde);
+        Transaksjon registrerTransaksjon(Transaksjon transaksjon);
+        List<String> hentKontoer(String personnr);
+        String hentKontoInformasjon(String kontonavn, String personnr);
+        String hentKontoUtskrift(String kontonavn, String personnr);
+        void startsjekk();
     }
 }

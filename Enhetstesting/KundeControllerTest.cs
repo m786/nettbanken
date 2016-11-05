@@ -7,9 +7,10 @@ namespace Enhetstesting
     public class KundeControllerTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TadminLogginnview_godkjent()
         {
-
+            //Arrange
+            var controller = new KundeController
         }
     }
 }
