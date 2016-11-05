@@ -213,9 +213,9 @@
     <Content Include="scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\Kunde\adminLogginnView.cshtml" />
     <Content Include="Views\Kunde\adminsideView.cshtml" />
-    <Content Include="Views\Kunde\endre.cshtml" />
-    <Content Include="Views\Kunde\info.cshtml" />
-    <Content Include="Views\Kunde\slett.cshtml" />
+    <Content Include="Views\Kunde\endreView.cshtml" />
+    <Content Include="Views\Kunde\infoView.cshtml" />
+    <Content Include="Views\Kunde\slettView.cshtml" />
     <Content Include="Views\Kunde\registrerViaAdmin.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
