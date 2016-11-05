@@ -16,6 +16,7 @@ namespace Enhetstesting
             //Arrange
             var SessionMock = new TestControllerBuilder();
             var controller = new KundeController();
+            // ???
             SessionMock.InitializeController(controller);
 
             //Act
