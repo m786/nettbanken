@@ -612,7 +612,7 @@ namespace Nettbanken.DAL
             string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi", "Eirik", "Martin" };
             string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda", "Solo", "Haugen" };
             string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo", "Langesund", "Skien" };
-            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Halv Life 3", "Acestreet 13", "Gangveien 9" };
+            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Half Life 3", "Acestreet 13", "Gangveien 9" };
             byte[] kundeSalt, adminSalt;
 
             int pernr = 118921160, tlf = 12345678, konNr = 12345, postNr = 6789, bankid = 0, adminid = 0;
@@ -762,6 +762,36 @@ namespace Nettbanken.DAL
             }
         }
 
+        //oppdater konto balanser etter transaksjoner
+        public static void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop)
+        {
+           
+            
+
+            for (int i = 0; i<fraKonto.Length;i++) {
+
+                var db = new DBContext();
+
+                var fraKontoFunnet = db.Kontoer.Find(fraKonto[i]);
+                var tilKontoFunnet = db.Kontoer.Find(tilKonto[i]);
+
+                int fraKontoSinBalanse = fraKontoFunnet.saldo;
+                int tilKontoSinBalanse = tilKontoFunnet.saldo;
+
+                int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse- Int32.Parse(belop[i]);
+                int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop[i]);
+
+                String fraKontoSinNyeBalanse = kontoSomSkalBetalesFraSinNyeBalanse + "";
+                String tilKontoSinNyeBalanse = kontoSomSkalBetalesTilSinNyeBalanse + "";
+
+                 
+
+                //oppdater DB sett inn og oppdater DB med nye verdier.
+
+                 
+
+            }
+        }
 
     }
 }

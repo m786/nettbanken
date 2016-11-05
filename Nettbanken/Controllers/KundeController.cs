@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Nettbanken.BLL;
 using Nettbanken.Models;
+using Nettbanken.DAL;
 
 namespace Nettbanken.Controllers
 {
@@ -364,6 +365,11 @@ namespace Nettbanken.Controllers
         {
             var nettbankBLL = new NettbankBLL();
             var betalingsListe = (List<String[]>)Session["tempTabell"];
+
+            String[] fraKonto = new String[betalingsListe.Count()];
+            String[] tilKonto = new String[betalingsListe.Count()];
+            String[] belop = new String[betalingsListe.Count()]; 
+
             if (betalingsListe.Count > 1)
             {
                 for (int i = 1; i < betalingsListe.Count(); i++)
@@ -377,8 +383,14 @@ namespace Nettbanken.Controllers
                     t.dato = rad[4];
                     t.melding = rad[5];
                     nettbankBLL.registrerTransaksjon(t);
+
+                    fraKonto[i] = rad[0];
+                    tilKonto[i] = rad[1];
+                    belop[i] = rad[2];
+
                 }
 
+                NettbankDAL.oppdaterKontoer(fraKonto,tilKonto,belop); 
                 betalingsListe.Clear(); //clear transaction buffer
                 String[] temp = { "initializer" };
                 betalingsListe.Add(temp);

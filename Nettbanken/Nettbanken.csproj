@@ -136,6 +136,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\NettbankDB.mdf" />
+    <Content Include="App_Data\NettbankDB_log.ldf">
+      <DependentUpon>NettbankDB.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\Admin_Veiw.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -221,13 +225,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{38c30f2e-4b81-4fd1-9368-c4fd92a6dbda}</Project>
       <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{E3CC00B7-428C-412F-8394-F08AEFC57E72}</Project>
+      <Name>DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{61ed801f-e4a3-43b9-875e-5f579cec5d0e}</Project>
