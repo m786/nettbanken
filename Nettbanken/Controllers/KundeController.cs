@@ -13,12 +13,23 @@ namespace Nettbanken.Controllers
     // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
     public class KundeController : Controller
     {
+        private INettbankBLL _nettbankBLL;
+
+        public KundeController()
+        {
+            _nettbankBLL = new NettbankBLL();
+        }
+
+        public KundeController(INettbankBLL stub)
+        {
+            _nettbankBLL = stub;
+        }
+
         // Returnerer forsiden til Nettbanken
         public ActionResult forsideView()
         {
             // Tester om det er data i databasen, hvis ikke opprettes dummydata
-            var nettbankenBLL = new NettbankBLL();
-            nettbankenBLL.startsjekk();
+            _nettbankBLL.startsjekk();
             
             // Kunde session
             // Sjekker om session finnes, hvis ikke så settes den
@@ -64,10 +75,9 @@ namespace Nettbanken.Controllers
                 {
                     Session["innloggetAdmin"] = false;
                 }
-                var nettbankBLL = new NettbankBLL();
 
                 // Hvis OK er tom, så gikk registreringen bra, og går videre
-                if (nettbankBLL.registrerKunde(kunde))
+                if (_nettbankBLL.registrerKunde(kunde))
                 {
                     Session["innlogget"] = true;
 
@@ -81,7 +91,7 @@ namespace Nettbanken.Controllers
                     Session["personnr"] = kunde.personNr;
                     Session["bankid"] = kunde.bankId;
                     // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
-                    Session["kontoer"] = nettbankBLL.hentKontoer(personnr);
+                    Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
 
                     return RedirectToAction("hjemmesideView");
@@ -136,8 +146,7 @@ namespace Nettbanken.Controllers
 
             if (ModelState.IsValid)
             {
-                var nettbankBLL = new NettbankBLL();
-                if (nettbankBLL.adminLogginn(admin))
+                if (_nettbankBLL.adminLogginn(admin))
                 {
                     // Hvis en logger seg inn som admin, så logges kundekonto ut dersom en kundekonto er innlogget
                     Session["innloggetAdmin"] = true;
@@ -165,9 +174,8 @@ namespace Nettbanken.Controllers
 
             if (ModelState.IsValid)//formValider
             {
-                var nettbankBLL = new NettbankBLL();
                 // if-setning sjekker om kunden finnes i databasen
-                if (nettbankBLL.kundeLogginn(kunde)) 
+                if (_nettbankBLL.kundeLogginn(kunde)) 
                 {
                     // Hvis en logger seg inn som kunde, så logges adminbruker ut dersom en adminbruker er innlogget
                     Session["innloggetAdmin"] = false;
@@ -183,7 +191,7 @@ namespace Nettbanken.Controllers
                     Session["personnr"] = kunde.personNr;
                     Session["bankid"] = kunde.bankId;
                     // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
-                    Session["kontoer"] = nettbankBLL.hentKontoer(personnr);
+                    Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
 
                     return RedirectToAction("hjemmesideView");
@@ -197,13 +205,13 @@ namespace Nettbanken.Controllers
         // Hjemmesiden til admins
         public ActionResult adminsideView()
         {
-            var nettbankBLL = new NettbankBLL();
+ 
             // Siden kan kun vises dersom man er innlogget
             if (Session["innloggetAdmin"] != null)
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
 
-                List<Kunde> alleKunder = nettbankBLL.alleKunder();
+                List<Kunde> alleKunder = _nettbankBLL.alleKunder();
                 if (innlogget)
                 {
                     return View(alleKunder);
@@ -290,15 +298,13 @@ namespace Nettbanken.Controllers
         // Kaller på metode som henter konto informasjon
         public String hentKontoInformasjon(String kontonavn, String personnr)
         {
-            var nettbankBLL = new NettbankBLL();
-            return nettbankBLL.hentKontoInformasjon(kontonavn, personnr);
+            return _nettbankBLL.hentKontoInformasjon(kontonavn, personnr);
         }
 
         // Kaller på metode som henter gitt kontoutskrift
         public String hentKontoUtskrift(String kontonavn, String personnr)
         {
-            var nettbankBLL = new NettbankBLL();
-            return nettbankBLL.hentKontoUtskrift(kontonavn, personnr);
+            return _nettbankBLL.hentKontoUtskrift(kontonavn, personnr);
         }
 
         // Metode som legger til en transaksjon temporert

@@ -1,16 +1,25 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Nettbanken.Controllers;
+using Nettbanken.BLL;
+using Nettbanken.DAL;
+using SessionMockUnitTest.Controllers;
+using MvcContrib.TestHelper;
 namespace Enhetstesting
 {
     [TestClass]
     public class KundeControllerTest
     {
         [TestMethod]
-        public void TadminLogginnview_godkjent()
+        public void adminLogginnViewSessionOK()
         {
             //Arrange
-            var controller = new KundeController
+            var SessionMock = new TestControllerBuilder();
+            var controller = new KundeController();
+            SessionMock.InitializeController(controller);
+
+            //Act
+            
         }
     }
 }
