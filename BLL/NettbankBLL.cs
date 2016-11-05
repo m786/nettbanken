@@ -25,11 +25,13 @@ namespace Nettbanken.BLL
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
 
-        public bool interfaceTEST()
+        // Innloggingsmetode for admin
+        public Boolean adminLogginn(Admin admin)
         {
-            return true;
+            return _repository.adminLogginn(admin);
         }
 
+        // Henter alle kunder for admin
         public List<Kunde> alleKunder()
         {
             return _repository.alleKunder();
@@ -54,12 +56,6 @@ namespace Nettbanken.BLL
         public void opprettStandardkonto(string[] nyKundeinfo)
         {
             _repository.opprettStandardkonto(nyKundeinfo);
-        }
-
-        // Innloggingsmetode for admin
-        public Boolean adminLogginn(Admin admin)
-        {
-            return _repository.adminLogginn(admin);
         }
 
         // Innloggingsmetode for kunder

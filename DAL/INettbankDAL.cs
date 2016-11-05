@@ -12,19 +12,26 @@ namespace Nettbanken.DAL
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
 
-        // Admin metode skal inn her
+        Boolean adminLogginn(Admin admin);
         List<Kunde> alleKunder();
+
+        Boolean registrerNyKunde(Kunde kunde);
+        Boolean endreKunde(int personNr, Kunde innKunde);
+        Boolean slettKunde(string personNr);
+        Kunde finnKunde(string sok);
+        Boolean sjekkSaldo(String personnr);
+
+
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 
         Boolean registrerKunde(Kunde kunde);
         Boolean registrerNyKonto(Konto nykonto);
         void opprettStandardkonto(string[] nyKundeInfo);
-        Boolean adminLogginn(Admin admin);
         Boolean kundeLogginn(Kunde kunde);
         Transaksjon registrerTransaksjon(Transaksjon transaksjon);
         List<String> hentKontoer(String personnr);
-       
+      
         String hentKontoInformasjon(String kontonavn, String personnr);
         String hentKontoUtskrift(String kontonavn, String personnr);
         void startsjekk();

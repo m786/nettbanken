@@ -18,25 +18,51 @@ namespace Nettbanken.DAL
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
 
-        // Admin metode skal inn her
-
-        public List<Kunde> alleKunder()
+        // Innloggingsmetode for admins
+        public Boolean adminLogginn(Admin admin)
         {
-            var db = new DBContext();
-            List<Kunde> alleKunder = db.Kunder.Select(k => new Kunde()
+            using (var db = new DBContext())
             {
-                personNr = k.personNr,
-                fornavn = k.fornavn,
-                etternavn = k.etternavn,
-                adresse = k.adresse,
-                postNr = k.postNr,
-                poststed = k.poststed.poststed,
-                telefonNr = k.telefonNr
+                // Sjekker oppgitte adminID mot databasen om admin finnes
+                AdminDB fantAdmin = db.Admins.FirstOrDefault
+                    (a => a.adminId == admin.adminId);
+
+                if (fantAdmin != null)
+                {
+                    // Dersom admin finnes så sjekker vi om oppgitte passord er korrekt
+                    String passord = krypterPassord(admin.passord, fantAdmin.salt);
+                    if (passord == fantAdmin.passord)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
-                                ).ToList();
-            return alleKunder;
         }
 
+
+        // Henter alle kunder for admin
+        public List<Kunde> alleKunder()
+        {
+            using (var db = new DBContext())
+            {
+                List<Kunde> alleKunder = db.Kunder.Select(k => new Kunde()
+                {
+                    personNr = k.personNr,
+                    fornavn = k.fornavn,
+                    etternavn = k.etternavn,
+                    adresse = k.adresse,
+                    postNr = k.postNr,
+                    poststed = k.poststed.poststed,
+                    telefonNr = k.telefonNr
+                }).ToList();
+
+                return alleKunder;
+            }
+        }
+
+        // Registrerer en ny kunde
         public Boolean registrerNyKunde(Kunde kunde)
         {
             Boolean OK = true;
@@ -123,9 +149,10 @@ namespace Nettbanken.DAL
 
             return OK;
         }
+
         //Her genereres tilfeldig passord for en ny kunde som admin lager,passordet skal da sendes 
         //til kunden på mail eller sms.
-        private static string lagPassord()
+        private static String lagPassord()
         {
             string velgFra = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
             char[] bokstaver = new char[10];
@@ -138,92 +165,100 @@ namespace Nettbanken.DAL
 
             return new string(bokstaver);
         }
-        //Admin skal kunne endre eksisterende kunde info om nødvendig.
-        public bool endreKunde(int personNr, Kunde innKunde)
-        {
-            var db = new DBContext();
-            try
-            {
-                KundeDB endreKunde = db.Kunder.Find(personNr);
-                endreKunde.personNr = innKunde.personNr;
-                endreKunde.fornavn = innKunde.fornavn;
-                endreKunde.etternavn = innKunde.etternavn;
-                endreKunde.adresse = innKunde.adresse;
-                endreKunde.telefonNr = innKunde.telefonNr;
-                if (endreKunde.postNr != innKunde.postNr)
-                {
-                    // sjekker om postnr allerede finnes
-                    bool finnes = db.Poststeder.Any(p => p.postNr == innKunde.postNr);
-                    if (finnes)
-                    {
-                        // Om postedet ikke eksisterer så legges det inn her
-                        var nyPoststed = new PoststedDB
-                        {
-                            postNr = innKunde.postNr,
-                            poststed = innKunde.poststed
-                        };
-                     
-                    }
-                    else
-                    {   // Endrer postnr
-                        endreKunde.postNr = innKunde.postNr;
-                    }
-                };
-                db.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
-        public bool slettKunde(string personNr)
+        //Admin skal kunne endre eksisterende kunde info om nødvendig.
+        public Boolean endreKunde(int personNr, Kunde innKunde)
         {
-            var db = new DBContext();
-            var ok = sjekkSaldo(personNr);
-            
-            try
-            {
-                KundeDB slettKunde = db.Kunder.Find(personNr);
-                
-                if (ok)
+            using (var db = new DBContext())
+            { 
+                try
                 {
-                    db.Kunder.Remove(slettKunde);
+                    KundeDB endreKunde = db.Kunder.Find(personNr);
+                    endreKunde.personNr = innKunde.personNr;
+                    endreKunde.fornavn = innKunde.fornavn;
+                    endreKunde.etternavn = innKunde.etternavn;
+                    endreKunde.adresse = innKunde.adresse;
+                    endreKunde.telefonNr = innKunde.telefonNr;
+                    if (endreKunde.postNr != innKunde.postNr)
+                    {
+                        // sjekker om postnr allerede finnes
+                        bool finnes = db.Poststeder.Any(p => p.postNr == innKunde.postNr);
+                        if (finnes)
+                        {
+                            // Om postedet ikke eksisterer så legges det inn her
+                            var nyPoststed = new PoststedDB
+                            {
+                                postNr = innKunde.postNr,
+                                poststed = innKunde.poststed
+                            };
+
+                        }
+                        else
+                        {   // Endrer postnr
+                            endreKunde.postNr = innKunde.postNr;
+                        }
+                    };
                     db.SaveChanges();
                     return true;
                 }
-                return false;
-            }
-            catch (Exception feil)
-            {
-                return false;
+                catch
+                {
+                    return false;
+                }
             }
         }
+
+        public Boolean slettKunde(string personNr)
+        {
+            using (var db = new DBContext())
+            {
+                var ok = sjekkSaldo(personNr);
+
+                try
+                {
+                    KundeDB slettKunde = db.Kunder.Find(personNr);
+
+                    if (ok)
+                    {
+                        db.Kunder.Remove(slettKunde);
+                        db.SaveChanges();
+                        return true;
+                    }
+                    return false;
+                }
+                catch (Exception feil)
+                {
+                    return false;
+                }
+
+            }
+        }
+
         //Under her er listet søkfunksjoner, skal kunne søke en kunde via tlf,personnr,navn og eventuelt liste opp alle kunder med et gitt postnr
         public Kunde finnKunde(string sok)
         {
-            var db = new DBContext();
-
-            var funnetKunde = db.Kunder.Find(sok);
-
-            if (funnetKunde == null)
+            using (var db = new DBContext())
             {
-                return null;
-            }
-            else
-            {
-                var utKunde = new Kunde()
+                var funnetKunde = db.Kunder.Find(sok);
+
+                if (funnetKunde == null)
                 {
-                    personNr = funnetKunde.personNr,
-                    fornavn = funnetKunde.fornavn,
-                    etternavn = funnetKunde.etternavn,
-                    adresse = funnetKunde.adresse,
-                    postNr = funnetKunde.postNr,
-                    telefonNr = funnetKunde.telefonNr,
-                    poststed = funnetKunde.poststed.poststed
-                };
-                return utKunde;
+                    return null;
+                }
+                else
+                {
+                    var utKunde = new Kunde()
+                    {
+                        personNr = funnetKunde.personNr,
+                        fornavn = funnetKunde.fornavn,
+                        etternavn = funnetKunde.etternavn,
+                        adresse = funnetKunde.adresse,
+                        postNr = funnetKunde.postNr,
+                        telefonNr = funnetKunde.telefonNr,
+                        poststed = funnetKunde.poststed.poststed
+                    };
+                    return utKunde;
+                }
             }
         }
        
@@ -247,9 +282,6 @@ namespace Nettbanken.DAL
             return ok;
         }
     
-      
-      
-
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 
@@ -410,29 +442,6 @@ namespace Nettbanken.DAL
                 }
             }
             return true;
-        }
-
-        // Innloggingsmetode for admins
-        public Boolean adminLogginn(Admin admin)
-        {
-            using (var db = new DBContext())
-            {
-                // Sjekker oppgitte adminID mot databasen om admin finnes
-                AdminDB fantAdmin = db.Admins.FirstOrDefault
-                    (a => a.adminId == admin.adminId);
-
-                if (fantAdmin != null)
-                {
-                    // Dersom admin finnes så sjekker vi om oppgitte passord er korrekt
-                    String passord = krypterPassord(admin.passord, fantAdmin.salt);
-                    if (passord == fantAdmin.passord)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
         }
 
         // Innloggingsmetode for kunder
