@@ -82,15 +82,15 @@
                                 @Html.DisplayFor(modelItem => item.poststed)
                             </td>
                             <td>
-                                @Html.ActionLink("Endre", "Endre", new { id = item.personNr }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("info", "Detaljer", new { id = item.personNr }, new { @class = "btn btn-primary" })
-                                @Html.ActionLink("Slette", "Slett", new { id = item.personNr }, new { @class = "btn btn-danger" })
+                                @Html.ActionLink("Endre", "endre", new { id = item.personNr }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Info", "info", new { id = item.personNr }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Slette", "slett", new { id = item.personNr }, new { @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }
 
                 </table>
-                @Html.ActionLink("Registrer ny Kunde", "Registrer", new { tom = "" }, new { @class = "btn btn-success" })
+                @Html.ActionLink("Registrer ny Kunde", "registrerViaAdmin", new { tom = "" }, new { @class = "btn btn-success" })
                 <div class="knapper_under_panel">
                 </div>
 
