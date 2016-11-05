@@ -774,13 +774,8 @@ namespace Nettbanken.DAL
         //oppdater konto balanser etter transaksjoner
         public static void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop)
         {
-           
-            
-
-            for (int i = 0; i<fraKonto.Length;i++) {
-
+            for (int i = 1; i<fraKonto.Length;i++) {
                 var db = new DBContext();
-
                 var fraKontoFunnet = db.Kontoer.Find(fraKonto[i]);
                 var tilKontoFunnet = db.Kontoer.Find(tilKonto[i]);
 
@@ -790,17 +785,11 @@ namespace Nettbanken.DAL
                 int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse- Int32.Parse(belop[i]);
                 int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop[i]);
 
-                String fraKontoSinNyeBalanse = kontoSomSkalBetalesFraSinNyeBalanse + "";
-                String tilKontoSinNyeBalanse = kontoSomSkalBetalesTilSinNyeBalanse + "";
-
-                 
-
-                //oppdater DB sett inn og oppdater DB med nye verdier.
-
-                 
-
+                fraKontoFunnet.saldo = kontoSomSkalBetalesFraSinNyeBalanse;
+                tilKontoFunnet.saldo = kontoSomSkalBetalesTilSinNyeBalanse;
+                
+                db.SaveChanges();
             }
         }
-
     }
 }
