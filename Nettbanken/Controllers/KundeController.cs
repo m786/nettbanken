@@ -275,6 +275,40 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
+        public ActionResult slettView(string idnr)
+        {
+            if (Session["innloggetAdmin"] != null)
+            {
+             var kunden = _nettbankBLL.finnKunde(idnr);
+             bool innlogget = (bool)Session["innloggetAdmin"];
+                if (innlogget)
+                {
+                  return View(kunden);
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
+
+        }
+        [HttpPost]
+        public ActionResult Slett(string idnr)
+        {
+            if (Session["innloggetAdmin"] != null)
+            {
+                
+                bool innlogget = (bool)Session["innloggetAdmin"];
+                bool slettetOk = _nettbankBLL.slettKunde(idnr);
+                if (slettetOk)
+                {
+                    return RedirectToAction("adminsideView");
+                }
+                return RedirectToAction("kundeLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
+
+        }
         // Metode for utlogging
         public ActionResult loggUt()
         {
