@@ -333,7 +333,7 @@ namespace Nettbanken.DAL
         public Boolean registrerKunde(Kunde kunde) 
         {
             Boolean OK = true;
-
+            String logg = "";
             // Oppretter Database connection
             using (var db = new DBContext())
             {
@@ -362,6 +362,9 @@ namespace Nettbanken.DAL
                         telefonNr = kunde.telefonNr,
                         postNr = kunde.postNr
                     };
+
+                    logg = "Ny kunde har blitt registrert. Navn: "
+                        + nyKunde.fornavn + " " + nyKunde.etternavn + " - " + "Personnummer: " + nyKunde.personNr;
 
                     try
                     {
@@ -408,11 +411,9 @@ namespace Nettbanken.DAL
                     {
                         OK = false;
                     }
-
+                    
                 }
-             
             }
-            
 
             return OK;
         }
@@ -458,7 +459,7 @@ namespace Nettbanken.DAL
                     // Dersom kunden finnes så sjekker vi om oppgitte passord er korrekt
                     String passord = krypterPassord(kunde.passord, fantKunde.salt);
                     if (passord == fantKunde.passord)
-                    { 
+                    {
                         return true;
                     }
                 }
@@ -640,7 +641,7 @@ namespace Nettbanken.DAL
                     postNr += 1;
                     bankid += 1;
                     kundeSalt = genererSalt();
-
+                    
                     // Lager 7 Kundekontoer
                     if (i < fornavn.Length - 2)
                     {
@@ -802,11 +803,29 @@ namespace Nettbanken.DAL
             }
         }
 
-        // Metode for logging av fil
-        public String TmpPath()
+        // Metode som henter veien til C:\Users\DITTBRUKERNAVN\AppData\Temp
+        public static String hentTempPath()
         {
-            //String path = System.Envior
-            return null;
+            String path = System.Environment.GetEnvironmentVariable("TEMP");
+            if (!path.EndsWith("\\")) path += "\\";
+            return path;
+        }
+
+        // Metode for selve logging til filen
+        public static void loggEndring(String melding)
+        {
+            // Åpner streamwriter som skriver til oppgitte path
+            System.IO.StreamWriter writer = System.IO.File.AppendText(hentTempPath() + "DBendringer.txt");
+            try
+            {
+                String loggLinje = System.String.Format(
+                    "{0:G}: {1}.", System.DateTime.Now, melding);
+                writer.WriteLine(loggLinje);
+            }
+            finally
+            {
+                writer.Close();
+            }
         }
 
     }
