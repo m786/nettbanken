@@ -37,6 +37,14 @@ namespace Nettbanken.BLL
             return _repository.alleKunder();
         }
 
+        public Kunde finnKunde(string sok)
+        {
+            return _repository.finnKunde(sok);
+        }
+        public Boolean slettKunde(string personNr)
+        {
+            return _repository.slettKunde(personNr);
+        }
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 

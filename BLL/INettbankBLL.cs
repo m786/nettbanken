@@ -14,7 +14,8 @@ namespace Nettbanken.BLL
 
         Boolean adminLogginn(Admin admin);
         List<Kunde> alleKunder();
-
+        Kunde finnKunde(string sok);
+        Boolean slettKunde(string personNr);
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 

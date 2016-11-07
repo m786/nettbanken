@@ -82,9 +82,9 @@
                                 @Html.DisplayFor(modelItem => item.poststed)
                             </td>
                             <td>
-                                @Html.ActionLink("Endre", "endre", new { id = item.personNr }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Info", "info", new { id = item.personNr }, new { @class = "btn btn-primary" })
-                                @Html.ActionLink("Slette", "slett", new { id = item.personNr }, new { @class = "btn btn-danger" })
+                                @Html.ActionLink("Endre", "endreView", new { idnr = item.personNr }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Info", "infoView", new { idnr = item.personNr }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Slette", "slettView", new { idnr = item.personNr }, new { @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }

@@ -1,0 +1,85 @@
+﻿@model Nettbanken.Models.Kunde
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Slett</title>
+</head>
+<body>
+    <br /><br />
+    <h3>Er du sikker på at du vil slette denne?</h3>
+    <div>
+        <h4>Kunde</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.personNr)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.personNr)
+            </dd>
+
+              <dt>
+                @Html.DisplayNameFor(model => model.fornavn)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.fornavn)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.etternavn)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.etternavn)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.adresse)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.adresse)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.postNr)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.postNr)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.poststed)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.poststed)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.telefonNr)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.telefonNr)
+            </dd>
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Slett" class="btn btn-danger" />
+                @Html.ActionLink("Kundeliste", "adminsideView", new { tom = "" }, new { @class = "btn btn-primary" })
+            </div>
+        }
+    </div>
+</body>
+</html>
