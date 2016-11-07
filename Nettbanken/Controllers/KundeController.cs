@@ -90,7 +90,6 @@ namespace Nettbanken.Controllers
                     String personnr = kunde.personNr;
    
                     Session["personnr"] = kunde.personNr;
-                    Session["bankid"] = kunde.bankId;
                     // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
                     Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;

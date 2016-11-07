@@ -362,10 +362,7 @@ namespace Nettbanken.DAL
                         telefonNr = kunde.telefonNr,
                         postNr = kunde.postNr
                     };
-
-                    logg = "Ny kunde har blitt registrert. Navn: "
-                        + nyKunde.fornavn + " " + nyKunde.etternavn + " - " + "Personnummer: " + nyKunde.personNr;
-
+                    
                     try
                     {
                         db.Kunder.Add(nyKunde);
@@ -413,8 +410,14 @@ namespace Nettbanken.DAL
                     }
                     
                 }
+
+                // Kunden logges dersom det ikke var noen excpetions som ble fanget
+                logg = "Ny kunde har blitt registrert. Navn: "
+                        + kunde.fornavn + " " + kunde.etternavn + " - " + "Personnummer: " + kunde.personNr;
             }
 
+            // Logger hendelsen
+            loggHendelse(logg, true);
             return OK;
         }
 
@@ -739,6 +742,8 @@ namespace Nettbanken.DAL
                     }
 
                 } // forloop slutt
+
+                loggHendelse("Dummydata opprettet", true);
             } // DB slutt
 
         }
@@ -811,11 +816,26 @@ namespace Nettbanken.DAL
             return path;
         }
 
-        // Metode for selve logging til filen
-        public static void loggEndring(String melding)
+        // Metode logging av hendelse til fil
+        public static void loggHendelse(String melding, Boolean type)
         {
-            // Åpner streamwriter som skriver til oppgitte path
-            System.IO.StreamWriter writer = System.IO.File.AppendText(hentTempPath() + "DBendringer.txt");
+            
+            System.IO.StreamWriter writer;
+
+            // Åpner en stream writer med filnavn "DBendringer" dersom type parameter er true. 
+            // Dette logger alle endringer gjort mot Database.
+            if (type == true)
+            {
+                writer = System.IO.File.AppendText(hentTempPath() + "DBendringer.txt");
+            }
+            // Åpner en stream writer med filnavn "DBfeil" dersom type parameter er  false.
+            // Dette logger alle feilsituasjoner. 
+            else
+            {
+                writer = System.IO.File.AppendText(hentTempPath() + "DBfeil.txt");
+            }
+
+            // Logger hendelsen til filen
             try
             {
                 String loggLinje = System.String.Format(
