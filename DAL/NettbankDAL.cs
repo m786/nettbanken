@@ -755,7 +755,7 @@ namespace Nettbanken.DAL
                 {
                     kontoNr = kontonr,
                     saldo = 50,
-                    kontoNavn = nyKundeInfo[0] + " " + nyKundeInfo[1] + ": " + kontonr,
+                    kontoNavn = ""+ kontonr,
                     personNr = nyKundeInfo[2],
                 };
 
@@ -772,7 +772,7 @@ namespace Nettbanken.DAL
         }
 
         //oppdater konto balanser etter transaksjoner
-        public static void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop)
+        public static void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop) 
         {
             for (int i = 1; i<fraKonto.Length;i++) {
                 var db = new DBContext();
