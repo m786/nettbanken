@@ -755,7 +755,7 @@ namespace Nettbanken.DAL
                 {
                     kontoNr = kontonr,
                     saldo = 50,
-                    kontoNavn = nyKundeInfo[0] + " " + nyKundeInfo[1] + ": " + kontonr,
+                    kontoNavn = ""+ kontonr,
                     personNr = nyKundeInfo[2],
                 };
 
