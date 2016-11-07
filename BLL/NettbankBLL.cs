@@ -102,6 +102,12 @@ namespace Nettbanken.BLL
             return kontoUtskrift;
         }
 
+        // Metode for å oppdatere kontobalanser etter transaksjoner
+        public void oppdaterKontoer(String[] fraKonto, String[] tilKonto, String[] belop)
+        {
+            _repository.oppdaterKontoer(fraKonto, tilKonto, belop);
+        }
+
         // Startsjekk som sjekker for dummydata
         public void startsjekk()
         {

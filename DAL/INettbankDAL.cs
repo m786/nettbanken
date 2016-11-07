@@ -34,6 +34,7 @@ namespace Nettbanken.DAL
       
         String hentKontoInformasjon(String kontonavn, String personnr);
         String hentKontoUtskrift(String kontonavn, String personnr);
+        void oppdaterKontoer(String[] fraKonto, String[] tilKonto, String[] belop);
         void startsjekk();
 
     }

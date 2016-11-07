@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nettbanken.Controllers;
 using Nettbanken.BLL;
 using Nettbanken.DAL;
-using SessionMockUnitTest.Controllers;
+//using SessionMockUnitTest.Controllers;
 using MvcContrib.TestHelper;
 namespace Enhetstesting
 {
@@ -17,7 +17,7 @@ namespace Enhetstesting
             var SessionMock = new TestControllerBuilder();
             var controller = new KundeController();
             // ???
-            SessionMock.InitializeController(controller);
+            //SessionMock.InitializeController(controller);
 
             //Act
             

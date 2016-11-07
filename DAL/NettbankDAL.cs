@@ -771,25 +771,43 @@ namespace Nettbanken.DAL
             }
         }
 
-        //oppdater konto balanser etter transaksjoner
-        public static void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop)
+        // Metode for å oppdatere kontobalanser etter transaksjoner
+        public void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop)
         {
-            for (int i = 1; i<fraKonto.Length;i++) {
-                var db = new DBContext();
-                var fraKontoFunnet = db.Kontoer.Find(fraKonto[i]);
-                var tilKontoFunnet = db.Kontoer.Find(tilKonto[i]);
+            using (var db = new DBContext())
+            {
+                for (int i = 1; i < fraKonto.Length; i++)
+                {
+                    var fraKontoFunnet = db.Kontoer.Find(fraKonto[i]);
+                    var tilKontoFunnet = db.Kontoer.Find(tilKonto[i]);
 
-                int fraKontoSinBalanse = fraKontoFunnet.saldo;
-                int tilKontoSinBalanse = tilKontoFunnet.saldo;
+                    int fraKontoSinBalanse = fraKontoFunnet.saldo;
+                    int tilKontoSinBalanse = tilKontoFunnet.saldo;
 
-                int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse- Int32.Parse(belop[i]);
-                int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop[i]);
+                    int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse - Int32.Parse(belop[i]);
+                    int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop[i]);
 
-                fraKontoFunnet.saldo = kontoSomSkalBetalesFraSinNyeBalanse;
-                tilKontoFunnet.saldo = kontoSomSkalBetalesTilSinNyeBalanse;
-                
-                db.SaveChanges();
+                    fraKontoFunnet.saldo = kontoSomSkalBetalesFraSinNyeBalanse;
+                    tilKontoFunnet.saldo = kontoSomSkalBetalesTilSinNyeBalanse;
+
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (Exception feil)
+                    {
+
+                    }
+                }
             }
         }
+
+        // Metode for logging av fil
+        public String TmpPath()
+        {
+            //String path = System.Envior
+            return null;
+        }
+
     }
 }

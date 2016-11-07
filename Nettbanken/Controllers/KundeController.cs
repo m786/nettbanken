@@ -433,7 +433,6 @@ namespace Nettbanken.Controllers
         // Betaler alle temporære betalinger
         public String betal()
         {
-            var nettbankBLL = new NettbankBLL();
             var betalingsListe = (List<String[]>)Session["tempTabell"];
 
             String[] fraKonto = new String[betalingsListe.Count()];
@@ -452,7 +451,7 @@ namespace Nettbanken.Controllers
                     t.KID = rad[3];
                     t.dato = rad[4];
                     t.melding = rad[5];
-                    nettbankBLL.registrerTransaksjon(t);
+                    _nettbankBLL.registrerTransaksjon(t);
 
                     fraKonto[i] = rad[0];
                     tilKonto[i] = rad[1];
@@ -460,7 +459,7 @@ namespace Nettbanken.Controllers
 
                 }
 
-                NettbankDAL.oppdaterKontoer(fraKonto,tilKonto,belop); 
+                _nettbankBLL.oppdaterKontoer(fraKonto, tilKonto, belop); 
                 betalingsListe.Clear(); //clear transaction buffer
                 String[] temp = { "initializer" };
                 betalingsListe.Add(temp);
