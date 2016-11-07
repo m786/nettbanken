@@ -21,7 +21,7 @@
             {
                 // Henter data fra feltene og blanker dem ut
                 var fraKonto = $("#konto").val();
-                var tilKonto = $("#tilKonto").val(); 
+                var tilKonto =  $("#tilKonto").val(); 
                 $("#tilKonto").val("");
                 var saldoUt = $("#saldoUt").val(); 
                 $("#saldoUt").val("");
@@ -32,8 +32,23 @@
                 var melding = $("#melding").val(); 
                 $("#melding").val("");
 
-                var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
-                $("#tempTabell").load("/Kunde/tempTransaksjon", {infoliste: info})
+                var manglendeFelt = [];
+                if(fraKonto==""){
+                    manglendeFelt.push("Fra konto");
+                }  if(tilKonto==""){
+                    manglendeFelt.push("Til konto");
+                } if(saldoUt==""){
+                    manglendeFelt.push("Saldo ut");
+                }  if(dato==""){
+                    manglendeFelt.push("Dato");
+                } 
+                if(manglendeFelt.length==0){
+                    var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
+                    $("#tempTabell").load("/Kunde/tempTransaksjon", {infoliste: info})
+                }else{
+                    alert('Vennligst fyll inn alle nødvendige feltene for transaksjon!\n\n '+manglendeFelt.toString()+'\n\n Mangler');
+                }
+                
             }
             function knapper(id,indeks)
             {
@@ -60,8 +75,24 @@
                         var melding = $("#melding").val(); 
                         $("#melding").val("");
 
+                        var manglendeFelt = [];
+                        if(fraKonto==""){
+                            manglendeFelt.push("Fra konto");
+                        }  if(tilKonto==""){
+                            manglendeFelt.push("Til konto");
+                        } if(saldoUt==""){
+                            manglendeFelt.push("Saldo ut");
+                        }  if(dato==""){
+                            manglendeFelt.push("Dato");
+                        } 
+                        if(manglendeFelt.length==0){
                         var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
                         $("#tempTabell").load("/Kunde/endre", { betalingNr: indeks, info: info });
+                        alert('Transaksjon nr '+indeks+' ble endret!');
+                        }else{
+                            alert('Transaksjon ble ikke endret! vennligst fyll inn i feltene for å endre transaksjon nr '+indeks+' !\n\n '+manglendeFelt.toString()+'\n\n Mangler');
+                            break;
+                        }
                         break;
                     case "slett":
                         $("#tilKonto").val("");
