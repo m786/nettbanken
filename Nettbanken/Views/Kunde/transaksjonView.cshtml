@@ -19,25 +19,20 @@
             }
             function leggtilTemp()
             {
-                // Henter data fra feltene og blanker dem ut
+                //Henter data fra feltene og blanker dem ut
                 var fraKonto = $("#konto").val();
                 var tilKonto =  $("#tilKonto").val(); 
-                $("#tilKonto").val("");
                 var saldoUt = $("#saldoUt").val(); 
-                $("#saldoUt").val("");
                 var KID = $("#KID").val(); 
-                $("#KID").val("");
                 var dato = $("#dato").val(); 
-                $("#dato").val("");
                 var melding = $("#melding").val(); 
-                $("#melding").val("");
-
+               
                 var manglendeFelt = [];
-                if(fraKonto==""){
+                if(!fraKonto.match(/\b\d{5}\b/g)){
                     manglendeFelt.push("Fra konto");
-                }  if(tilKonto==""){
+                }  if(!tilKonto.match(/\b\d{5}\b/g)){ 
                     manglendeFelt.push("Til konto");
-                } if(saldoUt==""){
+                } if(!saldoUt ==""){
                     manglendeFelt.push("Saldo ut");
                 }  if(dato==""){
                     manglendeFelt.push("Dato");
@@ -45,8 +40,13 @@
                 if(manglendeFelt.length==0){
                     var info = [fraKonto,tilKonto,saldoUt,KID,dato,melding];
                     $("#tempTabell").load("/Kunde/tempTransaksjon", {infoliste: info})
+                    $("#tilKonto").val("");
+                    $("#saldoUt").val("");
+                    $("#KID").val("");
+                    $("#dato").val("");
+                    $("#melding").val("");
                 }else{
-                    alert('Vennligst fyll inn alle nødvendige feltene for transaksjon!\n\n '+manglendeFelt.toString()+'\n\n Mangler');
+                    alert('Vennligst kontroller om følgende felt(ene) er riktig fylt inn!\n\n '+manglendeFelt.toString()+'\n\n ________________________________________');
                 }
                 
             }
