@@ -681,9 +681,9 @@ namespace Nettbanken.DAL
                         p = new PoststedDB();
                         s = new KontoDB();
 
-                        k.bankId = null;// bankid.ToString();
-                        p.poststed = null;// poststed[i];
-                        k.personNr = null;// pernr.ToString();
+                        k.bankId = bankid.ToString();
+                        p.poststed = poststed[i];
+                        k.personNr = pernr.ToString();
                         k.passord = krypterPassord("passord", kundeSalt);
                         k.salt = kundeSalt;
                         k.fornavn = fornavn[i];
