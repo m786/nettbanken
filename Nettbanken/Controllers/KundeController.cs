@@ -66,7 +66,7 @@ namespace Nettbanken.Controllers
             {               
                 if (_nettbankBLL.registrerKunde(kunde))
                 {
-                    System.Windows.Forms.MessageBox.Show("Registrering godkjent! <br/> Ditt BankID er: " + Session["bankid"]);
+                    System.Windows.Forms.MessageBox.Show("Registrering godkjent! Ditt BankID er: " + Session["bankid"]);
                     return RedirectToAction("kundeLogginnView");
                 }
             }
