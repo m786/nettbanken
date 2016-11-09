@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Windows;
 using System.Web.Mvc;
 using Nettbanken.BLL;
 using Nettbanken.Models;
@@ -62,41 +63,14 @@ namespace Nettbanken.Controllers
         {
             ModelState.Remove("bankId");
             if (ModelState.IsValid)//valider 
-            {
-                // Hvis en kunde allerede er logget inn og prøver å lage ny kunde, så logges den innloggede ut
-                if ((Boolean)Session["innlogget"])
-                {
-                    Session["innlogget"] = false;
-                    Session["personnr"] = null;
-                    Session["bankid"] = null;
-                    Session["kontoer"] = null;
-                    Session["tempTabell"] = null;
-                }
-                if ((Boolean)Session["innloggetAdmin"])
-                {
-                    Session["innloggetAdmin"] = false;
-                }
-
-                // Hvis OK er tom, så gikk registreringen bra, og går videre
+            {               
                 if (_nettbankBLL.registrerKunde(kunde))
                 {
-                    Session["innlogget"] = true;
-
-                    // Initialiserer betalingsListe, trenger en verdi hvis ikke gir det en error ved oppstart
-                    var betalingsListe = new List<String[]>();
-                    String[] temp = { "initializer" };
-                    betalingsListe.Add(temp);
-
-                    String personnr = kunde.personNr;
-   
-                    Session["personnr"] = kunde.personNr;
-                    // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
-                    Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
-                    Session["tempTabell"] = betalingsListe;
-
-                    return RedirectToAction("hjemmesideView");
+                    System.Windows.Forms.MessageBox.Show("Registrering godkjent! <br/> Ditt BankID er: " + Session["bankid"]);
+                    return RedirectToAction("kundeLogginnView");
                 }
             }
+
             return View();
         }
 
@@ -149,9 +123,16 @@ namespace Nettbanken.Controllers
                 if (_nettbankBLL.adminLogginn(admin))
                 {
                     // Hvis en logger seg inn som admin, så logges kundekonto ut dersom en kundekonto er innlogget
+                    if((Boolean)Session["innlogget"])
+                    {
+                        Session["innlogget"] = false;
+                        Session["personnr"] = null;
+                        Session["bankid"] = null;
+                        Session["kontoer"] = null;
+                        Session["tempTabell"] = null;
+                    }
                     Session["innloggetAdmin"] = true;
-                    Session["innlogget"] = false;
-                   
+
                     return RedirectToAction("adminsideView");
                 }
             }
@@ -190,7 +171,6 @@ namespace Nettbanken.Controllers
    
                     Session["personnr"] = kunde.personNr;
                     Session["bankid"] = kunde.bankId;
-                    // Session["kontoNavn"] = kunde.fornavn + " " + kunde.etternavn + ": " + kunde.konto;
                     Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
                     Session["tempTabell"] = betalingsListe;
 

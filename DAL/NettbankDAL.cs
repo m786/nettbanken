@@ -7,14 +7,13 @@ using Nettbanken.Models;
 using System.Security.Cryptography;
 using System.Text;
 using Nettbanken.DAL;
+using System.Net.Http;
 
 namespace Nettbanken.DAL
 {
     // Klasse for alle metoder som interagerer med databasen, aka DAL
     public class NettbankDAL : INettbankDAL
     {
-        //private static int bankId = 0;
-
         // ---------------------------------------------------------------------------------------
         // Admin Metoder
 
@@ -362,7 +361,6 @@ namespace Nettbanken.DAL
                         telefonNr = kunde.telefonNr,
                         postNr = kunde.postNr
                     };
-                    
                     try
                     {
                         db.Kunder.Add(nyKunde);
@@ -411,6 +409,7 @@ namespace Nettbanken.DAL
                     
                 }
 
+                HttpContext.Current.Session["bankid"] = bankId;
                 // Kunden logges dersom det ikke var noen excpetions som ble fanget
                 logg = "Ny kunde har blitt registrert. Navn: "
                         + kunde.fornavn + " " + kunde.etternavn + " - " + "Personnummer: " + kunde.personNr;
