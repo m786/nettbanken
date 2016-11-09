@@ -91,7 +91,7 @@
 
                 </table>
                 @Html.ActionLink("Registrer ny Kunde", "registrerViaAdmin", new { tom = "" }, new { @class = "btn btn-success" })
-                @Html.ActionLink("loggUt", "forsideView", new { tom = "" }, new { @class = "btn btn-danger" })
+                <input type="button" class="btn btn-danger" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" />
                 <div class="knapper_under_panel">
                 </div>
 
