@@ -27,7 +27,8 @@ namespace Nettbanken.BLL
         List<String> hentKontoer(String personnr);
         String hentKontoInformasjon(String kontonavn, String personnr);
         String hentKontoUtskrift(String kontonavn, String personnr);
-        void oppdaterKontoer(String[] fraKonto, String[] tilKonto, String[] belop);
+        void oppdaterKontoer(String fraKonto, String tilKonto, String belop);
         void startsjekk();
+        void startSjekkTransaksjonStatus();
     }
 }

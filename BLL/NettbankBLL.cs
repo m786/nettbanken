@@ -103,7 +103,7 @@ namespace Nettbanken.BLL
         }
 
         // Metode for å oppdatere kontobalanser etter transaksjoner
-        public void oppdaterKontoer(String[] fraKonto, String[] tilKonto, String[] belop)
+        public void oppdaterKontoer(String fraKonto, String tilKonto, String belop)
         {
             _repository.oppdaterKontoer(fraKonto, tilKonto, belop);
         }
@@ -113,6 +113,12 @@ namespace Nettbanken.BLL
         {
             _repository.startsjekk();
         }
-        
+
+        //start metoden som sjekker transaksjoner
+        public void startSjekkTransaksjonStatus()
+        {
+            _repository.startSjekkTransaksjonStatus();
+        }
+
     }
 }

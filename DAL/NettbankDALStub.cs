@@ -113,12 +113,17 @@ namespace Nettbanken.DAL
             throw new NotImplementedException();
         }
 
-        public void oppdaterKontoer(String[] fraKonto, String[] tilKonto, String[] belop)
+        public void oppdaterKontoer(String fraKonto, String tilKonto, String belop)
         {
             throw new NotImplementedException();
         }
 
         public void startsjekk()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void startSjekkTransaksjonStatus()
         {
             throw new NotImplementedException();
         }
