@@ -32,9 +32,9 @@
                     manglendeFelt.push("Fra konto");
                 }  if(!tilKonto.match(/\b\d{5}\b/g)){ 
                     manglendeFelt.push("Til konto");
-                } if(!saldoUt == "" ){
+                } if(saldoUt ==""){
                     manglendeFelt.push("Saldo ut");
-                }  if( dato == "" ){
+                }  if(!dato.match(/(^((((0[1-9])|([1-2][0-9])|(3[0-1]))|([1-9]))\x2F(((0[1-9])|(1[0-2]))|([1-9]))\x2F(([0-9]{2})|(((19)|([2]([0]{1})))([0-9]{2}))))$)/)){   
                     manglendeFelt.push("Dato");
                 } 
                 if(manglendeFelt.length==0){

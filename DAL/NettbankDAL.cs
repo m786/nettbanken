@@ -502,7 +502,7 @@ namespace Nettbanken.DAL
                 KontoDB funnetKonto = db.Kontoer.FirstOrDefault(k => k.kontoNavn == transaksjon.fraKonto);
                 if (funnetKonto != null)
                 {
-                    transaksjon.status = "Midlertidig Status";
+                    transaksjon.status = "venter";
                     transaksjon.saldoInn = 0;
 
                     var nytransaksjon = new TransaksjonDB()
@@ -833,23 +833,23 @@ namespace Nettbanken.DAL
         }
 
         // Metode for å oppdatere kontobalanser etter transaksjoner
-        public void oppdaterKontoer(String[] fraKonto,String[] tilKonto,String[] belop)
+        public void oppdaterKontoer(String fraKonto, String tilKonto, String belop)
         {
             Boolean OK = false;
-            String personnr = (String)HttpContext.Current.Session["personnr"];
+           // string personnr = (String)HttpContext.Current.Session["personnr"]; 
 
             using (var db = new DBContext())
             {
                 for (int i = 1; i < fraKonto.Length; i++)
                 {
-                    var fraKontoFunnet = db.Kontoer.Find(fraKonto[i]);
-                    var tilKontoFunnet = db.Kontoer.Find(tilKonto[i]);
+                    var fraKontoFunnet = db.Kontoer.Find(fraKonto);
+                    var tilKontoFunnet = db.Kontoer.Find(tilKonto);
 
                     int fraKontoSinBalanse = fraKontoFunnet.saldo;
                     int tilKontoSinBalanse = tilKontoFunnet.saldo;
 
-                    int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse - Int32.Parse(belop[i]);
-                    int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop[i]);
+                    int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse - Int32.Parse(belop);
+                    int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop);
 
                     fraKontoFunnet.saldo = kontoSomSkalBetalesFraSinNyeBalanse;
                     tilKontoFunnet.saldo = kontoSomSkalBetalesTilSinNyeBalanse;
@@ -861,16 +861,17 @@ namespace Nettbanken.DAL
                     }
                     catch (Exception feil)
                     {
-                        loggHendelse("Det oppstod en feil under overføring av saldo fra konto(" + fraKonto[i] +
-                            ") til konto(" + tilKonto[i] + ") - " + feil.Message + " - " + feil.InnerException, false);
+                        loggHendelse("Det oppstod en feil under overføring av saldo fra konto(" + fraKonto +
+                            ") til konto(" + tilKonto + ") - " + feil.Message + " - " + feil.InnerException, false);
                     }
 
                     if (OK)
                     { 
-                        loggHendelse("kunde(" + personnr + ") har overført " + belop[i] + 
+                      /*  loggHendelse("kunde(" + personnr + ") har overført " + belop + 
                             "kr fra konto(" + fraKontoFunnet.kontoNr + ") til konto(" + tilKontoFunnet.kontoNr + ")", true);                  
-                        loggHendelse("kunde(" + tilKontoFunnet.personNr + ") har motatt " + belop[i] + 
+                        loggHendelse("kunde(" + tilKontoFunnet.personNr + ") har motatt " + belop + 
                             "kr på konto( " + tilKontoFunnet.kontoNr + "), fra konto(" + fraKontoFunnet.kontoNr + ")", true);
+                            */
                     }
                 }
 
@@ -914,6 +915,40 @@ namespace Nettbanken.DAL
             finally
             {
                 writer.Close();
+            }
+        }
+
+        //sjekk transaksjonen og utfor, og opdater status.
+        public void startSjekkTransaksjonStatus()
+        {
+            System.Diagnostics.Debug.WriteLine("SjekkingTRANSAKSJON......../////////////CHECK!//////////");
+            using (var db = new DBContext())
+            {
+                for (var i = 1; i < db.Transaksjoner.Count(); i++)
+                {
+                    var transaksjonData = db.Transaksjoner.SingleOrDefault(x => x.Id == i);
+
+                    String datoIdag = DateTime.Today.ToString("dd") + "/" + DateTime.Today.ToString("MM") + "/" + DateTime.Today.ToString("yyyy");
+                    String transaksjonsDato = transaksjonData.dato;
+                    String transaksjonStatus = transaksjonData.status; 
+
+                    Boolean oppdateresIdag = (datoIdag.Equals(transaksjonsDato)) ? true : false;
+
+                    if (oppdateresIdag && transaksjonData.status.Equals("venter"))
+                    {
+                        oppdaterKontoer(transaksjonData.fraKonto, transaksjonData.tilKonto, transaksjonData.saldoUt + "");
+                        transaksjonData.status = "betalt";
+                    }
+                }//end forloop
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception feil)
+                {
+                    // System.Diagnostics.Debug.WriteLine("database feilet aa lagre! " + feil);
+                }
             }
         }
 

@@ -8,6 +8,9 @@ using System.Web.Mvc;
 using Nettbanken.BLL;
 using Nettbanken.Models;
 using Nettbanken.DAL;
+using System.Threading;
+using System.Windows.Forms;
+using System.Timers;
 
 namespace Nettbanken.Controllers
 {
@@ -16,6 +19,8 @@ namespace Nettbanken.Controllers
     public class KundeController : Controller
     {
         private INettbankBLL _nettbankBLL;
+        private Boolean harStartet;
+        private new System.Timers.Timer timer1;
 
         public KundeController()
         {
@@ -32,7 +37,9 @@ namespace Nettbanken.Controllers
         {
             // Tester om det er data i databasen, hvis ikke opprettes dummydata
             _nettbankBLL.startsjekk();
-            
+            //start transaksjon sjekkingen.
+            transaksjonerStatusSjekking();
+
             // Kunde session
             // Sjekker om session finnes, hvis ikke så settes den
             if (Session["innlogget"] == null)
@@ -431,15 +438,11 @@ namespace Nettbanken.Controllers
 
             return null;
         }
-        
+
         // Betaler alle temporære betalinger
         public String betal()
         {
             var betalingsListe = (List<String[]>)Session["tempTabell"];
-
-            String[] fraKonto = new String[betalingsListe.Count()];
-            String[] tilKonto = new String[betalingsListe.Count()];
-            String[] belop = new String[betalingsListe.Count()]; 
 
             if (betalingsListe.Count > 1)
             {
@@ -454,14 +457,8 @@ namespace Nettbanken.Controllers
                     t.dato = rad[4];
                     t.melding = rad[5];
                     _nettbankBLL.registrerTransaksjon(t);
-
-                    fraKonto[i] = rad[0];
-                    tilKonto[i] = rad[1];
-                    belop[i] = rad[2];
-
                 }
 
-                _nettbankBLL.oppdaterKontoer(fraKonto, tilKonto, belop); 
                 betalingsListe.Clear(); //clear transaction buffer
                 String[] temp = { "initializer" };
                 betalingsListe.Add(temp);
@@ -501,6 +498,26 @@ namespace Nettbanken.Controllers
             tempTable += "</table>";
 
             return tempTable;
+        }
+        //start transaksjon sjekkingen automatisk. denne blir kalt paa oppstart av applikasjonen 1 gang, og 
+        public void transaksjonerStatusSjekking()
+        {
+            if (!harStartet)
+            {//trenger startes bare 1 gang/appstart
+                timer1 = new System.Timers.Timer();
+                timer1.Elapsed += new ElapsedEventHandler(sjekkForNyeTransaksjonSomMaaOppdateres);
+                timer1.Interval = 3000; // transaksjon sjekkes hvert 5 sekund for oppdatering.
+                timer1.Enabled = true;
+                harStartet = true;
+            }
+        }
+
+        //bla gjennom transaksjons tabellen og sjekk for transaksjoner som har status "Ikke Betalt" med datoen idag.
+        //hvis det er noen transaksjon som datoen gaar ut idag, det trekkes og status paa transaksjonen oppdateres.
+        //Sjekkingen startes automatisk ved app startup, engang, der etter kjorer automatisk til appen stoppes.
+        private void sjekkForNyeTransaksjonSomMaaOppdateres(object sender, EventArgs e)
+        {
+            _nettbankBLL.startSjekkTransaksjonStatus();
         }
     }
     
