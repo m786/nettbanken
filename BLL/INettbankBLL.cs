@@ -16,6 +16,8 @@ namespace Nettbanken.BLL
         List<Kunde> alleKunder();
         Kunde finnKunde(string sok);
         Boolean slettKunde(string personNr);
+        String lagPassord();
+        Boolean registrerNyKunde(Kunde kunde);
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 

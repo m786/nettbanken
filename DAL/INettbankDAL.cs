@@ -20,7 +20,7 @@ namespace Nettbanken.DAL
         Boolean slettKunde(string personNr);
         Kunde finnKunde(string sok);
         Boolean sjekkSaldo(String personnr);
-    
+        String lagPassord();
 
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder

@@ -45,6 +45,15 @@ namespace Nettbanken.BLL
         {
             return _repository.slettKunde(personNr);
         }
+
+        public String lagPassord()
+        {
+            return _repository.lagPassord();
+        }
+        public Boolean registrerNyKunde(Kunde kunde)
+        {
+            return _repository.registrerNyKunde(kunde);
+        }
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 
