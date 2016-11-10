@@ -153,7 +153,7 @@ namespace Nettbanken.DAL
 
         //Her genereres tilfeldig passord for en ny kunde som admin lager,passordet skal da sendes 
         //til kunden på mail eller sms.
-        private static String lagPassord()
+        public String lagPassord()
         {
             string velgFra = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
             char[] bokstaver = new char[10];
