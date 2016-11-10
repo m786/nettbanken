@@ -1,14 +1,91 @@
-﻿
-<!DOCTYPE html>
+﻿@model Nettbanken.Models.Kunde
 
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    <title>Register ny kunde</title>
+    <link href="~/Content/logginn_register.css" rel="stylesheet" type="text/css">
 </head>
+
 <body>
-    <div>
-    
-    </div>
+    <!--BeginForm har parameterene (metodenavn, kontrollernavn, postmethod)-->
+    @using (Html.BeginForm("kundeRegistreringView", "Kunde", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="header">
+                <div class="header-container">
+                    <img src="~/Content/images/nettbanken.png" class="logo">
+                </div>
+
+                <div class="logginn-container">
+
+                    <fieldset>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.personNr)
+                        </div>
+
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.fornavn)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.fornavn)
+                            @Html.ValidationMessageFor(model => model.fornavn, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.etternavn)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.etternavn)
+                            @Html.ValidationMessageFor(model => model.etternavn, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.adresse)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.adresse)
+                            @Html.ValidationMessageFor(model => model.adresse, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.telefonNr)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.telefonNr)
+                            @Html.ValidationMessageFor(model => model.telefonNr, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.postNr)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.postNr)
+                            @Html.ValidationMessageFor(model => model.postNr, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="editor-lable">
+                            @Html.LabelFor(model => model.poststed)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.poststed)
+                            @Html.ValidationMessageFor(model => model.poststed, "", new { @class = "text-danger" })
+                        </div>
+
+                        <br />
+                        <div>
+                            <button class="form-btn" type="submit" value="Registrer">Register</button>
+                        </div>
+                    </fieldset>
+
+                </div>
+                <div class="footer-container">
+                    <div>
+                        @Html.ActionLink("Tilbake", "adminsideView")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </body>
+
 </html>

@@ -270,6 +270,11 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
 
         }
+        public ActionResult registrerViaAdmin()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult Slett(string idnr)
         {
