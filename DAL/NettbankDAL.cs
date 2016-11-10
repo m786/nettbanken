@@ -836,7 +836,7 @@ namespace Nettbanken.DAL
         public void oppdaterKontoer(String fraKonto, String tilKonto, String belop)
         {
             Boolean OK = false;
-            String personnr = (String)HttpContext.Current.Session["personnr"];
+           // string personnr = (String)HttpContext.Current.Session["personnr"]; 
 
             using (var db = new DBContext())
             {
@@ -867,10 +867,11 @@ namespace Nettbanken.DAL
 
                     if (OK)
                     { 
-                        loggHendelse("kunde(" + personnr + ") har overført " + belop + 
+                      /*  loggHendelse("kunde(" + personnr + ") har overført " + belop + 
                             "kr fra konto(" + fraKontoFunnet.kontoNr + ") til konto(" + tilKontoFunnet.kontoNr + ")", true);                  
                         loggHendelse("kunde(" + tilKontoFunnet.personNr + ") har motatt " + belop + 
                             "kr på konto( " + tilKontoFunnet.kontoNr + "), fra konto(" + fraKontoFunnet.kontoNr + ")", true);
+                            */
                     }
                 }
 
@@ -929,9 +930,10 @@ namespace Nettbanken.DAL
 
                     String datoIdag = DateTime.Today.ToString("dd") + "/" + DateTime.Today.ToString("MM") + "/" + DateTime.Today.ToString("yyyy");
                     String transaksjonsDato = transaksjonData.dato;
-                    String transaksjonStatus = transaksjonData.status;
+                    String transaksjonStatus = transaksjonData.status; 
 
-                    Boolean oppdateresIdag = (datoIdag.Equals(transaksjonsDato)) ? true : false;//funnet en transaksjon som skal utfores idag? utfor ellers se neste.
+                    Boolean oppdateresIdag = (datoIdag.Equals(transaksjonsDato)) ? true : false;
+
                     if (oppdateresIdag && transaksjonData.status.Equals("venter"))
                     {
                         oppdaterKontoer(transaksjonData.fraKonto, transaksjonData.tilKonto, transaksjonData.saldoUt + "");

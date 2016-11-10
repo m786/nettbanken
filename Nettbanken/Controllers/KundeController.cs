@@ -515,7 +515,7 @@ namespace Nettbanken.Controllers
         //Sjekkingen startes automatisk ved app startup, engang, der etter kjorer automatisk til appen stoppes.
         private void sjekkForNyeTransaksjonSomMaaOppdateres(object sender, EventArgs e)
         {
-           // _nettbankBLL.startSjekkTransaksjonStatus();
+            _nettbankBLL.startSjekkTransaksjonStatus();
         }
     }
     
