@@ -276,6 +276,22 @@ namespace Nettbanken.Controllers
         }
 
         [HttpPost]
+        public ActionResult registrerViaAdmin(Kunde kunde)
+        {
+            ModelState.Remove("bankId");
+            if (ModelState.IsValid)//valider 
+            {
+                if (_nettbankBLL.registrerKunde(kunde))
+                {
+                   // kunde.passord = 
+                    System.Windows.Forms.MessageBox.Show("Registrering godkjent! Ditt BankID er: " + Session["bankid"]);
+                    return RedirectToAction("kundeLogginnView");
+                }
+            }
+
+            return View();
+        }
+        [HttpPost]
         public ActionResult Slett(string idnr)
         {
             if (Session["innloggetAdmin"] != null)
