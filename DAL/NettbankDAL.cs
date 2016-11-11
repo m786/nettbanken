@@ -950,13 +950,19 @@ namespace Nettbanken.DAL
                     Boolean maneHarPasert = transaksjonsDatoSinAAR == Int32.Parse(datoIdagA) && transaksjonsDatoSinMANE < Int32.Parse(datoIdagM);
                     Boolean datoHarPasert = transaksjonsDatoSinAAR == Int32.Parse(datoIdagA) && transaksjonsDatoSinMANE == Int32.Parse(datoIdagM) && transaksjonsDatoSinDATO < Int32.Parse(datoIdagD);
 
-                    Boolean betalingsDatoHarPasert = (aarHarPasert || maneHarPasert || datoHarPasert) ? true : false;  
-                       
+                    Boolean betalingsDatoHarPasert = (aarHarPasert || maneHarPasert || datoHarPasert) ? true : false;
+
                     if ((oppdateresIdag && transaksjonData.status.Equals("venter") && antallTransaksjoner != 0) || (transaksjonData.status.Equals("venter") && betalingsDatoHarPasert && antallTransaksjoner != 0))
                     {
+                        if (db.Kontoer.Find(transaksjonData.tilKonto)!= null) { 
                         oppdaterKontoer(transaksjonData.fraKonto, transaksjonData.tilKonto, transaksjonData.saldoUt + "");
                         transaksjonData.status = "betalt";
-                        System.Diagnostics.Debug.WriteLine("\nTRANSAKSJON_BETALING_UTFORT!/////////////////////////////////\n");
+                        System.Diagnostics.Debug.WriteLine("\nTRANSAKSJON_BETALING_UTFORT!/////////////UTFORT////////////////////\n");
+                        }else
+                        {
+                            transaksjonData.status = "FEILET";
+                            System.Diagnostics.Debug.WriteLine("\nTRANSAKSJON_BETALING_FEILET!/////////FEILET////////////////////////\n");
+                        }
                     }
                     antallSjekketRad += 1;
                 }//end forloop

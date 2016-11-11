@@ -22,7 +22,6 @@ namespace Nettbanken.Controllers
         private Boolean harStartet;
         private new System.Timers.Timer timer1;
 
-        Boolean isCALLED_TEMP = false;
 
 
 
@@ -543,7 +542,7 @@ namespace Nettbanken.Controllers
             {//trenger startes bare 1 gang/appstart
                 timer1 = new System.Timers.Timer();
                 timer1.Elapsed += new ElapsedEventHandler(sjekkForNyeTransaksjonSomMaaOppdateres);
-                timer1.Interval = 3000; // transaksjon sjekkes hvert 3 sekund for oppdatering.
+                timer1.Interval = 5000; // transaksjon interval
                 timer1.Enabled = true;
                 harStartet = true;
             }
