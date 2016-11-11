@@ -839,8 +839,6 @@ namespace Nettbanken.DAL
 
             using (var db = new DBContext())
             {
-                for (int i = 1; i < fraKonto.Length; i++)
-                {
                     var fraKontoFunnet = db.Kontoer.Find(fraKonto);
                     var tilKontoFunnet = db.Kontoer.Find(tilKonto);
 
@@ -872,8 +870,6 @@ namespace Nettbanken.DAL
                             "kr på konto( " + tilKontoFunnet.kontoNr + "), fra konto(" + fraKontoFunnet.kontoNr + ")", true);
                             */
                     }
-                }
-
             }
         }
 
@@ -923,23 +919,47 @@ namespace Nettbanken.DAL
             System.Diagnostics.Debug.WriteLine("SjekkingTRANSAKSJON......../////////////CHECK!//////////");
             using (var db = new DBContext())
             {
-                for (var i = 1; i < db.Transaksjoner.Count(); i++)
-                {
-                    var transaksjonData = db.Transaksjoner.SingleOrDefault(x => x.Id == i);
+                int antallTransaksjoner = db.Transaksjoner.Count();
+                int antallSjekketRad = 1;
 
-                    String datoIdag = DateTime.Today.ToString("dd") + "/" + DateTime.Today.ToString("MM") + "/" + DateTime.Today.ToString("yyyy");
+                while (antallSjekketRad <= antallTransaksjoner)  
+                {
+                    var transaksjonData = db.Transaksjoner.SingleOrDefault(x => x.Id == antallSjekketRad);//hent en rad med id = i fra transaksjon
+
+                    String datoIdagD = DateTime.Today.ToString("dd");
+                    String datoIdagM = DateTime.Today.ToString("MM");
+                    String datoIdagA = DateTime.Today.ToString("yyyy");
+
+                    String datoIdag = datoIdagD + "/" + datoIdagM + "/" + datoIdagA; 
                     String transaksjonsDato = transaksjonData.dato;
                     String transaksjonStatus = transaksjonData.status; 
 
                     Boolean oppdateresIdag = (datoIdag.Equals(transaksjonsDato)) ? true : false;
 
-                    if (oppdateresIdag && transaksjonData.status.Equals("venter"))
+                    String tD, tM, tA;
+                    tD = transaksjonsDato.ElementAt(0) +""+ transaksjonsDato.ElementAt(1)+"";
+                    tM = transaksjonsDato.ElementAt(3) + "" + transaksjonsDato.ElementAt(4) + "";
+                    tA = transaksjonsDato.ElementAt(6) + "" + transaksjonsDato.ElementAt(7) + ""+ transaksjonsDato.ElementAt(8) + "" + transaksjonsDato.ElementAt(9) + "";
+
+                    int transaksjonsDatoSinDATO = Int32.Parse(tD); 
+                    int transaksjonsDatoSinMANE = Int32.Parse(tM);
+                    int transaksjonsDatoSinAAR = Int32.Parse(tA);
+
+                    //error kunne lurt seg inn her utsagnet.. sjekk gjerne igjen.
+                    Boolean aarHarPasert = transaksjonsDatoSinAAR < Int32.Parse(datoIdagA);
+                    Boolean maneHarPasert = transaksjonsDatoSinAAR == Int32.Parse(datoIdagA) && transaksjonsDatoSinMANE < Int32.Parse(datoIdagM);
+                    Boolean datoHarPasert = transaksjonsDatoSinAAR == Int32.Parse(datoIdagA) && transaksjonsDatoSinMANE == Int32.Parse(datoIdagM) && transaksjonsDatoSinDATO < Int32.Parse(datoIdagD);
+
+                    Boolean betalingsDatoHarPasert = (aarHarPasert || maneHarPasert || datoHarPasert) ? true : false;  
+                       
+                    if ((oppdateresIdag && transaksjonData.status.Equals("venter") && antallTransaksjoner != 0) || (transaksjonData.status.Equals("venter") && betalingsDatoHarPasert && antallTransaksjoner != 0))
                     {
                         oppdaterKontoer(transaksjonData.fraKonto, transaksjonData.tilKonto, transaksjonData.saldoUt + "");
                         transaksjonData.status = "betalt";
+                        System.Diagnostics.Debug.WriteLine("\nTRANSAKSJON_BETALING_UTFORT!/////////////////////////////////\n");
                     }
+                    antallSjekketRad += 1;
                 }//end forloop
-
                 try
                 {
                     db.SaveChanges();

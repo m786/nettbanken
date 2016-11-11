@@ -21,8 +21,10 @@ namespace Nettbanken.Controllers
         private INettbankBLL _nettbankBLL;
         private Boolean harStartet;
         private new System.Timers.Timer timer1;
-        
-        
+
+        Boolean isCALLED_TEMP = false;
+
+
 
         public KundeController()
         {
@@ -552,7 +554,7 @@ namespace Nettbanken.Controllers
         //Sjekkingen startes automatisk ved app startup, engang, der etter kjorer automatisk til appen stoppes.
         private void sjekkForNyeTransaksjonSomMaaOppdateres(object sender, EventArgs e)
         {
-            _nettbankBLL.startSjekkTransaksjonStatus();
+                _nettbankBLL.startSjekkTransaksjonStatus();
         }
     }
     
