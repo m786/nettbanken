@@ -21,6 +21,8 @@ namespace Nettbanken.Controllers
         private INettbankBLL _nettbankBLL;
         private Boolean harStartet;
         private new System.Timers.Timer timer1;
+        
+        
 
         public KundeController()
         {
@@ -277,6 +279,33 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
 
         }
+        public ActionResult endreView(String idnr)
+        {
+            Kunde kunden = _nettbankBLL.finnKunde(idnr);
+            return View(kunden);
+        }
+
+        [HttpPost]
+        public ActionResult endreView(String idnr,Kunde kunde)
+        {
+            ModelState.Remove("passord");
+            
+            Kunde kunden = _nettbankBLL.finnKunde(idnr);
+
+            if (ModelState.IsValid)//valider 
+            {
+                if (_nettbankBLL.endreKunde(idnr, kunde))
+                {
+
+            
+                    return RedirectToAction("adminsideView");
+                }
+            }
+
+            return View(kunden);
+            
+        }
+
         public ActionResult registrerViaAdmin()
         {
             return View();
