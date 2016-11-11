@@ -214,6 +214,7 @@ namespace Nettbanken.DAL
             }
         }
 
+        //kunde sletting
         public Boolean slettKunde(string personNr)
         {
             Boolean OK = false;

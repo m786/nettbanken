@@ -336,8 +336,8 @@ namespace Nettbanken.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult Slett(string idnr)
+        //slett kunde.. fra admin.
+        public ActionResult slettEnKundeFraDB(string idnr) 
         {
             if (Session["innloggetAdmin"] != null)
             {              

@@ -74,10 +74,8 @@
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
-
             <div class="form-actions no-color">
-                <input type="submit" value="Slett" class="btn btn-danger" />
-                @Html.ActionLink("Kundeliste", "adminsideView", new { tom = "" }, new { @class = "btn btn-primary" })
+                <button id="slettKunde" class="btn btn-danger" type="button" value="Registrer" onclick="location.href='@Url.Action("slettEnKundeFraDB","Kunde",new { idnr = @Html.DisplayFor(model => model.personNr)} )'">Slett</button>  
             </div>
         }
     </div>
