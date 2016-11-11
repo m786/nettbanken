@@ -21,8 +21,9 @@ namespace Nettbanken.Controllers
         private INettbankBLL _nettbankBLL;
         private Boolean harStartet;
         private new System.Timers.Timer timer1;
-        
-        
+
+
+
 
         public KundeController()
         {
@@ -542,7 +543,7 @@ namespace Nettbanken.Controllers
             {//trenger startes bare 1 gang/appstart
                 timer1 = new System.Timers.Timer();
                 timer1.Elapsed += new ElapsedEventHandler(sjekkForNyeTransaksjonSomMaaOppdateres);
-                timer1.Interval = 3000; // transaksjon sjekkes hvert 3 sekund for oppdatering.
+                timer1.Interval = 5000; // transaksjon interval
                 timer1.Enabled = true;
                 harStartet = true;
             }
@@ -553,7 +554,7 @@ namespace Nettbanken.Controllers
         //Sjekkingen startes automatisk ved app startup, engang, der etter kjorer automatisk til appen stoppes.
         private void sjekkForNyeTransaksjonSomMaaOppdateres(object sender, EventArgs e)
         {
-            _nettbankBLL.startSjekkTransaksjonStatus();
+                _nettbankBLL.startSjekkTransaksjonStatus();
         }
     }
     
