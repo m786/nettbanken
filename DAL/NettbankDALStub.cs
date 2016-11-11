@@ -70,6 +70,15 @@ namespace Nettbanken.DAL
             throw new NotImplementedException();
         }
 
+        public String lagPassord()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean endreKunde(String personNr, Kunde innKunde)
+        {
+            throw new NotImplementedException();
+        }
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 

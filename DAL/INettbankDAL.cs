@@ -16,11 +16,11 @@ namespace Nettbanken.DAL
         List<Kunde> alleKunder();
 
         Boolean registrerNyKunde(Kunde kunde);
-        Boolean endreKunde(int personNr, Kunde innKunde);
+        Boolean endreKunde(string personNr, Kunde innKunde);
         Boolean slettKunde(string personNr);
         Kunde finnKunde(string sok);
         Boolean sjekkSaldo(String personnr);
-    
+        String lagPassord();
 
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder

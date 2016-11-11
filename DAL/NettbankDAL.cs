@@ -156,10 +156,10 @@ namespace Nettbanken.DAL
         public String lagPassord()
         {
             string velgFra = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
-            char[] bokstaver = new char[10];
+            char[] bokstaver = new char[9];
             Random tilfeldig = new Random();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 9; i++)
             {
                 bokstaver[i] = velgFra[tilfeldig.Next(0, velgFra.Length)];
             }
@@ -168,15 +168,14 @@ namespace Nettbanken.DAL
         }
 
         //Admin skal kunne endre eksisterende kunde info om nødvendig.
-        public Boolean endreKunde(int personNr, Kunde innKunde)
+        public Boolean endreKunde(String idnr, Kunde innKunde)
         {
-            Boolean OK = false;
 
             using (var db = new DBContext())
             {
                 try
                 {
-                    KundeDB endreKunde = db.Kunder.Find(personNr);
+                    KundeDB endreKunde = db.Kunder.Find(idnr);
                     endreKunde.personNr = innKunde.personNr;
                     endreKunde.fornavn = innKunde.fornavn;
                     endreKunde.etternavn = innKunde.etternavn;
@@ -205,12 +204,12 @@ namespace Nettbanken.DAL
                 }
                 catch (Exception feil)
                 {
-                    loggHendelse("Det oppstod en feil under endring av kunde(" + personNr + ") - "
+                    loggHendelse("Det oppstod en feil under endring av kunde(" + idnr + ") - "
                         + feil.Message + " - " + feil.InnerException, false);
                     return false;
                 }
 
-                loggHendelse("Admin har endret informasjon hos kunde(" + personNr + ")", true);
+                loggHendelse("Admin har endret informasjon hos kunde(" + idnr + ")", true);
                 return true;
             }
         }
