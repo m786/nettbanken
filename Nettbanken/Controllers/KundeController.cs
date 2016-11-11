@@ -504,7 +504,7 @@ namespace Nettbanken.Controllers
             {//trenger startes bare 1 gang/appstart
                 timer1 = new System.Timers.Timer();
                 timer1.Elapsed += new ElapsedEventHandler(sjekkForNyeTransaksjonSomMaaOppdateres);
-                timer1.Interval = 3000; // transaksjon sjekkes hvert 5 sekund for oppdatering.
+                timer1.Interval = 3000; // transaksjon sjekkes hvert 3 sekund for oppdatering.
                 timer1.Enabled = true;
                 harStartet = true;
             }

@@ -806,7 +806,7 @@ namespace Nettbanken.DAL
                 var nykonto = new KontoDB()
                 {
                     kontoNr = kontonr,
-                    saldo = 50,
+                    saldo = 0,
                     kontoNavn = ""+ kontonr,
                     personNr = nyKundeInfo[2],
                 };
