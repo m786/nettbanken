@@ -55,9 +55,9 @@ namespace Nettbanken.BLL
             return _repository.registrerNyKunde(kunde);
         }
 
-        public Boolean endreKunde(String personNr, Kunde innKunde)
+        public Boolean endreKunde(string idnr,Kunde innKunde)
         {
-            return _repository.endreKunde(personNr,innKunde);
+            return _repository.endreKunde(idnr,innKunde);
         }
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder

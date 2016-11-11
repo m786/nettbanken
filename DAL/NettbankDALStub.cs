@@ -50,7 +50,7 @@ namespace Nettbanken.DAL
             throw new NotImplementedException();
         }
 
-        public bool endreKunde(int personNr, Kunde innKunde)
+        public bool endreKunde(string idnr, Kunde innKunde)
         {
             throw new NotImplementedException();
         }
@@ -75,10 +75,6 @@ namespace Nettbanken.DAL
             throw new NotImplementedException();
         }
 
-        public Boolean endreKunde(String personNr, Kunde innKunde)
-        {
-            throw new NotImplementedException();
-        }
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 

@@ -168,7 +168,7 @@ namespace Nettbanken.DAL
         }
 
         //Admin skal kunne endre eksisterende kunde info om nødvendig.
-        public Boolean endreKunde(String idnr, Kunde innKunde)
+        public Boolean endreKunde(string idnr,Kunde innKunde)
         {
 
             using (var db = new DBContext())
