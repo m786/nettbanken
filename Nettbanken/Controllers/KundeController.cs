@@ -286,11 +286,12 @@ namespace Nettbanken.Controllers
         }
 
         [HttpPost]
-        public ActionResult endreView(String idnr,Kunde kunde)
+        public ActionResult endreView(string idnr, Kunde kunde)
         {
             ModelState.Remove("passord");
-            
-            Kunde kunden = _nettbankBLL.finnKunde(idnr);
+            ModelState.Remove("bankId");
+            ModelState.Remove("personNr");
+
 
             if (ModelState.IsValid)//valider 
             {
@@ -302,7 +303,7 @@ namespace Nettbanken.Controllers
                 }
             }
 
-            return View(kunden);
+            return View(kunde);
             
         }
 
