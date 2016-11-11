@@ -1,14 +1,124 @@
-﻿
+﻿@model Nettbanken.Models.Kunde
+
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    <title>Nettbanken</title>
+    <link rel="stylesheet" href="~/Content/forside_bootstrap1.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/AdminView.css" />
+    <link href='http://fonts.googleapis.com/css?family=Belgrano' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    <div>
-    
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <img src="~/Content/images/nettbanken.png" width="200px">
+            </div>
+        </div>
+        <!-- /bar end -->
+        </div>
+        <!-- /.container end -->
+    </nav>
+    <div id="panel">
+
+        <div class="header">
+            <div class="title"><a href="#">Administrator</a></div>
+        </div>
+
+        <div class="Gull_farge">
+            <ul></ul>
+        </div>
+
+        <div class="center_content">
+
+            <div id="høyre_side">
+                <div id="høyre_content">
+                    <h2>Betalinger</h2>
+
+
+                    <table id="høyre_kolom">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Fra konto</th>
+                                <th>Til konto</th>
+                                <th>saldo</th>
+                                <th>KontoNR</th>
+                                <th>KID</th>
+                                <th>Dato</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr class="linje1">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="button rød">Slett</button></td>
+                            </tr>
+                            <tr class="linje2">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="button rød">Slett</button></td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                    @Html.ActionLink("Tilbake", "adminsideView", new { tom = "" }, new { @class = "btn btn-primary" })
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="knapper_under_panel">
+                    </div>
+
+
+                </div>
+            </div><!-- end of right content-->
+
+
+            <div class="venstre_bar" id="venstre_bar">
+                <h2>Alternativer:</h2>
+
+                <ul>
+                    <li><a href="#" class="selected">Kunder</a></li>
+                    <li><a href="#">Opprett konto</a></li>
+                    <li><a href="#">Betalinger</a></li>
+                </ul>
+            </div>
+
+
+            <div class="clear"></div>
+        </div> <!--end of center_content-->
+
+
     </div>
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p>Copyright Â© Nettbanken. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

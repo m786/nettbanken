@@ -306,6 +306,12 @@ namespace Nettbanken.Controllers
             
         }
 
+        public ActionResult infoView(String idnr)
+        {
+            Kunde kunden = _nettbankBLL.finnKunde(idnr);
+            return View(kunden);
+        }
+
         public ActionResult registrerViaAdmin()
         {
             return View();
