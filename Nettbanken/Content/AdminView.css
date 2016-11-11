@@ -84,7 +84,7 @@ float: left;
 width: 100%;
 }
 #høyre_content{
-margin:10px 10px 10px 232px;
+margin:10px 10px 10px 10px;
 }
 .knapper_under_panel{ padding:0 0 50% 0; float:left;}
 #høyre_content h1{ background-color:#bad7e6;
