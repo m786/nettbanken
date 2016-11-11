@@ -611,20 +611,46 @@ namespace Nettbanken.DAL
             // Finner riktig konto og kunde
             using (var db = new DBContext())
             {
-                var transaksjoner = db.Transaksjoner.Where(t => t.konto.kontoNavn == kontonavn && t.konto.personNr == personnr);
-                foreach (var t in transaksjoner)
+                String status, dato, kid, saldoinn, saldout, frakonto, tilkonto, melding;
+                for (int i =1;i<= db.Transaksjoner.Count(); i++)
                 {
-                    kontoUtskrift +=
+                    var td= db.Transaksjoner.SingleOrDefault(x => x.Id == i);
+                    status = td.status;
+                    dato = td.dato;
+                    kid = td.KID;
+                    saldoinn = td.saldoInn+"";
+                    saldout = td.saldoUt + "";
+                    frakonto = td.fraKonto;
+                    tilkonto = td.tilKonto;
+                    melding = td.melding;
+
+                    if (frakonto.Equals(kontonavn))
+                    {
+                        kontoUtskrift +=
+                      "<tr>" +
+                      "<td class='col-sm-1' style='background-color:lavenderblush;'>" + status + "</td>" +
+                      "<td class='col-sm-1' style='background-color:lavender;'>" + dato + "</td>" +
+                      "<td class='col-sm-1' style='background-color:lavenderblush;'>" + kid + "</td>" +
+                      "<td class='col-sm-1' style='background-color:lavender;'>" + "0" + "</td>" + 
+                      "<td class='col-sm-1' style='background-color:lavenderblush;'>" + saldout+ "</td>" +
+                      "<td class='col-sm-1' style='background-color:lavender;'>" + frakonto + "</td>" +
+                      "<td class='col-sm-1' style='background-color:lavenderblush;'>" + tilkonto + "</td>" +
+                      "<td class='col-sm-1' style='background-color:lavender;'>" + melding + "</td>" +
+                      "</tr>";
+                    } else if (tilkonto.Equals(kontonavn)) {
+                        kontoUtskrift +=
                        "<tr>" +
-                       "<td class='col-sm-1' style='background-color:lavenderblush;'>"+ t.status +"</td>" +
-                       "<td class='col-sm-1' style='background-color:lavender;'>"+t.dato+"</td>" +
-                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + t.KID + "</td>" +
-                       "<td class='col-sm-1' style='background-color:lavender;'>" + t.saldoInn + "</td>" +
-                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + t.saldoUt + "</td>" +
-                       "<td class='col-sm-1' style='background-color:lavender;'>" + t.fraKonto + "</td>" +
-                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + t.tilKonto + "</td>" +
-                       "<td class='col-sm-1' style='background-color:lavender;'>" + t.melding + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + status + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + dato + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + kid + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + saldout + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + "0" + "</td>" + 
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + frakonto + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + tilkonto + "</td>" +
+                       "<td class='col-sm-1' style='background-color:lavender;'>" + melding + "</td>" +
                        "</tr>";
+                    }
+                   
                 }
             }
 
