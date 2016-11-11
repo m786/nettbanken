@@ -156,7 +156,7 @@
     <Content Include="Content\logginn_register.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\AdminView.css" />
-    <Content Include="Content\Transaksjon_bootstrap1.css" />
+    <Content Include="Content\Transaksjon.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
