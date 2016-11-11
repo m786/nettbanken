@@ -329,32 +329,29 @@ namespace Nettbanken.Controllers
             {
                 if (_nettbankBLL.registrerNyKunde(kunde))
                 {
-                    
-                  //  System.Windows.Forms.MessageBox.Show("Registrering godkjent! Ditt BankID er: " + Session["bankid"]);
                     return RedirectToAction("adminsideView");
                 }
             }
 
             return View();
         }
+
         [HttpPost]
         public ActionResult Slett(string idnr)
         {
             if (Session["innloggetAdmin"] != null)
-            {
-                
+            {              
                 bool innlogget = (bool)Session["innloggetAdmin"];
-                bool slettetOk = _nettbankBLL.slettKunde(idnr);
-                if (slettetOk)
+                if (_nettbankBLL.slettKunde(idnr))
                 {
                     return RedirectToAction("adminsideView");
                 }
-                return RedirectToAction("kundeLogginnView");
+                return View();
             }
 
             return RedirectToAction("forsideView");
-
         }
+
         // Metode for utlogging
         public ActionResult loggUt()
         {
@@ -560,3 +557,16 @@ namespace Nettbanken.Controllers
     
    
 }
+
+/* Liste over det som trengs å gjøres
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * */

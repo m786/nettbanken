@@ -37,7 +37,7 @@ namespace Nettbanken.DAL
 
     public class AdminDB
     {
-        public string adminId { get; set; } // BankID for innlogging
+        public string adminId { get; set; }
 
         public string passord { get; set; }
 

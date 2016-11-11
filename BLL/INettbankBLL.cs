@@ -19,6 +19,7 @@ namespace Nettbanken.BLL
         String lagPassord();
         Boolean registrerNyKunde(Kunde kunde);
         Boolean endreKunde(string idnr,Kunde innKunde);
+
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 

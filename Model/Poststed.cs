@@ -21,9 +21,9 @@ namespace Nettbanken.Models
         public string poststed { get; set; }
 
         // Hver poststed kan ha flere kunder/admins knyttet til seg
-        public List<string> admins { get; set; }
+        //public List<string> admins { get; set; }
 
-        public List<string> kunder { get; set; }
+        //public List<string> kunder { get; set; }
     }
 
 }
