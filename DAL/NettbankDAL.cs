@@ -658,165 +658,6 @@ namespace Nettbanken.DAL
             return kontoUtskrift;
         }
 
-        // Sjekker ved hver oppstart om dummy data finnes
-        public void startsjekk()
-        {
-            var db = new DBContext();
-            try
-            {
-                var enDbKunde = db.Kunder.First();
-            }
-            catch (Exception feil)
-            {
-                dummyData();
-            }
-        }
-
-
-        // Oppretter dummy data dersom databasen er tom
-        public static void dummyData()
-        {
-            string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi", "Eirik", "Martin" };
-            string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda", "Solo", "Haugen" };
-            string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo", "Langesund", "Skien" };
-            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Half Life 3", "Acestreet 13", "Gangveien 9" };
-            byte[] kundeSalt, adminSalt;
-
-            int pernr = 118921160, tlf = 12345678, konNr = 12345, postNr = 6789, bankid = 0, adminid = 0;
-            AdminDB a;
-            KundeDB k;
-            PoststedDB p;
-            KontoDB s;
-
-            using (var db = new DBContext())
-            {
-                for (var i = 0; i < fornavn.Length; i++)
-                {
-                    pernr += i;
-                    tlf += 1;
-                    konNr += 1;
-                    postNr += 1;
-                    bankid += 1;
-                    kundeSalt = genererSalt();
-                    
-                    // Lager 7 Kundekontoer
-                    if (i < fornavn.Length - 2)
-                    {
-                        k = new KundeDB();
-                        p = new PoststedDB();
-                        s = new KontoDB();
-
-                        k.bankId = bankid.ToString();
-                        p.poststed = poststed[i];
-                        k.personNr = pernr.ToString();
-                        k.passord = krypterPassord("passord", kundeSalt);
-                        k.salt = kundeSalt;
-                        k.fornavn = fornavn[i];
-                        k.etternavn = etternavn[i];
-                        k.adresse = adresse[i];
-                        k.telefonNr = tlf.ToString();
-                        k.postNr = p.postNr = postNr.ToString();
-                        k.poststed = p;
-
-                        s.kontoNr = konNr.ToString();
-                        s.saldo = 500;
-                        s.kontoNavn = ""+konNr;
-                        s.personNr = k.personNr;
-
-                        try
-                        {
-                            db.Kunder.Add(k);
-                            db.Kontoer.Add(s);
-                            db.SaveChanges();
-                        }
-                        catch (Exception feil)
-                        {
-                            loggHendelse("Det oppstod en feil under opprettelse av dummydata! - " 
-                                + feil.Message, false);
-                            return;
-                        }
-
-                        // Legger til esktra kontoer en gang 
-                        if (i == fornavn.Length - 3)
-                        {
-                            konNr += i;
-                            //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
-                            KontoDB e = new KontoDB();
-                            e.kontoNr = konNr.ToString();
-                            e.saldo = 50;
-                            e.kontoNavn = "" + konNr;
-                            e.personNr = "118921160";
-
-                            konNr += i;
-                            KontoDB f = new KontoDB();
-                            f.kontoNr = konNr.ToString();
-                            f.saldo = 400;
-                            f.kontoNavn = "" + konNr;
-                            f.personNr = "118921160";
-
-                            konNr += i;
-                            KontoDB g = new KontoDB();
-                            g.kontoNr = konNr.ToString();
-                            g.saldo = 50;
-                            g.kontoNavn = "" + konNr;
-                            g.personNr = "118921161";
-
-                            try
-                            {
-                                db.Kontoer.Add(e);
-                                db.Kontoer.Add(f);
-                                db.Kontoer.Add(g);
-                                db.SaveChanges();
-                            }
-                            catch (Exception feil)
-                            {
-                                loggHendelse("Det oppstod en feil under opprettelse av dummydata! - " 
-                                    + feil.Message, false);
-                                return;
-                            }
-
-                        }
-                    }
-
-                    else
-                    {
-                        adminid += 1;
-                        adminSalt = genererSalt();
-
-                        a = new AdminDB();
-                        p = new PoststedDB();
-
-                        a.adminId = adminid.ToString();
-                        a.passord = krypterPassord("ghettoadmin", adminSalt);
-                        a.salt = adminSalt;
-                        a.fornavn = fornavn[i];
-                        a.etternavn = etternavn[i];
-                        a.adresse = adresse[i];
-                        a.telefonNr = tlf.ToString();
-
-                        p.poststed = poststed[i];
-                        a.postNr = p.postNr = postNr.ToString();
-                        a.poststed = p;
-                        try
-                        {
-                            db.Admins.Add(a);
-                            db.SaveChanges();
-                        }
-                        catch (Exception feil)
-                        {
-                            loggHendelse("Det oppstod en feil under opprettelse av dummydata! - " 
-                                + feil.Message, false);
-                            return;
-                        }
-                    }
-
-                } // forloop slutt
-
-            } // DB slutt
-
-            loggHendelse("Dummydata opprettet", true);
-        }
-
         // Oppretter en standard konto for hver ny kunde registrring
         public void opprettStandardkonto(string[] nyKundeInfo)
         {
@@ -857,48 +698,6 @@ namespace Nettbanken.DAL
             }
         }
 
-        // Metode for å oppdatere kontobalanser etter transaksjoner
-        public void oppdaterKontoer(String fraKonto, String tilKonto, String belop)
-        {
-            Boolean OK = false;
-           // string personnr = (String)HttpContext.Current.Session["personnr"]; 
-
-            using (var db = new DBContext())
-            {
-                    var fraKontoFunnet = db.Kontoer.Find(fraKonto);
-                    var tilKontoFunnet = db.Kontoer.Find(tilKonto);
-
-                    int fraKontoSinBalanse = fraKontoFunnet.saldo;
-                    int tilKontoSinBalanse = tilKontoFunnet.saldo;
-
-                    int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse - Int32.Parse(belop);
-                    int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop);
-
-                    fraKontoFunnet.saldo = kontoSomSkalBetalesFraSinNyeBalanse;
-                    tilKontoFunnet.saldo = kontoSomSkalBetalesTilSinNyeBalanse;
-
-                    try
-                    {
-                        db.SaveChanges();
-                        OK = true;
-                    }
-                    catch (Exception feil)
-                    {
-                        loggHendelse("Det oppstod en feil under overføring av saldo fra konto(" + fraKonto +
-                            ") til konto(" + tilKonto + ") - " + feil.Message + " - " + feil.InnerException, false);
-                    }
-
-                    if (OK)
-                    { 
-                      /*  loggHendelse("kunde(" + personnr + ") har overført " + belop + 
-                            "kr fra konto(" + fraKontoFunnet.kontoNr + ") til konto(" + tilKontoFunnet.kontoNr + ")", true);                  
-                        loggHendelse("kunde(" + tilKontoFunnet.personNr + ") har motatt " + belop + 
-                            "kr på konto( " + tilKontoFunnet.kontoNr + "), fra konto(" + fraKontoFunnet.kontoNr + ")", true);
-                            */
-                    }
-            }
-        }
-
         // Metode som henter veien til C:\Users\DITTBRUKERNAVN\AppData\Temp
         public static String hentTempPath()
         {
@@ -936,6 +735,47 @@ namespace Nettbanken.DAL
             finally
             {
                 writer.Close();
+            }
+        }
+
+        // Metode for å oppdatere kontobalanser etter transaksjoner
+        public void oppdaterKontoer(String fraKonto, String tilKonto, String belop)
+        {
+            Boolean OK = false;
+
+            using (var db = new DBContext())
+            {
+                var fraKontoFunnet = db.Kontoer.Find(fraKonto);
+                var tilKontoFunnet = db.Kontoer.Find(tilKonto);
+
+                int fraKontoSinBalanse = fraKontoFunnet.saldo;
+                int tilKontoSinBalanse = tilKontoFunnet.saldo;
+
+                int kontoSomSkalBetalesFraSinNyeBalanse = fraKontoSinBalanse - Int32.Parse(belop);
+                int kontoSomSkalBetalesTilSinNyeBalanse = tilKontoSinBalanse + Int32.Parse(belop);
+
+                fraKontoFunnet.saldo = kontoSomSkalBetalesFraSinNyeBalanse;
+                tilKontoFunnet.saldo = kontoSomSkalBetalesTilSinNyeBalanse;
+
+                try
+                {
+                    db.SaveChanges();
+                    OK = true;
+                }
+                catch (Exception feil)
+                {
+                    loggHendelse("Det oppstod en feil ved overføring av " + belop +
+                        "kr fra kunde(" + fraKontoFunnet.personNr + ") - konto(" + fraKontoFunnet.kontoNr +
+                        ") til kunde(" + tilKontoFunnet.personNr + ") - konto(" + tilKontoFunnet.kontoNr + "). " +
+                        feil.Message + " - " + feil.InnerException, false);
+                }
+
+                if (OK)
+                {
+                    loggHendelse("Det har nå blitt foretatt en betaling på " + belop +
+                        "kr fra kunde(" + fraKontoFunnet.personNr + ") - konto(" + fraKontoFunnet.kontoNr +
+                        ") til kunde(" + tilKontoFunnet.personNr + ") - konto(" + tilKontoFunnet.kontoNr + ")", true);
+                }
             }
         }
 
@@ -1001,6 +841,164 @@ namespace Nettbanken.DAL
                     // System.Diagnostics.Debug.WriteLine("database feilet aa lagre! " + feil);
                 }
             }
+        }
+
+        // Sjekker ved hver oppstart om dummy data finnes
+        public void startsjekk()
+        {
+            var db = new DBContext();
+            try
+            {
+                var enDbKunde = db.Kunder.First();
+            }
+            catch (Exception feil)
+            {
+                dummyData();
+            }
+        }
+
+        // Oppretter dummy data dersom databasen er tom
+        public static void dummyData()
+        {
+            string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi", "Eirik", "Martin" };
+            string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda", "Solo", "Haugen" };
+            string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo", "Langesund", "Skien" };
+            string[] adresse = new string[] { "Helba 2", "Femti 21", "Hokk 34", "Turn 12", "Kort 22", "Malibu 2", "Half Life 3", "Acestreet 13", "Gangveien 9" };
+            byte[] kundeSalt, adminSalt;
+
+            int pernr = 118921160, tlf = 12345678, konNr = 12345, postNr = 6789, bankid = 0, adminid = 0;
+            AdminDB a;
+            KundeDB k;
+            PoststedDB p;
+            KontoDB s;
+
+            using (var db = new DBContext())
+            {
+                for (var i = 0; i < fornavn.Length; i++)
+                {
+                    pernr += i;
+                    tlf += 1;
+                    konNr += 1;
+                    postNr += 1;
+                    bankid += 1;
+                    kundeSalt = genererSalt();
+
+                    // Lager 7 Kundekontoer
+                    if (i < fornavn.Length - 2)
+                    {
+                        k = new KundeDB();
+                        p = new PoststedDB();
+                        s = new KontoDB();
+
+                        k.bankId = bankid.ToString();
+                        p.poststed = poststed[i];
+                        k.personNr = pernr.ToString();
+                        k.passord = krypterPassord("passord", kundeSalt);
+                        k.salt = kundeSalt;
+                        k.fornavn = fornavn[i];
+                        k.etternavn = etternavn[i];
+                        k.adresse = adresse[i];
+                        k.telefonNr = tlf.ToString();
+                        k.postNr = p.postNr = postNr.ToString();
+                        k.poststed = p;
+
+                        s.kontoNr = konNr.ToString();
+                        s.saldo = 500;
+                        s.kontoNavn = "" + konNr;
+                        s.personNr = k.personNr;
+
+                        try
+                        {
+                            db.Kunder.Add(k);
+                            db.Kontoer.Add(s);
+                            db.SaveChanges();
+                        }
+                        catch (Exception feil)
+                        {
+                            loggHendelse("Det oppstod en feil under opprettelse av dummydata! - "
+                                + feil.Message, false);
+                            return;
+                        }
+
+                        // Legger til esktra kontoer en gang 
+                        if (i == fornavn.Length - 3)
+                        {
+                            konNr += i;
+                            //2 ekstra kontoer for personNR 1 og 1 ekstra konto for person nr 2!
+                            KontoDB e = new KontoDB();
+                            e.kontoNr = konNr.ToString();
+                            e.saldo = 50;
+                            e.kontoNavn = "" + konNr;
+                            e.personNr = "118921160";
+
+                            konNr += i;
+                            KontoDB f = new KontoDB();
+                            f.kontoNr = konNr.ToString();
+                            f.saldo = 400;
+                            f.kontoNavn = "" + konNr;
+                            f.personNr = "118921160";
+
+                            konNr += i;
+                            KontoDB g = new KontoDB();
+                            g.kontoNr = konNr.ToString();
+                            g.saldo = 50;
+                            g.kontoNavn = "" + konNr;
+                            g.personNr = "118921161";
+
+                            try
+                            {
+                                db.Kontoer.Add(e);
+                                db.Kontoer.Add(f);
+                                db.Kontoer.Add(g);
+                                db.SaveChanges();
+                            }
+                            catch (Exception feil)
+                            {
+                                loggHendelse("Det oppstod en feil under opprettelse av dummydata! - "
+                                    + feil.Message, false);
+                                return;
+                            }
+
+                        }
+                    }
+
+                    else
+                    {
+                        adminid += 1;
+                        adminSalt = genererSalt();
+
+                        a = new AdminDB();
+                        p = new PoststedDB();
+
+                        a.adminId = adminid.ToString();
+                        a.passord = krypterPassord("ghettoadmin", adminSalt);
+                        a.salt = adminSalt;
+                        a.fornavn = fornavn[i];
+                        a.etternavn = etternavn[i];
+                        a.adresse = adresse[i];
+                        a.telefonNr = tlf.ToString();
+
+                        p.poststed = poststed[i];
+                        a.postNr = p.postNr = postNr.ToString();
+                        a.poststed = p;
+                        try
+                        {
+                            db.Admins.Add(a);
+                            db.SaveChanges();
+                        }
+                        catch (Exception feil)
+                        {
+                            loggHendelse("Det oppstod en feil under opprettelse av dummydata! - "
+                                + feil.Message, false);
+                            return;
+                        }
+                    }
+
+                } // forloop slutt
+
+            } // DB slutt
+
+            loggHendelse("Dummydata opprettet", true);
         }
 
     }

@@ -245,7 +245,7 @@ namespace Nettbanken.Controllers
                     ViewBag.personnr = (String)Session["personnr"];
                     ViewBag.kontoer = (List<String>)Session["kontoer"];
 
-                    // Resetter betalinhsliste om den har blitt brukt før
+                    // Resetter betalingsliste om den har blitt brukt før
                     var betalingsListe = (List<String[]>)Session["tempTabell"];
                     if (betalingsListe.Count > 1)
                     {
