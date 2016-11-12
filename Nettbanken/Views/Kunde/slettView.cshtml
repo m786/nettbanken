@@ -4,81 +4,106 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Slett</title>
+    <title>Nettbanken</title>
+    <link href="~/Content/forside_bootstrap1.css" rel="stylesheet">
+    <link href="~/Content/AdminEndreView.css" rel="stylesheet">
 </head>
 <body>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <img src="~/Content/images/nettbanken.png" width="200px">
+            </div>
+        </div>
+        <!-- /bar end -->
+        <!-- /.container end -->
+    </nav>
     <br /><br />
-    <h3>Er du sikker på at du vil slette denne?</h3>
-    <div>
-        <h4>Kunde</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.personNr)
-            </dt>
+    <div id="panel" style="padding-bottom:27%;">
 
-            <dd>
-                @Html.DisplayFor(model => model.personNr)
-            </dd>
+        <div class="header">
+            <div class="title"><a>Administrator</a></div>
+        </div>
 
-              <dt>
-                @Html.DisplayNameFor(model => model.fornavn)
-            </dt>
+        <div class="Gull_farge">
+            <ul></ul>
+        </div>
+        <div id="høyre_side">
+            <div id="høyre_content">
+                <h1 style="margin-top:2%;">Kunde</h1>
+                <h3>Er du sikker på at du vil slette denne?</h3>
+                <div>
+                    <hr />
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.personNr)
+                        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.fornavn)
-            </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.personNr)
+                        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.etternavn)
-            </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.fornavn)
+                        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.etternavn)
-            </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.fornavn)
+                        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.adresse)
-            </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.etternavn)
+                        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.adresse)
-            </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.etternavn)
+                        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.postNr)
-            </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.adresse)
+                        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.postNr)
-            </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.adresse)
+                        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.poststed)
-            </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.postNr)
+                        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.poststed)
-            </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.postNr)
+                        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.telefonNr)
-            </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.poststed)
+                        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.telefonNr)
-            </dd>
-        </dl>
+                        <dd>
+                            @Html.DisplayFor(model => model.poststed)
+                        </dd>
 
+                        <dt>
+                            @Html.DisplayNameFor(model => model.telefonNr)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.telefonNr)
+                        </dd>
+                    </dl>
+                    <hr />
+                </div>
+            </div>
+        </div>
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
-            <div class="form-actions no-color">
-                <button id="slettKunde" class="btn btn-danger" type="button" value="Registrer" onclick="location.href='@Url.Action("slettEnKundeFraDB","Kunde",new { idnr = @Html.DisplayFor(model => model.personNr)} )'">Slett</button>  
+            <div class="form-actions no-color" style="margin-left: 8%;">
+                <button id="slettKunde" class="btn btn-danger" type="button" value="Registrer" onclick="location.href='@Url.Action("slettEnKundeFraDB","Kunde",new { idnr = @Html.DisplayFor(model => model.personNr)} )'">Slett</button>
                 <button id="slettKunde" class="btn btn-primary" type="button" onclick="location.href='@Url.Action("adminsideView","Kunde")'">Tilbake</button>
             </div>
         }
     </div>
+
 </body>
 </html>
