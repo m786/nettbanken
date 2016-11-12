@@ -217,29 +217,28 @@ namespace Nettbanken.DAL
         //kunde sletting
         public Boolean slettKunde(string personNr)
         {
-            Boolean OK = false;
-
             using (var db = new DBContext())
             {
-                var ok = sjekkSaldo(personNr);
-
+                var slettesRad =
+                   from k in db.Kunder
+                   where k.personNr == personNr
+                   select k;
+            
+                foreach (var l in slettesRad)
+                {
+                    db.Kunder.Remove(l);//kan ikke slettes forst! 
+                }
                 try
                 {
-                    KundeDB slettKunde = db.Kunder.Find(personNr);
-
-                    if (ok)
-                    {
-                        db.Kunder.Remove(slettKunde);
-                        db.SaveChanges();
-                        return true;
-                    }
-                    return false;
+                    db.SaveChanges();
                 }
-                catch (Exception feil)
+                catch (Exception e)
                 {
+                    Console.Write(e); 
                     return false;
                 }
             }
+            return true;
         }
 
         //Under her er listet søkfunksjoner, skal kunne søke en kunde via tlf,personnr,navn og eventuelt liste opp alle kunder med et gitt postnr
