@@ -33,6 +33,11 @@
                 <img src="~/Content/images/nettbanken.png" width="200px">
             </div>
         </div>
+        <div style="margin-left:89%; margin-top:-4%;">
+            <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("loggUt","Kunde")'">
+                <span class="glyphicon glyphicon-log-out"></span> Logg Ut
+            </button>
+        </div>
     </nav>
 
     <div class="container">
@@ -63,8 +68,6 @@
                     <p>
                         <!--<input type="button" class="btn btn-primary" value="Utskrift" onclick="printUtskrift()"/>-->
                         <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'"/>
-
-                        <input type="button" class="btn btn-primary" value="Logg ut" onclick="location.href='@Url.Action("loggUt","Kunde")'" style="margin-left: 21%;" />
                     </p>
                     
                 </div>
