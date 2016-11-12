@@ -24,7 +24,7 @@ namespace Nettbanken.Models
         [RegularExpression(@"[0-9]{1,}", ErrorMessage = "Saldoen må være over eller lik et siffer")]
         public int saldoUt { get; set; }
 
-        [Display(Name = "Dato dd/mm/yyyy")]
+        [Display(Name = "Dato (dd/mm/yyy)")]
         [Required(ErrorMessage = "Vennligst fyll inn dato")]
         public string dato { get; set; }
 
