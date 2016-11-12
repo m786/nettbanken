@@ -8,10 +8,9 @@ namespace Nettbanken.BLL
     // Logikk laget som blir brukt til å aksessere DAL for databasemetoder
     public class NettbankBLL : INettbankBLL
     {
-        //private static int bankId = 0;
-
         private INettbankDAL _repository;
 
+        // Konstruktører, relatert til stub/unittesting
         public NettbankBLL()
         {
             _repository = new NettbankDAL();
@@ -37,28 +36,36 @@ namespace Nettbanken.BLL
             return _repository.alleKunder();
         }
 
+        // Finner oppgitt kunde
         public Kunde finnKunde(string sok)
         {
             return _repository.finnKunde(sok);
         }
+
+        // Sletter oppgitt kunde
         public Boolean slettKunde(string personNr)
         {
             return _repository.slettKunde(personNr);
         }
 
+        // Generer random passord
         public String lagPassord()
         {
             return _repository.lagPassord();
         }
+
+        // Registrer en ny kunde via admin
         public Boolean registrerNyKunde(Kunde kunde)
         {
             return _repository.registrerNyKunde(kunde);
         }
 
-        public Boolean endreKunde(string idnr,Kunde innKunde)
+        // Endrer oppgitt kunde med oppgitt informasjon
+        public Boolean endreKunde(string idnr, Kunde innKunde)
         {
             return _repository.endreKunde(idnr,innKunde);
         }
+
         // ---------------------------------------------------------------------------------------
         // Kunde Metoder
 
@@ -128,7 +135,7 @@ namespace Nettbanken.BLL
             _repository.startsjekk();
         }
 
-        //start metoden som sjekker transaksjoner
+        // Start metoden som sjekker transaksjoner
         public void startSjekkTransaksjonStatus()
         {
             _repository.startSjekkTransaksjonStatus();

@@ -14,7 +14,7 @@ namespace Nettbanken.Models
         public int Id { get; set; }
 
         [Display(Name = "Status")]
-        public string status { get; set; } // Status, Betalt, Ikke-Betalt, Kansellert osv.
+        public string status { get; set; }
 
         [Display(Name = "Saldo inn")]
         public int saldoInn { get; set; }

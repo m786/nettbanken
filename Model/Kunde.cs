@@ -51,7 +51,7 @@ namespace Nettbanken.Models
         [Display(Name = "Poststed")]
         [Required(ErrorMessage = "Vennligst fyll inn poststedsnavn")]
         [RegularExpression(@"[A-ZÆØÅa-zæøå]{2,}", ErrorMessage = "Poststedsnavn kan kun inneholde bokstaver")]
-        public string poststed { get; set; } // Hver kunde har kun et postnr og poststed
+        public string poststed { get; set; }
     }
 
 }

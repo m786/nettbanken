@@ -19,7 +19,6 @@ namespace Nettbanken.DAL
         Boolean endreKunde(string idnr,Kunde innKunde);
         Boolean slettKunde(string personNr);
         Kunde finnKunde(string sok);
-        Boolean sjekkSaldo(String personnr);
         String lagPassord();
 
         // ---------------------------------------------------------------------------------------
@@ -37,6 +36,6 @@ namespace Nettbanken.DAL
         void oppdaterKontoer(String fraKonto, String tilKonto, String belop);
         void startsjekk();
         void startSjekkTransaksjonStatus();
-
     }
+
 }

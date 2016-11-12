@@ -20,6 +20,7 @@ namespace Nettbanken.DAL
         // Innloggingsmetode for admins
         public Boolean adminLogginn(Admin admin)
         {
+            // Kobler til databasen
             using (var db = new DBContext())
             {
                 // Sjekker oppgitte adminID mot databasen om admin finnes
@@ -41,11 +42,13 @@ namespace Nettbanken.DAL
         }
 
 
-        // Henter alle kunder for admin
+        // Henter alle kunder
         public List<Kunde> alleKunder()
         {
+            // Kobler til databasen
             using (var db = new DBContext())
             {
+                // Lager en liste av alle kunder
                 List<Kunde> alleKunder = db.Kunder.Select(k => new Kunde()
                 {
                     personNr = k.personNr,
@@ -61,19 +64,22 @@ namespace Nettbanken.DAL
             }
         }
 
-        // Registrerer en ny kunde
+        // Registrerer en ny kunde via admin
         public Boolean registrerNyKunde(Kunde kunde)
         {
+            // Genererer et random nummer, brukt for bankid
             Random rng = new Random();
             int num = rng.Next(10, 999);
 
-            // Oppretter Database connection
+            // Kobler til databasen
             using (var db = new DBContext())
             {
+                // BankID
                 int bid = db.Kunder.Count();
                 bid += num;
                 String bankId = bid.ToString();
                 string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
+                // Genererer salt og passord
                 byte[] salt = genererSalt();
                 var passord = lagPassord();
 
@@ -157,8 +163,7 @@ namespace Nettbanken.DAL
             }
         }
 
-        //Her genereres tilfeldig passord for en ny kunde som admin lager,passordet skal da sendes 
-        //til kunden på mail eller sms.
+        // Her genereres tilfeldig passord for en ny kunde som admin lager
         public String lagPassord()
         {
             string velgFra = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
@@ -173,8 +178,8 @@ namespace Nettbanken.DAL
             return new string(bokstaver);
         }
 
-        //Admin skal kunne endre eksisterende kunde info om nødvendig.
-        public Boolean endreKunde(string idnr,Kunde innKunde)
+        // Admin skal kunne endre eksisterende kundeinfo om nødvendig.
+        public Boolean endreKunde(string idnr, Kunde innKunde)
         {
             KundeDB endreKunde;
             String personnr, fornavn, etternavn, adresse, telefonnr, postnr, poststed;
@@ -185,7 +190,7 @@ namespace Nettbanken.DAL
                 {
                     endreKunde = db.Kunder.Find(idnr);
 
-                    // Lagrer verdiene før endring forl ogging
+                    // Lagrer verdiene før kunden endres, brukes i logging av databaseendringer
                     personnr = endreKunde.personNr;
                     fornavn = endreKunde.fornavn;
                     etternavn = endreKunde.etternavn;
@@ -200,25 +205,31 @@ namespace Nettbanken.DAL
                     endreKunde.etternavn = innKunde.etternavn;
                     endreKunde.adresse = innKunde.adresse;
                     endreKunde.telefonNr = innKunde.telefonNr;
+
                     if (endreKunde.postNr != innKunde.postNr)
                     {
-                        // sjekker om postnr allerede finnes
-                        bool finnes = db.Poststeder.Any(p => p.postNr == innKunde.postNr);
-                        if (finnes)
+                        // Sjekker om postnr allerede finnes
+                        PoststedDB finnes = db.Poststeder.FirstOrDefault(p => p.postNr == innKunde.postNr);
+
+                        // Om postedet ikke eksisterer så legges det inn her
+                        if (finnes == null)
                         {
-                            // Om postedet ikke eksisterer så legges det inn her
                             var nyPoststed = new PoststedDB
                             {
                                 postNr = innKunde.postNr,
                                 poststed = innKunde.poststed
                             };
+                            db.Poststeder.Add(nyPoststed);
 
+                            endreKunde.poststed = nyPoststed;
                         }
+                        // Endrer postnr dersom poststedet finnes
                         else
-                        {   // Endrer postnr
-                            endreKunde.postNr = innKunde.postNr;
+                        {
+                            endreKunde.poststed = finnes;
                         }
                     };
+
                     db.SaveChanges();
                 }
                 catch (Exception feil)
@@ -241,28 +252,33 @@ namespace Nettbanken.DAL
             }
         }
 
-        //kunde sletting
+        // Sletter kunde med gitt personnr
         public Boolean slettKunde(string personNr)
         {
             using (var db = new DBContext())
             {               
                 try
                 {
+                    // Finner kunden
                     KundeDB kunde = db.Kunder.SingleOrDefault(k => k.personNr == personNr);
 
+                    // Finner alle kontoer til kunden
                     List<KontoDB> kontoer = db.Kontoer.Where(ko => ko.personNr == kunde.personNr).ToList();
                     foreach (KontoDB konto in kontoer)
                     {
+                        // Hvis det er en konto som har saldo i seg, så kanselleres slettingen av kunden
                         if (konto.saldo != 0)
                         {
                             System.Windows.Forms.MessageBox.Show("Kunden kunne ikke bli slettet. Kun kunder uten saldo i kontoene sine kan bli slettet.");
                             return false;
                         }
+                        // Finner alle transaksjoner tsom tilhører kontoen
                         List<TransaksjonDB> transaksjoner = db.Transaksjoner.Where(t => t.konto.kontoNr == konto.kontoNr).ToList();
                         foreach (TransaksjonDB transaksjon in transaksjoner)
                         {
                             db.Transaksjoner.Remove(transaksjon);
                         }
+
                         db.Kontoer.Remove(konto);
                     }
 
@@ -282,11 +298,12 @@ namespace Nettbanken.DAL
             return true;
         }
 
-        //Under her er listet søkfunksjoner, skal kunne søke en kunde via tlf,personnr,navn og eventuelt liste opp alle kunder med et gitt postnr
+        // Under her er listet søkfunksjoner, skal kunne søke en kunde via tlf,personnr,navn og eventuelt liste opp alle kunder med et gitt postnr
         public Kunde finnKunde(string sok)
         {
             using (var db = new DBContext())
             {
+                // Leter etter kunden ved bruk av oppgitte søkeparameter
                 var funnetKunde = db.Kunder.Find(sok);
 
                 if (funnetKunde == null)
@@ -305,29 +322,10 @@ namespace Nettbanken.DAL
                         telefonNr = funnetKunde.telefonNr,
                         poststed = funnetKunde.poststed.poststed
                     };
+
                     return utKunde;
                 }
             }
-        }
-       
-        public Boolean sjekkSaldo(String personnr)
-        {
-            var ok = false;
-            using (var db = new DBContext())
-            {
-                var sjekkSaldo = db.Kontoer.Where(k =>k.personNr == personnr);
-                
-                foreach (var i in sjekkSaldo)
-                {
-                    if(i.saldo == 0)
-                    {
-                        ok = true;
-                    }
-     
-                }
-
-            }
-            return ok;
         }
     
         // ---------------------------------------------------------------------------------------
@@ -380,15 +378,18 @@ namespace Nettbanken.DAL
         // Registrering av kunde. Tar et Kunde objekt direkte dra Html.beginForm()
         public Boolean registrerKunde(Kunde kunde) 
         {
+            // Genererer et random nummer
             Random rng = new Random();
             int num = rng.Next(10,999);
 
             // Oppretter Database connection
             using (var db = new DBContext())
             {
+                // BankID genereres ut fra antall kunder og det random genererte nummeret
                 int bid = db.Kunder.Count();
                 bid += num;
                 String bankId = bid.ToString();
+
                 string[] kundeInfo = { kunde.fornavn, kunde.etternavn, kunde.personNr };
                 byte[] salt = genererSalt();
 
@@ -466,10 +467,8 @@ namespace Nettbanken.DAL
 
                 // Lagrer bankid til den nyregistrerte kunden, dersom den trengs ved førstegangs-innlogging
                 HttpContext.Current.Session["bankid"] = bankId;
-
                 // Oppretter standardkonto til kunden
                 opprettStandardkonto(kundeInfo);
-
                 // Kunden logges dersom det ikke var noen excpetions som ble fanget
                 loggHendelse("Ny kunde har blitt registrert med navn(" + kunde.fornavn + " " + kunde.etternavn + ") og " 
                     + "personnummer(" + kunde.personNr + ")", true);
@@ -478,11 +477,12 @@ namespace Nettbanken.DAL
             }
         }
 
-        //Metode for registrering av ny konto
+        // Metode for registrering av ny konto
         public Boolean registrerNyKonto(Konto nykonto)
         {
             using (var db = new DBContext())
             {
+                // Lager ny konto 
                 var nyKonto = new KontoDB()
                 {
                     kontoNr = nykonto.kontoNr,
@@ -529,6 +529,7 @@ namespace Nettbanken.DAL
             }
 
         }
+
         // Registrerer transaksjon
         public Transaksjon registrerTransaksjon(Transaksjon transaksjon)
         {
@@ -598,7 +599,7 @@ namespace Nettbanken.DAL
             return kontoer.ToList();
         }
 
-        // Meetode som lager tabellen for konto informasjon
+        // Metode som lager tabellen for konto informasjon
         public String hentKontoInformasjon(String kontonavn, String personnr)
         {
             String kontoInformasjon =
@@ -650,9 +651,11 @@ namespace Nettbanken.DAL
             using (var db = new DBContext())
             {
                 String status, dato, kid, saldoinn, saldout, frakonto, tilkonto, melding;
-                for (int i =1;i<= db.Transaksjoner.Count(); i++)
+
+                for (int i =1; i<= db.Transaksjoner.Count(); i++)
                 {
-                    var td= db.Transaksjoner.SingleOrDefault(x => x.Id == i);
+                    // Henter hver transaksjon i tabellen
+                    var td = db.Transaksjoner.SingleOrDefault(x => x.Id == i);
                     status = td.status;
                     dato = td.dato;
                     kid = td.KID;
@@ -662,6 +665,7 @@ namespace Nettbanken.DAL
                     tilkonto = td.tilKonto;
                     melding = td.melding;
 
+                    // Tar ut transaksjoner som er relevant for vår kunde/konto
                     if (frakonto.Equals(kontonavn))
                     {
                         kontoUtskrift +=
@@ -675,7 +679,9 @@ namespace Nettbanken.DAL
                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + tilkonto + "</td>" +
                       "<td class='col-sm-1' style='background-color:lavender;'>" + melding + "</td>" +
                       "</tr>";
-                    } else if (tilkonto.Equals(kontonavn)) {
+                    }
+                    else if (tilkonto.Equals(kontonavn))
+                    {
                         kontoUtskrift +=
                        "<tr>" +
                        "<td class='col-sm-1' style='background-color:lavenderblush;'>" + status + "</td>" +
@@ -699,15 +705,16 @@ namespace Nettbanken.DAL
         // Oppretter en standard konto for hver ny kunde registrring
         public void opprettStandardkonto(string[] nyKundeInfo)
         {
+            // Genererer random nummer for kontonr
             Random rng = new Random();
             int num = rng.Next(10000, 99999);
             Boolean OK = false;
 
             using (var db = new DBContext())
             {
-                int n = db.Kunder.Count();
                 string kontonr = num.ToString();
 
+                // Oppretter ny konto
                 var nykonto = new KontoDB()
                 {
                     kontoNr = kontonr,
@@ -784,6 +791,7 @@ namespace Nettbanken.DAL
 
             using (var db = new DBContext())
             {
+                // Trekker/legger til beløp
                 KontoDB fraKontoFunnet = db.Kontoer.Find(fraKonto);
                 KontoDB tilKontoFunnet = db.Kontoer.Find(tilKonto);
 
@@ -818,7 +826,7 @@ namespace Nettbanken.DAL
             }
         }
 
-        //sjekk transaksjonen og utfort, og opdater status.
+        // Sjekk transaksjonen og utfort, og opdater status.
         public void startSjekkTransaksjonStatus()
         {
             System.Diagnostics.Debug.WriteLine("SjekkingTRANSAKSJON......../////////////CHECK!//////////");
@@ -871,6 +879,7 @@ namespace Nettbanken.DAL
                     }
                     antallSjekketRad += 1;
                 }//end forloop
+
                 try
                 {
                     db.SaveChanges();
@@ -881,26 +890,31 @@ namespace Nettbanken.DAL
                         feil.Message +  " - " + feil.InnerException, false);
                     return;
                 }
+
             }
         }
 
         // Sjekker ved hver oppstart om dummy data finnes
         public void startsjekk()
         {
-            var db = new DBContext();
-            try
+            using (var db = new DBContext())
             {
-                var enDbKunde = db.Kunder.First();
-            }
-            catch (Exception feil)
-            {
-                dummyData();
+                // Sjekker om det finnes en kunde i databasen, hvis ikke så starter vi dummydata metoden.
+                try
+                {
+                    var enDbKunde = db.Kunder.First();
+                }
+                catch (Exception feil)
+                {
+                    dummyData();
+                }
             }
         }
 
         // Oppretter dummy data dersom databasen er tom
         public static void dummyData()
         {
+            // Predefinert informasjon
             string[] fornavn = new string[] { "Per", "Ola", "Maria", "Marius", "Helen", "Brage", "Najmi", "Eirik", "Martin" };
             string[] etternavn = new string[] { "Bakke", "Hansen", "Dilora", "Kalle", "Desta", "Petter", "Suda", "Solo", "Haugen" };
             string[] poststed = new string[] { "Oslo", "Bergen", "Stavanger", "Kristia", "Haugesund", "Hammer", "Oslo", "Langesund", "Skien" };
@@ -1003,6 +1017,7 @@ namespace Nettbanken.DAL
                         }
                     }
 
+                    // Lager admins etter at kundene er ferdiglaget
                     else
                     {
                         adminid += 1;

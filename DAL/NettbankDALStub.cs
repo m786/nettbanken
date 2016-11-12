@@ -65,11 +65,6 @@ namespace Nettbanken.DAL
             throw new NotImplementedException();
         }
 
-        public bool sjekkSaldo(string personnr)
-        {
-            throw new NotImplementedException();
-        }
-
         public String lagPassord()
         {
             throw new NotImplementedException();
@@ -134,5 +129,4 @@ namespace Nettbanken.DAL
         }
 
     }
-
 }

@@ -13,20 +13,21 @@ using System.Windows.Forms;
 using System.Timers;
 
 namespace Nettbanken.Controllers
-{
-    
-    // KundeController, der alle metodene som kunden utfører/trenger blir plassert. 
+{  
+    // KundeController, interaksjonene mellom model og view
     public class KundeController : Controller
     {
         private INettbankBLL _nettbankBLL;
         private Boolean harStartet;
         private new System.Timers.Timer timer1;
 
+        // Konstruktør, relatert til stub/unittesting
         public KundeController()
         {
             _nettbankBLL = new NettbankBLL();
         }
 
+        // Konstruktør, relatert til stub/unittesting
         public KundeController(INettbankBLL stub)
         {
             _nettbankBLL = stub;
@@ -37,7 +38,7 @@ namespace Nettbanken.Controllers
         {
             // Tester om det er data i databasen, hvis ikke opprettes dummydata
             _nettbankBLL.startsjekk();
-            //start transaksjon sjekkingen.
+            // Start transaksjon sjekkingen.
             transaksjonerStatusSjekking();
 
             // Kunde session
@@ -69,8 +70,9 @@ namespace Nettbanken.Controllers
         public ActionResult kundeRegistreringView(Kunde kunde)
         {
             ModelState.Remove("bankId");
-            if (ModelState.IsValid)//valider 
-            {               
+            if (ModelState.IsValid) //valider 
+            {
+                // Hvis registrering av kunde OK
                 if (_nettbankBLL.registrerKunde(kunde))
                 {
                     System.Windows.Forms.MessageBox.Show("Registrering godkjent! Ditt BankID er: " + Session["bankid"]);
@@ -127,6 +129,7 @@ namespace Nettbanken.Controllers
 
             if (ModelState.IsValid)
             {
+                // Sjekker om logginn informasjon til admin er gyldig
                 if (_nettbankBLL.adminLogginn(admin))
                 {
                     // Hvis en logger seg inn som admin, så logges kundekonto ut dersom en kundekonto er innlogget
@@ -160,9 +163,9 @@ namespace Nettbanken.Controllers
             ModelState.Remove("postNr");
             ModelState.Remove("poststed");
 
-            if (ModelState.IsValid)//formValider
+            if (ModelState.IsValid) //Valider
             {
-                // if-setning sjekker om kunden finnes i databasen
+                // Sjekker om innloggingsinformasjoner gyldig
                 if (_nettbankBLL.kundeLogginn(kunde)) 
                 {
                     // Hvis en logger seg inn som kunde, så logges adminbruker ut dersom en adminbruker er innlogget
@@ -175,7 +178,8 @@ namespace Nettbanken.Controllers
                     betalingsListe.Add(temp);
 
                     String personnr = kunde.personNr;
-   
+                    
+                    // Lagrer nødvendig informasjon inn i sessions
                     Session["personnr"] = kunde.personNr;
                     Session["bankid"] = kunde.bankId;
                     Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
@@ -192,7 +196,6 @@ namespace Nettbanken.Controllers
         // Hjemmesiden til admins
         public ActionResult adminsideView()
         {
- 
             // Siden kan kun vises dersom man er innlogget
             if (Session["innloggetAdmin"] != null)
             {
@@ -218,7 +221,7 @@ namespace Nettbanken.Controllers
                 bool innlogget = (bool)Session["innlogget"];
                 if (innlogget)
                 {
-                    // Henter kontoer til gitt kunde (id)
+                    // Henter kontoer til gitt kunde
                     var kontoer = (List<String>)Session["kontoer"];
                     ViewBag.personnr = (String)Session["personnr"];
 
@@ -261,8 +264,10 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
+        // Side som sletter en gitt kunde, brukes av admins
         public ActionResult slettView(string idnr)
         {
+            // Kan kun aksesseres dersom man er innlogget som admin
             if (Session["innloggetAdmin"] != null)
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
@@ -277,8 +282,10 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
+        // Siden som endrer en gitt kunde, bruke av admins
         public ActionResult endreView(String idnr)
         {
+            // Siden vises kun derso mman er logget inn som admin
             if (Session["innloggetAdmin"] != null)
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
@@ -293,6 +300,7 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
+        // Siden brukes når admin submitter endringene som er gjort på kunden 
         [HttpPost]
         public ActionResult endreView(string idnr, Kunde kunde)
         {
@@ -300,7 +308,7 @@ namespace Nettbanken.Controllers
             ModelState.Remove("bankId");
             ModelState.Remove("personNr");
 
-            if (ModelState.IsValid)//valider 
+            if (ModelState.IsValid) //Valider 
             {
                 if (_nettbankBLL.endreKunde(idnr, kunde))
                 {          
@@ -311,8 +319,10 @@ namespace Nettbanken.Controllers
             return View(kunde);       
         }
 
+        // Side som viser informasjon om kunden, brukes av admins
         public ActionResult infoView(String idnr)
         {
+            // Siden kan kun vises dersom man er innlogget som admin
             if (Session["innloggetAdmin"] != null)
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
@@ -327,6 +337,7 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
+        // Registrerer en ny kunde via admin
         public ActionResult registrerViaAdmin()
         {
             if (Session["innloggetAdmin"] != null)
@@ -342,13 +353,14 @@ namespace Nettbanken.Controllers
             return RedirectToAction("forsideView");
         }
 
+        // Viewet brukes når admin submitter opprettelsen av den nye kunden
         [HttpPost]
         public ActionResult registrerViaAdmin(Kunde kunde)
         {
             ModelState.Remove("bankId");
             ModelState.Remove("passord");
 
-            if (ModelState.IsValid)//valider 
+            if (ModelState.IsValid) //Valider 
             {
                 if (_nettbankBLL.registrerNyKunde(kunde))
                 {
@@ -359,7 +371,7 @@ namespace Nettbanken.Controllers
             return View();
         }
 
-        //slett kunde.. fra admin. 
+        //Sletter en kunde, brukes av admin
         public ActionResult slettEnKundeFraDB(string idnr) 
         {
             if (Session["innloggetAdmin"] != null)
@@ -408,7 +420,7 @@ namespace Nettbanken.Controllers
             return _nettbankBLL.hentKontoUtskrift(kontonavn, personnr);
         }
 
-        // Metode som legger til en transaksjon temporert
+        // Metode som legger til en temporær transaksjon
         public String tempTransaksjon(String[] infoliste)
         {
             if (ModelState.IsValid)
@@ -454,7 +466,7 @@ namespace Nettbanken.Controllers
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
 
-                // Sjekker om oppgitte endringsnummer tilhører en temporær betaling
+                // Henter den korrekte betalingen som skal endres
                 try
                 {
                     String[] endreRad = betalingsListe.ElementAt(Int32.Parse(betalingNr));
@@ -481,6 +493,7 @@ namespace Nettbanken.Controllers
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
 
+                // Sletter den korrekte betalingen
                 try
                 {
                     betalingsListe.RemoveAt(Int32.Parse(betalingNr));
@@ -502,6 +515,7 @@ namespace Nettbanken.Controllers
 
             if (betalingsListe.Count > 1)
             {
+                // Lager transaksjonsobjekt ut av hver temporær transaksjon
                 for (int i = 1; i < betalingsListe.Count(); i++)
                 {
                     Transaksjon t = new Transaksjon();
@@ -515,7 +529,8 @@ namespace Nettbanken.Controllers
                     _nettbankBLL.registrerTransaksjon(t);
                 }
 
-                betalingsListe.Clear(); //clear transaction buffer
+                // Tømmer lista med temporære betalinger
+                betalingsListe.Clear();
                 String[] temp = { "initializer" };
                 betalingsListe.Add(temp);
 
@@ -562,11 +577,13 @@ namespace Nettbanken.Controllers
                 return "";
             }
         }
-        //start transaksjon sjekkingen automatisk. denne blir kalt paa oppstart av applikasjonen 1 gang, og 
+
+        // Start transaksjon sjekkingen automatisk. Denne blir kalt på oppstart av applikasjonen 1 gang
         public void transaksjonerStatusSjekking()
         {
             if (!harStartet)
-            {//trenger startes bare 1 gang/appstart
+            {
+                // Trenger startes bare 1 gang/appstart
                 timer1 = new System.Timers.Timer();
                 timer1.Elapsed += new ElapsedEventHandler(sjekkForNyeTransaksjonSomMaaOppdateres);
                 timer1.Interval = 10000; // transaksjon interval
@@ -575,9 +592,9 @@ namespace Nettbanken.Controllers
             }
         }
 
-        //bla gjennom transaksjons tabellen og sjekk for transaksjoner som har status "Ikke Betalt" med datoen idag.
-        //hvis det er noen transaksjon som datoen gaar ut idag, det trekkes og status paa transaksjonen oppdateres.
-        //Sjekkingen startes automatisk ved app startup, engang, der etter kjorer automatisk til appen stoppes.
+        // Bla gjennom transaksjons tabellen og sjekk for transaksjoner som har status "Ikke Betalt" med datoen idag.
+        // Hvis det er noen transaksjon som datoen gaar ut idag, det trekkes og status paa transaksjonen oppdateres.
+        // Sjekkingen startes automatisk ved app startup, engang, der etter kjorer automatisk til appen stoppes.
         private void sjekkForNyeTransaksjonSomMaaOppdateres(object sender, EventArgs e)
         {
                 _nettbankBLL.startSjekkTransaksjonStatus();
@@ -596,7 +613,9 @@ namespace Nettbanken.Controllers
  * 
  * Kunde
  * - Bedre regex for transaksjonsfeltene - prioriter admin tingene først. 
- * - nullpointerEX på dato for transaksjonssjekken, sjekk kommentar
+ * - nullpointerEX på dato for transaksjonssjekken, sjekk der det er kommenter med "// exception skjer regel messig her", linje 839.
+ *   Tingen er at hvis databasen har transaksjoner i transaksjonstabellen så skjer det regelmessige nullpointerExs når vi kjører løsningen
+ *    som jeg ikke helt forstår hvorfor skjer, dermed trenger gebi å teste dete.
  * 
  * 
  * 
