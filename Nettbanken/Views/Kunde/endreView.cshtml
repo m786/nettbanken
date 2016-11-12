@@ -5,74 +5,98 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Endre</title>
+    <title>Nettbanken</title>
+    <link href="~/Content/forside_bootstrap1.css" rel="stylesheet">
+    <link href="~/Content/AdminEndreView.css" rel="stylesheet">
 </head>
 <body>
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal">
-            <h4>Kunde</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.personNr)
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.fornavn, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.fornavn, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.fornavn, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.etternavn, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.etternavn, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.etternavn, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.adresse, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.adresse, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.adresse, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.telefonNr, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.telefonNr, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.telefonNr, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.postNr, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.postNr, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.postNr, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.poststed, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.poststed, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.poststed, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Lagre endring" class="btn btn-success" />
-                    @Html.ActionLink("Kunder", "adminsideView", new { tom = "" }, new { @class = "btn btn-primary" })
-                </div>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <img src="~/Content/images/nettbanken.png" width="200px">
             </div>
         </div>
-    }
+        <!-- /bar end -->
+        <!-- /.container end -->
+    </nav>
+
+    <div id="panel">
+
+        <div class="header">
+            <div class="title"><a>Administrator</a></div>
+        </div>
+
+        <div class="Gull_farge">
+            <ul></ul>
+        </div>
+        <div id="høyre_side">
+            <div id="høyre_content">
+                <h1 style="margin-top:2%;">Kunde</h1>
+                <hr />
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.personNr)
+
+                    <div>
+                        @Html.LabelFor(model => model.fornavn, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.EditorFor(model => model.fornavn, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.fornavn, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div style="margin-top:3%;">
+                        @Html.LabelFor(model => model.etternavn, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.EditorFor(model => model.etternavn, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.etternavn, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div style="margin-top:3%;">
+                        @Html.LabelFor(model => model.adresse, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.EditorFor(model => model.adresse, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.adresse, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div style="margin-top:3%;">
+                        @Html.LabelFor(model => model.telefonNr, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.EditorFor(model => model.telefonNr, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.telefonNr, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div style="margin-top:3%;">
+                        @Html.LabelFor(model => model.postNr, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.EditorFor(model => model.postNr, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.postNr, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div style="margin-top:3%;">
+                        @Html.LabelFor(model => model.poststed, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.EditorFor(model => model.poststed, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.poststed, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="margin-top:3%; margin-left:16%;">
+                            <input type="submit" value="Lagre endring" class="btn btn-success" />
+                            @Html.ActionLink("Kunder", "adminsideView", new { tom = "" }, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
