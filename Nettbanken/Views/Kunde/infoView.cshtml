@@ -18,68 +18,9 @@
             </div>
         </div>
         <!-- /bar end -->
-        </div>
         <!-- /.container end -->
     </nav>
-    <h4>Kunde</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.personNr)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.personNr)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fornavn)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.fornavn)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.etternavn)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.etternavn)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.adresse)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.adresse)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.postNr)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.postNr)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.poststed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.poststed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.telefonNr)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.telefonNr)
-        </dd>
-    </dl>
+   
     <div id="panel">
 
         <div class="header">
@@ -94,9 +35,45 @@
 
             <div id="høyre_side">
                 <div id="høyre_content">
-                    <h1>Konto informasjon</h1>
+                    
+                    <h1>Kunde informasjon</h1>
+                    <table id="høyre_kolom">
+                        <thead>
+                            <tr>
+                                <th>PersonNR</th>
+                                <th>Fornavn</th>
+                                <th>Etternavm</th>
+                                <th>Addresse</th>
+                                <th>PostNr</th>
+                                <th>Poststed</th>
+                                <th>Tlf</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
 
+                        <tbody>
+                            <tr class="linje1">
+                                <td>@Html.DisplayFor(model => model.personNr)</td>
+                                <td>@Html.DisplayFor(model => model.fornavn)</td>
+                                <td>@Html.DisplayFor(model => model.etternavn)</td>
+                                <td>@Html.DisplayFor(model => model.adresse)</td>
+                                <td>@Html.DisplayFor(model => model.postNr)</td>
+                                <td>@Html.DisplayFor(model => model.poststed)</td>
+                                <td>@Html.DisplayFor(model => model.telefonNr)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
 
+                        <tfoot>
+                            <tr>
+                                <td colspan="12"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <h2>Konto informasjon</h2>
                     <table id="høyre_kolom">
                         <thead>
                             <tr>
@@ -144,9 +121,7 @@
                         </tfoot>
                     </table>
 
-                    <h2>Betalinger</h2>
-
-
+                    <h3>Betalinger</h3>
                     <table id="høyre_kolom">
                         <thead>
                             <tr>
@@ -194,7 +169,7 @@
                         </tfoot>
                     </table>
 
-                    <div class="knapper_under_panel">
+                    <div class="knapper_under_panel" style="margin-top:2%;">
                         @Html.ActionLink("Tilbake", "adminsideView", new { tom = "" }, new { @class = "btn btn-primary" })
                     </div>
 
