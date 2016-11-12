@@ -76,6 +76,7 @@
             @Html.AntiForgeryToken()
             <div class="form-actions no-color">
                 <button id="slettKunde" class="btn btn-danger" type="button" value="Registrer" onclick="location.href='@Url.Action("slettEnKundeFraDB","Kunde",new { idnr = @Html.DisplayFor(model => model.personNr)} )'">Slett</button>  
+                <button id="slettKunde" class="btn btn-primary" type="button" onclick="location.href='@Url.Action("adminsideView","Kunde")'">Tilbake</button>
             </div>
         }
     </div>

@@ -369,7 +369,7 @@ namespace Nettbanken.Controllers
                 {
                     return RedirectToAction("adminsideView");
                 }
-                return View();
+                return RedirectToAction("adminsideView");
             }
 
             return RedirectToAction("forsideView");
@@ -569,7 +569,7 @@ namespace Nettbanken.Controllers
             {//trenger startes bare 1 gang/appstart
                 timer1 = new System.Timers.Timer();
                 timer1.Elapsed += new ElapsedEventHandler(sjekkForNyeTransaksjonSomMaaOppdateres);
-                timer1.Interval = 5000; // transaksjon interval
+                timer1.Interval = 10000; // transaksjon interval
                 timer1.Enabled = true;
                 harStartet = true;
             }
@@ -591,13 +591,12 @@ namespace Nettbanken.Controllers
  * 
  * 
  * Admin
- *  - Info, sletting
+ *  - Info
  *  - TESTING
- * 
  * 
  * Kunde
  * - Bedre regex for transaksjonsfeltene - prioriter admin tingene først. 
- * 
+ * - nullpointerEX på dato for transaksjonssjekken, sjekk kommentar
  * 
  * 
  * 
