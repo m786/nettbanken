@@ -82,13 +82,13 @@ namespace Nettbanken.DAL
                 {
                     var nyKunde = new KundeDB
                     {
-                        bankId = bankId,
-                        personNr = kunde.personNr,
-                        passord = krypterPassord(lagPassord(), salt),
+                        bankId = null,//bankId,
+                        personNr = null,//kunde.personNr,
+                        passord = null,//krypterPassord(lagPassord(), salt),
                         salt = salt,
-                        fornavn = kunde.fornavn,
+                        fornavn = null,//kunde.fornavn,
                         etternavn = kunde.etternavn,
-                        adresse = kunde.adresse,
+                        adresse = null,//kunde.adresse,
                         telefonNr = kunde.telefonNr,
                         postNr = kunde.postNr
                     };
@@ -97,12 +97,12 @@ namespace Nettbanken.DAL
                     {
                         db.Kunder.Add(nyKunde);
                         db.SaveChanges();
-                        opprettStandardkonto(kundeInfo);
                     }
                     catch (Exception feil)
                     {
                         loggHendelse("Det oppstod en feil under registrering av kunde! - "
                             + feil.Message + " - " + feil.InnerException, false);
+                        System.Windows.Forms.MessageBox.Show("Ops det var flaut, men det oppstod en feil ved registrering av kunden.. Prøv igjen senere.");
                         return false;
                     }
 
@@ -113,13 +113,13 @@ namespace Nettbanken.DAL
                 {
                     var nyKunde = new KundeDB
                     {
-                        bankId = bankId,
-                        personNr = kunde.personNr,
-                        passord = krypterPassord(lagPassord(), salt),
+                        bankId = null,//bankId,
+                        personNr = null,//kunde.personNr,
+                        passord = null,//krypterPassord(lagPassord(), salt),
                         salt = salt,
-                        fornavn = kunde.fornavn,
+                        fornavn = null,//kunde.fornavn,
                         etternavn = kunde.etternavn,
-                        adresse = kunde.adresse,
+                        adresse = null,//kunde.adresse,
                         telefonNr = kunde.telefonNr,
                         postNr = kunde.postNr
                     };
@@ -134,17 +134,18 @@ namespace Nettbanken.DAL
                         nyKunde.poststed = nyPoststed;
                         db.Kunder.Add(nyKunde);
                         db.SaveChanges();
-                        opprettStandardkonto(kundeInfo);
                     }
                     catch (Exception feil)
                     {
                         loggHendelse("Det oppstod en feil under registrering av kunde! - "
                             + feil.Message + " - " + feil.InnerException, false);
+                        System.Windows.Forms.MessageBox.Show("Ops det var flaut, men det oppstod en feil ved registrering av kunden.. Prøv igjen senere.");
                         return false;
                     }
 
                 }
 
+                opprettStandardkonto(kundeInfo);
                 loggHendelse("Admin har opprettet en ny kunde med navn(" + kunde.fornavn + " " + kunde.etternavn + ")" +
                     " og personnummer(" + kunde.personNr + ")", true);
                 return true;
@@ -170,12 +171,25 @@ namespace Nettbanken.DAL
         //Admin skal kunne endre eksisterende kunde info om nødvendig.
         public Boolean endreKunde(string idnr,Kunde innKunde)
         {
+            KundeDB endreKunde;
+            String personnr, fornavn, etternavn, adresse, telefonnr, postnr, poststed;
 
             using (var db = new DBContext())
             {
                 try
                 {
-                    KundeDB endreKunde = db.Kunder.Find(idnr);
+                    endreKunde = db.Kunder.Find(idnr);
+
+                    // Lagrer verdiene før endring forl ogging
+                    personnr = endreKunde.personNr;
+                    fornavn = endreKunde.fornavn;
+                    etternavn = endreKunde.etternavn;
+                    adresse = endreKunde.adresse;
+                    telefonnr = endreKunde.telefonNr;
+                    postnr = endreKunde.postNr;
+                    poststed = endreKunde.poststed.poststed;
+
+                    // Endrer verdiene til kunden
                     endreKunde.personNr = innKunde.personNr;
                     endreKunde.fornavn = innKunde.fornavn;
                     endreKunde.etternavn = innKunde.etternavn;
@@ -205,11 +219,19 @@ namespace Nettbanken.DAL
                 catch (Exception feil)
                 {
                     loggHendelse("Det oppstod en feil under endring av kunde(" + idnr + ") - "
-                        + feil.Message + " - " + feil.InnerException, false);
+                        + feil.Message, false);
+                    System.Windows.Forms.MessageBox.Show("Ops det var flaut, men det oppstod en feil under endringen av kunden.. Prøv igjen senere.");
                     return false;
                 }
 
-                loggHendelse("Admin har endret informasjon hos kunde(" + idnr + ")", true);
+                loggHendelse("Admin har endret informasjon hos kunde(" + idnr + "). " +
+                    "Navn(" + fornavn + " " + etternavn + " => " + endreKunde.fornavn + " " + endreKunde.etternavn + "), " +
+                    "Adresse(" + adresse + " => " + endreKunde.adresse + "), " +
+                    "Telefonnummer(" + telefonnr + " => " + endreKunde.telefonNr + "), " +
+                    "Adresse(" + adresse + " => " + endreKunde.adresse + "), " +
+                    "Poststed(" + postnr + " " + poststed + " => " + endreKunde.postNr + " " + endreKunde.poststed.poststed + ")"
+                    , true);
+
                 return true;
             }
         }
@@ -232,12 +254,16 @@ namespace Nettbanken.DAL
                 {
                     db.SaveChanges();
                 }
-                catch (Exception e)
+                catch (Exception feil)
                 {
-                    Console.Write(e); 
+                    loggHendelse("Det oppstod en feil under sletting av kunde(" + personNr + ") - " +
+                        feil.Message +  " - " + feil.InnerException, false);
+                    System.Windows.Forms.MessageBox.Show("Ops det var flaut, men det oppstod en feil under sletting av kunden.. Prøv igjen senere.");
                     return false;
                 }
             }
+
+            loggHendelse("Admin har slettet kunde(" + personNr + ")", true);
             return true;
         }
 
@@ -377,6 +403,7 @@ namespace Nettbanken.DAL
                     {
                         loggHendelse("Det oppstod en feil under registrering av kunde! - " 
                             + feil.Message +  " - " + feil.InnerException, false);
+                        System.Windows.Forms.MessageBox.Show("Ops det var flaut, men det oppstod en feil ved registrering av kunden.. Prøv igjen senere.");
                         return false;
                     }
 
@@ -413,6 +440,7 @@ namespace Nettbanken.DAL
                     {
                         loggHendelse("Det oppstod en feil under registrering av kunde! - " 
                             + feil.Message + " - " + feil.InnerException, false);
+                        System.Windows.Forms.MessageBox.Show("Ops det var flaut, men det oppstod en feil ved registrering av kunden.. Prøv igjen senere.");
                         return false;
                     }
 
@@ -435,8 +463,6 @@ namespace Nettbanken.DAL
         //Metode for registrering av ny konto
         public Boolean registrerNyKonto(Konto nykonto)
         {
-            Boolean OK = false;
-
             using (var db = new DBContext())
             {
                 var nyKonto = new KontoDB()
@@ -450,18 +476,12 @@ namespace Nettbanken.DAL
                 {
                     db.Kontoer.Add(nyKonto);
                     db.SaveChanges();
-                    OK = true;
                 }
                 catch (Exception feil)
                 {
                     loggHendelse("Det oppstod en feil under registrering av ny konto for kunde(" 
                         + nykonto.personNr + ") - " + feil.Message + " - " + feil.InnerException, false);
                     return false;
-                }
-
-                if (OK)
-                {
-                    // gjøre noe
                 }
             }
 
@@ -525,7 +545,7 @@ namespace Nettbanken.DAL
                     catch (Exception feil)
                     {
                         loggHendelse("Det oppstod en feil under registrering av transaksjon for kunde(" 
-                            + funnetKonto.personNr + ") - " + feil.Message + " - " + feil.InnerException, false);
+                            + personnr + ") - " + feil.Message + " - " + feil.InnerException, false);
                         return null;
                     }
 
@@ -692,7 +712,7 @@ namespace Nettbanken.DAL
                 if (OK)
                 {
                     loggHendelse("Ny Standardkonto(" + nykonto.kontoNr +
-                        ") har blitt opprettet for kunde med personnummer( " + nykonto.personNr + ")", true);
+                        ") har blitt opprettet for kunde med personnummer(" + nykonto.personNr + ")", true);
                 }
 
             }
@@ -745,8 +765,8 @@ namespace Nettbanken.DAL
 
             using (var db = new DBContext())
             {
-                var fraKontoFunnet = db.Kontoer.Find(fraKonto);
-                var tilKontoFunnet = db.Kontoer.Find(tilKonto);
+                KontoDB fraKontoFunnet = db.Kontoer.Find(fraKonto);
+                KontoDB tilKontoFunnet = db.Kontoer.Find(tilKonto);
 
                 int fraKontoSinBalanse = fraKontoFunnet.saldo;
                 int tilKontoSinBalanse = tilKontoFunnet.saldo;
@@ -779,7 +799,7 @@ namespace Nettbanken.DAL
             }
         }
 
-        //sjekk transaksjonen og utfor, og opdater status.
+        //sjekk transaksjonen og utfort, og opdater status.
         public void startSjekkTransaksjonStatus()
         {
             System.Diagnostics.Debug.WriteLine("SjekkingTRANSAKSJON......../////////////CHECK!//////////");
@@ -838,7 +858,9 @@ namespace Nettbanken.DAL
                 }
                 catch (Exception feil)
                 {
-                    // System.Diagnostics.Debug.WriteLine("database feilet aa lagre! " + feil);
+                    loggHendelse("Det har oppstått en feil i systemet for overføring av betalinger - " + 
+                        feil.Message +  " - " + feil.InnerException, false);
+                    return;
                 }
             }
         }

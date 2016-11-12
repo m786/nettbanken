@@ -23,10 +23,6 @@ namespace Nettbanken.Models
         [Display(Name = "Personnummer")]
         [Required(ErrorMessage = "Vennligst fyll inn personnummer")]
         public string personNr { get; set; }
-
-        //public string kundeNr { get; set; } // Hver Konto er knyttet til en Kunde
-
-        //public  List<String> transaksjoner { get; set; } // Hver Konto kan ha flerne transaksjoner
     }
 
 }

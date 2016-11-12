@@ -22,9 +22,6 @@ namespace Nettbanken.Controllers
         private Boolean harStartet;
         private new System.Timers.Timer timer1;
 
-
-
-
         public KundeController()
         {
             _nettbankBLL = new NettbankBLL();
@@ -201,9 +198,9 @@ namespace Nettbanken.Controllers
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
 
-                List<Kunde> alleKunder = _nettbankBLL.alleKunder();
                 if (innlogget)
                 {
+                    List<Kunde> alleKunder = _nettbankBLL.alleKunder();
                     return View(alleKunder);
                 }
                 return RedirectToAction("adminLogginnView");
@@ -268,22 +265,32 @@ namespace Nettbanken.Controllers
         {
             if (Session["innloggetAdmin"] != null)
             {
-             var kunden = _nettbankBLL.finnKunde(idnr);
-             bool innlogget = (bool)Session["innloggetAdmin"];
+                bool innlogget = (bool)Session["innloggetAdmin"];
                 if (innlogget)
                 {
-                  return View(kunden);
+                    var kunden = _nettbankBLL.finnKunde(idnr);
+                    return View(kunden);
                 }
-                return RedirectToAction("kundeLogginnView");
+                return RedirectToAction("adminLogginnView");
             }
 
             return RedirectToAction("forsideView");
-
         }
+
         public ActionResult endreView(String idnr)
         {
-            Kunde kunden = _nettbankBLL.finnKunde(idnr);
-            return View(kunden);
+            if (Session["innloggetAdmin"] != null)
+            {
+                bool innlogget = (bool)Session["innloggetAdmin"];
+                if (innlogget)
+                {
+                    Kunde kunden = _nettbankBLL.finnKunde(idnr);
+                    return View(kunden);
+                }
+                return RedirectToAction("adminLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
         }
 
         [HttpPost]
@@ -293,30 +300,46 @@ namespace Nettbanken.Controllers
             ModelState.Remove("bankId");
             ModelState.Remove("personNr");
 
-
             if (ModelState.IsValid)//valider 
             {
                 if (_nettbankBLL.endreKunde(idnr, kunde))
-                {
-
-            
+                {          
                     return RedirectToAction("adminsideView");
                 }
             }
 
-            return View(kunde);
-            
+            return View(kunde);       
         }
 
         public ActionResult infoView(String idnr)
         {
-            Kunde kunden = _nettbankBLL.finnKunde(idnr);
-            return View(kunden);
+            if (Session["innloggetAdmin"] != null)
+            {
+                bool innlogget = (bool)Session["innloggetAdmin"];
+                if (innlogget)
+                {
+                    Kunde kunden = _nettbankBLL.finnKunde(idnr);
+                    return View(kunden);
+                }
+                return RedirectToAction("adminLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
         }
 
         public ActionResult registrerViaAdmin()
         {
-            return View();
+            if (Session["innloggetAdmin"] != null)
+            {
+                bool innlogget = (bool)Session["innloggetAdmin"];
+                if (innlogget)
+                {
+                    return View();
+                }
+                return RedirectToAction("adminLogginnView");
+            }
+
+            return RedirectToAction("forsideView");
         }
 
         [HttpPost]
@@ -567,9 +590,13 @@ namespace Nettbanken.Controllers
 /* Liste over det som trengs å gjøres
  * 
  * 
+ * Admin
+ *  - Info, sletting
+ *  - TESTING
  * 
  * 
- * 
+ * Kunde
+ * - Bedre regex for transaksjonsfeltene - prioriter admin tingene først. 
  * 
  * 
  * 

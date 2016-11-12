@@ -52,8 +52,6 @@ namespace Nettbanken.Models
         [Required(ErrorMessage = "Vennligst fyll inn poststedsnavn")]
         [RegularExpression(@"[A-ZÆØÅa-zæøå]{2,}", ErrorMessage = "Poststedsnavn kan kun inneholde bokstaver")]
         public string poststed { get; set; } // Hver kunde har kun et postnr og poststed
-
-        //public List<String> kontoer { get; set; } // En kunde kan ha flere kontoer, aka List<Konto>
     }
 
 }
