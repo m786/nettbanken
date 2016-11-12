@@ -458,7 +458,6 @@ namespace Nettbanken.Controllers
             {
                 var betalingsListe = (List<string[]>)Session["tempTabell"];
 
-                // Sjekker om oppgitte slettenummer tilhører en temporær betaling
                 try
                 {
                     betalingsListe.RemoveAt(Int32.Parse(betalingNr));
@@ -466,7 +465,7 @@ namespace Nettbanken.Controllers
                 }
                 catch (Exception feil)
                 {
-                    return oppdaterTabell() + "<div><b>Oppgitte slettenummer finnes ikke!</b></div>";
+                    return oppdaterTabell();
                 }
             }
 
@@ -508,30 +507,37 @@ namespace Nettbanken.Controllers
         public String oppdaterTabell()
         {
             var betalingsListe = (List<string[]>)Session["tempTabell"];
-            String tempTable = "<table>" + "<tr>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
-               "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
-               "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
-               "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" +
-               "</tr>";
-            for (var i = 1; i < betalingsListe.Count; i++)
+            if (betalingsListe.Count > 1)
             {
-                String[] tmp = betalingsListe.ElementAt(i);
-                tempTable +=
-                       "<tr>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
-                       "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
-                       "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
-                        "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" +
-                        "button" + " id=\"" + i + "\"onclick=\"knapper('slett',this.id)\"" + ">Slett</button></td>" +
-                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" +
-                            " id=\"" + i + "\"onclick=\"knapper('endre',this.id)\"" + ">Endre</button></td>" +
-                       "</tr>";
-            }
-            tempTable += "</table>";
+                String tempTable = "<table>" + "<tr>" +
+                    "<th class='col-sm-4' style='background-color:lavenderblush;'>Betaling Nummer</th>" +
+                   "<th class='col-sm-4' style='background-color:lavenderblush;'>Betalings Dato</th>" +
+                   "<th class='col-sm-4' style='background-color:lavender;'>Mottaker</th>" +
+                   "<th class='col-sm-4' style='background-color:lavenderblush;'>Beløp</th>" +
+                   "</tr>";
+                for (var i = 1; i < betalingsListe.Count; i++)
+                {
+                    String[] tmp = betalingsListe.ElementAt(i);
+                    tempTable +=
+                           "<tr>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i + "</td>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[4] + "</td>" +
+                           "<td class='col-sm-4' style='background-color:lavender;'>" + tmp[1] + "</td>" +
+                           "<td class='col-sm-4' style='background-color:lavenderblush;'>" + tmp[2] + "</td>" +
+                            "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" +
+                            "button" + " id=\"" + i + "\"onclick=\"knapper('slett',this.id)\"" + ">Slett</button></td>" +
+                                "<td class='col-sm-4' style='background-color:lavenderblush;'><button type=" + "button" +
+                                " id=\"" + i + "\"onclick=\"knapper('endre',this.id)\"" + ">Endre</button></td>" +
+                           "</tr>";
+                }
+                tempTable += "</table>";
 
-            return tempTable;
+                return tempTable;
+            }
+            else
+            {
+                return "";
+            }
         }
         //start transaksjon sjekkingen automatisk. denne blir kalt paa oppstart av applikasjonen 1 gang, og 
         public void transaksjonerStatusSjekking()

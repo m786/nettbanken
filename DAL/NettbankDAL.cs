@@ -618,8 +618,8 @@ namespace Nettbanken.DAL
                     status = td.status;
                     dato = td.dato;
                     kid = td.KID;
-                    saldoinn = td.saldoInn+"";
-                    saldout = td.saldoUt + "";
+                    saldoinn = td.saldoInn.ToString();
+                    saldout = td.saldoUt.ToString();
                     frakonto = td.fraKonto;
                     tilkonto = td.tilKonto;
                     melding = td.melding;
@@ -667,13 +667,13 @@ namespace Nettbanken.DAL
             using (var db = new DBContext())
             {
                 n = db.Kunder.Count();
-                string kontonr = 3211 + "" + n;
+                string kontonr = 3211.ToString() + n;
 
                 var nykonto = new KontoDB()
                 {
                     kontoNr = kontonr,
                     saldo = 0,
-                    kontoNavn = ""+ kontonr,
+                    kontoNavn = kontonr.ToString(),
                     personNr = nyKundeInfo[2],
                 };
 
@@ -904,7 +904,7 @@ namespace Nettbanken.DAL
 
                         s.kontoNr = konNr.ToString();
                         s.saldo = 500;
-                        s.kontoNavn = "" + konNr;
+                        s.kontoNavn = konNr.ToString();
                         s.personNr = k.personNr;
 
                         try
@@ -928,21 +928,21 @@ namespace Nettbanken.DAL
                             KontoDB e = new KontoDB();
                             e.kontoNr = konNr.ToString();
                             e.saldo = 50;
-                            e.kontoNavn = "" + konNr;
+                            e.kontoNavn = konNr.ToString();
                             e.personNr = "118921160";
 
                             konNr += i;
                             KontoDB f = new KontoDB();
                             f.kontoNr = konNr.ToString();
                             f.saldo = 400;
-                            f.kontoNavn = "" + konNr;
+                            f.kontoNavn = konNr.ToString();
                             f.personNr = "118921160";
 
                             konNr += i;
                             KontoDB g = new KontoDB();
                             g.kontoNr = konNr.ToString();
                             g.saldo = 50;
-                            g.kontoNavn = "" + konNr;
+                            g.kontoNavn = konNr.ToString();
                             g.personNr = "118921161";
 
                             try
