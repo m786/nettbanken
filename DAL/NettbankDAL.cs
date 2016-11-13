@@ -607,9 +607,9 @@ namespace Nettbanken.DAL
                 "<table>" +
                 "<thead>"+
                 "<tr>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Kontonavn</th>" +
+                "<th class='col-sm-4' style='background-color:lavender;'>Kontonavn</th>" +
                 "<th class='col-sm-4' style='background-color:lavender;'>Kontonummer</th>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Saldo</th>" +
+                "<th class='col-sm-4' style='background-color:lavender;'>Saldo</th>" +
                 "</tr>"+
                 "</thead>";
 
@@ -622,7 +622,7 @@ namespace Nettbanken.DAL
                     kontoInformasjon +=
                         "<tr>" +
                         "<td class='col-sm-4' style='background-color:lavenderblush;'>"+ i.kontoNavn+"</td>" +
-                        "<td class='col-sm-4' style='background-color:lavender;'>" +i.kontoNr+"</td>" +
+                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i.kontoNr+"</td>" +
                         "<td class='col-sm-4' style='background-color:lavenderblush;'>" +i.saldo+"</td>" +
                         "</tr>";
                 }
