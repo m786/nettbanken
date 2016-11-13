@@ -607,9 +607,9 @@ namespace Nettbanken.DAL
                 "<table>" +
                 "<thead>"+
                 "<tr>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Kontonavn</th>" +
+                "<th class='col-sm-4' style='padding-right:261px; background-color:lavender;'>Kontonavn</th>" +
                 "<th class='col-sm-4' style='background-color:lavender;'>Kontonummer</th>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush;'>Saldo</th>" +
+                "<th class='col-sm-4' style='background-color:lavender;'>Saldo</th>" +
                 "</tr>"+
                 "</thead>";
 
@@ -621,8 +621,8 @@ namespace Nettbanken.DAL
                 {
                     kontoInformasjon +=
                         "<tr>" +
-                        "<td class='col-sm-4' style='background-color:lavenderblush;'>"+ i.kontoNavn+"</td>" +
-                        "<td class='col-sm-4' style='background-color:lavender;'>" +i.kontoNr+"</td>" +
+                        "<td class='col-sm-4' style='padding-right:261px; background-color:lavenderblush;'>" + i.kontoNavn+"</td>" +
+                        "<td class='col-sm-4' style='background-color:lavenderblush;'>" + i.kontoNr+"</td>" +
                         "<td class='col-sm-4' style='background-color:lavenderblush;'>" +i.saldo+"</td>" +
                         "</tr>";
                 }
@@ -639,7 +639,7 @@ namespace Nettbanken.DAL
                 "<h3 style='background-color: #bad7e6; color: #22425e; font-size: 14px; font-weight: bold; moz-border-radius-topleft: 6px;-webkit-border-top-left-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-left-radius: 6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -khtml-border-top-right-radius: 6px; padding: 10px 0 10px 15px; text-shadow: 1px 1px #DCEEF7; border-bottom: 1px #ABC7D6 solid;'>Konto utskrift</h3>" +
                 "<table>" +
                 "<tr>" +
-                "<th class='col-sm-1' style='background-color:lavenderblush;'>Status</th>" +
+                "<th class='col-sm-1' style='padding-right:44px; background-color:lavenderblush;'>Status</th>" +
                 "<th class='col-sm-1' style='background-color:lavender;'>Dato</th>" +
                 "<th class='col-sm-1' style='background-color:lavenderblush;'>KID</th>" +
                 "<th class='col-sm-1' style='background-color:lavender;'>Saldo inn</th>" +
@@ -672,7 +672,7 @@ namespace Nettbanken.DAL
                     {
                         kontoUtskrift +=
                       "<tr>" +
-                      "<td class='col-sm-1' style='background-color:lavenderblush;'>" + status + "</td>" +
+                      "<td class='col-sm-1' style='padding-right:44px; background-color:lavenderblush;'>" + status + "</td>" +
                       "<td class='col-sm-1' style='background-color:lavender;'>" + dato + "</td>" +
                       "<td class='col-sm-1' style='background-color:lavenderblush;'>" + kid + "</td>" +
                       "<td class='col-sm-1' style='background-color:lavender;'>" + "0" + "</td>" + 
