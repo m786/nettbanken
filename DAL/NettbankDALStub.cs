@@ -41,6 +41,7 @@ namespace Nettbanken.DAL
                     poststed = poststed[i],
                     telefonNr = telefonnr[i]
                 };
+                allekunder.Add(kunde);
             }
 
             return allekunder;
