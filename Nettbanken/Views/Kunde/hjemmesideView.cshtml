@@ -10,6 +10,7 @@
     <script src="~/scripts/jquery-3.1.1.js"></script>
     <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
     <link href="~/Content/innlogget_bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/kundeside.css" rel="stylesheet" type="text/css">
 
     <script type="text/javascript">
         // Metode som oppdaterer tabell med korrekt info
@@ -33,56 +34,70 @@
                 <img src="~/Content/images/nettbanken.png" width="200px">
             </div>
         </div>
-        <div style="margin-left:89%; margin-top:-4%;">
+        
+        <div style="margin-left:75%; margin-top:-4%;">
+            <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("transaksjonView","Kunde")'">
+                <span class="glyphicon glyphicon-credit-card"></span> Transaksjoner
+            </button>
+        </div>
+        <div style="margin-left:89%; margin-top:-3%;">
             <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("loggUt","Kunde")'">
-                <span class="glyphicon glyphicon-log-out"></span> Logg Ut
+            <span class="glyphicon glyphicon-log-out"></span> Logg Ut
             </button>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="jumbotron">
-            <span style="font-size:10px;color:red">
-                <b>NB!</b>
-                <b>Påminnelse din BankID er: @Session["bankid"]</b>
-            </span>
-            <h3>Konto oversikt</h3>
-            <!--<h3>Velg konto:</h3>-->
+    <div id="panel">
 
-            <div class="container">
+        <div class="header">
+            <div class="title"><a>Kunde</a></div>
+        </div>
 
-                <div class="row">
-                    <div class="row">
-                        <select id="kontoDropdown" onchange="printUtskrift()">
-                           
-                            @foreach (var konto in Model)
-                            {
-                                <option>@konto</option> 
-                            }
-                        </select>
-                    </div>
-                </div>
-                <br/>
+        <div class="Gull_farge">
+            <ul></ul>
+        </div>
+        <span style="font-size:10px;color:red">
+            <b>NB!</b>
+            <b>Påminnelse din BankID er: @Session["bankid"]</b>
+        </span>
+        <div id="høyre_side">
+            <div id="høyre_content">
+                <h1>Konto oversikt</h1>
+                <!--<h1>Velg konto:</h1>-->
+                
+                <p style="margin-top:2%;"><b>Velg Konto:</b>
+                <select id="kontoDropdown" onchange="printUtskrift()" style="margin-left:2%;">
+                    @foreach (var konto in Model)
+                     {
+                       <option>@konto</option>
+                      }
+                </select>
+                </p>
+                <hr>
 
-                <div class="container">
-                    <p>
-                        <!--<input type="button" class="btn btn-primary" value="Utskrift" onclick="printUtskrift()"/>-->
-                        <input type="button" class="btn btn-primary" value="Transaksjoner" onclick="location.href='@Url.Action("transaksjonView","Kunde")'"/>
-                    </p>
-                    
-                </div>
-
-                <div id="kontoInformasjon">
-                    <!--Her kommer konto informasjon-->
-                </div>
-                <br/>
-                <div id="kontoUtskrift">
-                    <!--Her kommer utskriftstabellen-->
-                </div>
 
             </div>
         </div>
+        <br />
+
+        <div class="container">
+
+            <!--<input type="button" class="btn btn-primary" value="Utskrift" onclick="printUtskrift()"/>-->
+        </div>
+
+        <div id="kontoInformasjon" style="margin-left:1%;">
+            <!--Her kommer konto informasjon-->
+        </div>
+        <br />
+        <hr>
+        <div id="kontoUtskrift" style="margin-left:1%;">
+            <!--Her kommer utskriftstabellen-->
+        </div>
+        <hr>
+        <div class="knapper_under_panel">
+        </div>
     </div>
+    <div class="clear"></div>
 </body>
 
 </html>

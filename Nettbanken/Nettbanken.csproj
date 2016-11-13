@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AdminEndreView.css" />
+    <Content Include="Content\kundeside.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -210,7 +211,6 @@
     <Content Include="Views\Kunde\kundeLogginnView.cshtml" />
     <Content Include="Views\Kunde\kundeRegistreringView.cshtml" />
     <Content Include="Views\Kunde\transaksjonView.cshtml" />
-    <Content Include="Views\Kunde\hjemmesideView.cshtml" />
     <Content Include="scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\Kunde\adminLogginnView.cshtml" />
@@ -219,6 +219,7 @@
     <Content Include="Views\Kunde\infoView.cshtml" />
     <Content Include="Views\Kunde\slettView.cshtml" />
     <Content Include="Views\Kunde\registrerViaAdmin.cshtml" />
+    <Content Include="Views\Kunde\hjemmesideView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
