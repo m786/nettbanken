@@ -607,9 +607,9 @@ namespace Nettbanken.DAL
                 "<table>" +
                 "<thead>"+
                 "<tr>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush; padding-right: 31%;'>Kontonavn</th>" +
-                "<th class='col-sm-4' style='background-color:lavender; padding-right: 31%;'>Kontonummer</th>" +
-                "<th class='col-sm-4' style='background-color:lavenderblush; padding-right: 31%;'>Saldo</th>" +
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Kontonavn</th>" +
+                "<th class='col-sm-4' style='background-color:lavender;'>Kontonummer</th>" +
+                "<th class='col-sm-4' style='background-color:lavenderblush;'>Saldo</th>" +
                 "</tr>"+
                 "</thead>";
 
@@ -639,14 +639,14 @@ namespace Nettbanken.DAL
                 "<h3 style='background-color: #bad7e6; color: #22425e; font-size: 14px; font-weight: bold; moz-border-radius-topleft: 6px;-webkit-border-top-left-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-left-radius: 6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -khtml-border-top-right-radius: 6px; padding: 10px 0 10px 15px; text-shadow: 1px 1px #DCEEF7; border-bottom: 1px #ABC7D6 solid;'>Konto utskrift</h3>" +
                 "<table>" +
                 "<tr>" +
-                "<th class='col-sm-1' style='background-color:lavenderblush; padding-right: 6%;'>Status</th>" +
-                "<th class='col-sm-1' style='background-color:lavender; padding-right: 6%;'>Dato</th>" +
-                "<th class='col-sm-1' style='background-color:lavenderblush; padding-right: 6%;'>KID</th>" +
-                "<th class='col-sm-1' style='background-color:lavender; padding-right: 6%;'>Saldo inn</th>" +
-                "<th class='col-sm-1' style='background-color:lavenderblush; padding-right: 6%;'>Saldo ut</th>" +
-                "<th class='col-sm-1' style='background-color:lavender; padding-right: 6%;'>Fra konto</th>" +
-                "<th class='col-sm-1' style='background-color:lavenderblush; padding-right: 6%;'>Til konto</th>" +
-                "<th class='col-sm-1' style='background-color:lavender; padding-right: 6%;'>Melding</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>Status</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Dato</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>KID</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Saldo inn</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>Saldo ut</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Fra konto</th>" +
+                "<th class='col-sm-1' style='background-color:lavenderblush;'>Til konto</th>" +
+                "<th class='col-sm-1' style='background-color:lavender;'>Melding</th>" +
                 "</tr>";
 
             // Finner riktig konto og kunde
