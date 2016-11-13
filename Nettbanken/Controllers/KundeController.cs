@@ -322,18 +322,28 @@ namespace Nettbanken.Controllers
         // Side som viser informasjon om kunden, brukes av admins
         public ActionResult infoView(String idnr)
         {
-            // Siden kan kun vises dersom man er innlogget som admin
+
             if (Session["innloggetAdmin"] != null)
             {
                 bool innlogget = (bool)Session["innloggetAdmin"];
                 if (innlogget)
                 {
-                    Kunde kunden = _nettbankBLL.finnKunde(idnr);
-                    return View(kunden);
+                    var betalingsListe = new List<String[]>();
+                    String[] temp = { "initializer" };
+                    betalingsListe.Add(temp);
+
+                    String personnr = _nettbankBLL.finnKunde(idnr).personNr;
+                    Session["innlogget"] = true;
+                    // Lagrer nødvendig informasjon inn i sessions
+                    Session["personnr"] = _nettbankBLL.finnKunde(idnr).personNr;
+                    Session["bankid"] = _nettbankBLL.finnKunde(idnr).bankId;
+                    Session["kontoer"] = _nettbankBLL.hentKontoer(personnr);
+                    Session["tempTabell"] = betalingsListe;
+
+                    return RedirectToAction("hjemmesideView");
                 }
                 return RedirectToAction("adminLogginnView");
             }
-
             return RedirectToAction("forsideView");
         }
 
